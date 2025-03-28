@@ -1,0 +1,636 @@
+---
+title: "Procrastination & Dementia: A Markov Model"
+author: 
+  - name: "Cormac Monaghan"
+    url: "https://c-monaghan.github.io/"
+    orcid: "https://orcid.org/0000-0001-9012-3060"
+    affiliation:
+      - "Hamilton Institute, Maynooth University, Ireland"
+      - "Department of Psychology, Maynooth University, Ireland"
+  - name: "Rafael de Andrade Moral"
+    url: "https://rafamoral.github.io/"
+    orcid: "https://orcid.org/0000-0002-0875-3563"
+    affiliation:
+      - "Department of Mathematics and Statistics, Maynooth University, Ireland"
+  - name: "Joanna McHugh Power"
+    orcid: "https://orcid.org/0000-0002-7387-3107"
+    affiliation: 
+      - "Department of Psychology, Maynooth University, Ireland"
+toc: true
+toc-depth: 4
+toc-title: On this page
+bibliography: references.bib
+csl: apa.csl
+format: 
+  html:
+    theme: 
+      light: united
+    page-layout: full
+    html-math-method: katex
+    code-tools: true
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    include-in-header: 
+      - file: ./html/github-corner.html
+include-after-body: ./html/footer.html
+execute: 
+  warning: false
+editor: source
+---
+
+```{r setting-up}
+rm(list = ls())
+
+set.seed(43561)
+
+# Packages
+suppressMessages(library(dplyr))
+library(tidyr)
+library(ggplot2)
+library(ggalluvial)
+
+source(here::here("./02__Models/00__Functions.R"))
+
+# Paths -----------------------------------------------------------------------
+path_data <- "./01__Data/02__Processed/"
+```
+
+# Overview
+
+The Health and Retirement Study (HRS) collects an extensive array of data related to cognitive health, physical well-being, economic status, and psychosocial factors. Among the information gathered, specific variables are used to assess and classify individuals into distinct categories of cognitive functioning. These classifications help to better understand the progression of cognitive decline, enabling researchers to track trends and identify factors that may influence cognitive health over time.
+
+## Cognitive Function Categories
+
+- **Normal Cognition:** Individuals in this category show no significant signs of cognitive impairment and are able to function independently in daily activities.
+- **Mild Cognitive Impairment (MCI):** This stage reflects a slight but noticeable decline in cognitive abilities, such as memory or thinking skills, that goes beyond what would be expected with normal aging but does not yet interfere significantly with daily life.
+- **Dementia:** This classification is marked by more severe cognitive deficits, impacting memory, reasoning, and the ability to perform everyday tasks. Dementia encompasses various neurodegenerative conditions, with Alzheimer's disease being the most common.
+
+By tracking transitions between these categories, researchers can gain insights into the factors that contribute to cognitive decline and identify potential interventions to promote healthy aging.
+
+# Langa-Weir Classifications
+
+For previous waves of HRS data (1995 - 2020) there is a researcher contributed dataset of dementia classifications [@langa2023]. Researchers have used this dataset to study the trajectories of cognitive aging, dementia risk, and related health outcomes in older adults. However, with the recent release of the 2022 HRS data, **these classifications have yet to be updated**
+
+## LWC2022 Package
+
+In order to address this we developed the `LWC2022` package [@Monaghan2024] to replicate the methodology of @langa2023. This package automates the classification process, ensuring consistency with previous waves and providing researchers with an up-to-date resource for studying cognitive decline and dementia across all available HRS waves. @fig-lwc illustrates the LWC workflow.
+
+![LWC Workflow](./images/LWC_Workflow.png){#fig-lwc}
+
+# Dementia Dataset
+
+Our updated dataset contains 13 columns of cognitive classifications spanning from 1996 to 2022. These columns reflect dementia status across each wave, using the same criteria and structure as the original Langa-Weir dataset, now extended to include the most recent 2022 wave.
+
+```{r data-import}
+data <- readxl::read_xlsx(here::here(path_data, "data.xlsx"))
+
+dementia_data <- data |>
+  count_transitions(years = seq(1996, 2022, by = 2))
+
+glimpse(dementia_data)
+```
+
+## Missing data
+
+Since the participant pool is drawn from the 2020 wave of the HRS data, any analysis that looks back at previous waves will inevitably encounter missing data. Not all participants were included in earlier waves, leading to gaps in the data. @fig-missing-data displays the frequency of missing cognitive test data across each HRS wave.
+
+```{r missing-data}
+#| fig-width: 8
+#| label: fig-missing-data
+#| fig-cap: Occurance of missing data across HRS waves (participants were gathered from the 2020 HRS wave [in red])
+
+# Dynamic colours
+colours <- c(rep("#2e2e2e", times = 12), "red", "#2e2e2e")
+
+data |>
+  select(any_of(paste0("cogtot27_imp", 1996:2022))) |>
+  rename_with( ~ stringr::str_replace(., "cogtot27_imp", ""), starts_with("cogtot27")) |>
+  visdat::vis_dat(palette = "cb_safe") +
+  labs(title = "Missing data across HRS Waves (1996 - 2022)",
+       subtitle = "Total Cognitive Scores") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 12, face = "bold", colour = "#2e2e2e"),
+    plot.subtitle = element_text(hjust = 0.5, size = 10, colour = "#2e2e2e"),
+    axis.text.x = element_text(colour = colours)) +
+  ggeasy::easy_remove_legend() +
+  ggeasy::easy_x_axis_labels_size(size = 9)
+
+```
+
+The HRS had its most recent participant intake in 2016, which explains the notable decline in missing data occurrences from that point onward. As new participants were not added after 2016, the dataset becomes more complete in subsequent waves, with fewer missing values. 
+
+Given this shift, we will conduct our analysis **the reduced dataset (2016 - 2022)** (@fig-complete-data) along with removing the missing values from 2016 and 2018.
+
+```{r complete-data}
+#| fig-width: 8
+#| label: fig-complete-data
+#| fig-cap: HRS dataset after processing
+
+data |>
+  select(any_of(paste0("cogtot27_imp", 2016:2022))) |>
+  rename_with( ~ stringr::str_replace(., "cogtot27_imp", ""), starts_with("cogtot27")) |>
+  na.omit() |>
+  visdat::vis_dat(palette = "cb_safe") +
+  labs(title = "Complete dataset across HRS Waves (2016 - 2022)",
+       subtitle = "Total Cognitive Scores") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 12, face = "bold", colour = "#2e2e2e"),
+    plot.subtitle = element_text(hjust = 0.5, size = 10, colour = "#2e2e2e")) +
+  ggeasy::easy_remove_legend() +
+  ggeasy::easy_x_axis_labels_size(size = 9)
+```
+
+
+## Exploratory Data Analysis
+
+### Cognitive Test Scores
+
+Initially, we will plot a distribution of the cognitive test scores (ranging from 0 - 27) across time for all HRS participants.
+
+```{r cog-scores}
+#| fig-width: 12
+#| label: fig-cognitive-test-scores
+#| fig-cap: Cognitive test scores (2016 - 2022)
+
+plot_cognitive_scores(data = data, year = 2016)
+```
+
+### Classification proportion per year
+
+@fig-dementia-proportions shows the proportion of dementia classifications from HRS 2016 - 2022. The variable **Missing** represents the procrastination HRS respondents who were not yet interviewed by the HRS. Since the analysis focuses on participants included in the 2020 HRS wave, any retroactive analysis of prior waves may result in missing data for certain individuals
+
+```{r cog-class}
+#| fig-width: 12
+#| label: fig-dementia-proportions
+#| fig-cap: Proportion of dementia classifications per year
+
+# Plotting proportions --------------------------------------------------------
+data |>
+  count_transitions(years = seq(2016, 2022, by = 2), absorbing = TRUE) |>
+  ggplot(aes(x = Wave, fill = Classification)) +
+  geom_bar(position = "fill", alpha = 0.5, colour = "black") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Proportion of Cognitive Status Classifications (2016 - 2022)", 
+       x = "", y = "Percentage") +
+  scale_fill_viridis_d(direction = -1) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(size = 14, hjust = 0.5, face = "bold"),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 10),
+        text = element_text(size = 10)) +
+  ggeasy::easy_move_legend("bottom") +
+  ggeasy::easy_remove_legend_title()
+```
+
+### Dementia transitions per year
+
+@fig-dementia-transitions is an alluvial graph illustrating the transitions in cognitive classifications from one HRS wave to the next.
+
+```{r cog-transition}
+#| fig-width: 12
+#| label: fig-dementia-transitions
+#| fig-cap: Dementia transitions (2016 - 2022)
+
+data |>
+  count_transitions(years = seq(2016, 2022, by = 2)) |>
+  group_by(ID, Wave) |>
+  reframe(plyr::count(Classification)) |>
+  rename(Classification = x, n = freq) |>
+  plot_transitions(size = 2.5)
+```
+
+From this figure we can see that some individuals classified with dementia in one wave transition out of dementia in a subsequent wave. Let's fix this by adding an additional parameter to our `count_transitions()` function to turn dementia into an absorbing state (@fig-dementia-transitions-absorbing). We can do this by using the `cumany()` function from the `dplyr` [@Wickham2023] package.
+
+```{r cog-transition-absorbing}
+#| fig-width: 12
+#| label: fig-dementia-transitions-absorbing
+#| fig-cap: Dementia transitions with dementia as an absorbing state (2016 - 2022)
+
+data |>
+  count_transitions(years = seq(2016, 2022, by = 2), absorbing = TRUE) |>
+  group_by(ID, Wave) |>
+  reframe(plyr::count(Classification)) |>
+  rename(Classification = x, n = freq) |>
+  plot_transitions(size = 2.5)
+```
+
+# Markov Modelling
+
+In this section, we apply Markov modelling to analyze the transitions between cognitive states (Normal Cognition, Mild Cognitive Impairment [MCI], and Dementia) using longitudinal data from the Health and Retirement Study (HRS) from 2016 to 2022. By modeling these transitions, we aim to understand the probabilities of moving between different cognitive states over time.
+
+## Data preparation
+
+The first step is to prepare the transition dataset. We start by transforming the data to create a record of transitions from one cognitive state to another between consecutive waves.
+
+Once the transitions are identified, we calculate the probabilities of each state-to-state transition. These probabilities are computed by counting the occurrences of each transition and dividing by the total number of transitions.
+
+```{r transition-probability}
+tran_prob <- data |>
+  extract_years(years = seq(2016, 2022, by = 2)) |>
+  create_transitions(absorbing = TRUE) |>
+  calculate_probabilties()
+
+tran_prob |>
+  mutate(prop = round(prop, digits = 3)) |>
+  head(n = 9) |>
+  gt::gt() |>
+  gtExtras::gt_theme_538() |>
+  gt::cols_align(align = "center") |>
+  gt::tab_header(title = "Overall Transition Probabilties (2016 - 2022)") |>
+  gt::tab_options(table.width = gt::pct(100)) |>
+  gt::opt_align_table_header(align = "center")
+```
+
+
+## Creating transition matrix
+
+The probability distribution of transitions from one state to another can be represented into a transition matrix $P = (p_{ij})_{i,j}$ where each element of position $(i, j)$ represents the transition probability $p_{ij}$. 
+
+$$
+P = \begin{bmatrix} 
+p_{11} & p_{12} & p_{13} \\
+p_{21} & p_{22} & p_{23} \\
+p_{31} & p_{32} & p_{33} \\
+\end{bmatrix}
+$$
+
+```{r transition-matrix}
+tran_matrix <- tran_prob |>
+  transition_matrix() |>
+  normalise() |>
+  round(digits = 3)
+
+tran_matrix
+```
+
+This code creates a $3 \times 3$ matrix (for the three states: Normal Cognition, MCI, and Dementia) and populates it with the transition probabilities. 
+
+## Visualising the matrix
+
+To make the transition matrix more interpretable we visualize the probabilities using a heat map (@fig-transition-matrix)
+
+```{r transition-matrix-plot}
+#| fig-width: 8
+#| label: fig-transition-matrix
+#| fig-cap: Heat map of transition probabilities (2016 - 2022)
+
+plot_matrix(data = t(tran_matrix), year = 2016)
+```
+
+We can also create and plot transition matrices for each wave separately allowing us to see how these transition probabilities change across multiple waves of data collection
+
+```{r transition-matrix-longitudinal}
+tran_prob_long <- data |>
+  extract_years(years = seq(2016, 2022, by = 2)) |>
+  create_transitions(absorbing = TRUE) |>
+  group_by(Wave) |>
+  calculate_probabilties() |>
+  group_map(~ transition_matrix(.x, longitudinal = TRUE), .keep = TRUE) |>
+  lapply(function(mat) {
+    mat[c("Normal Cognition", "MCI", "Dementia"), c("Normal Cognition", "MCI", "Dementia")] |>
+        normalise()
+    }) |>
+  purrr::map2_df(.y = c(seq(2016, 2020, by = 2)), .f = reshape_matrix) |>
+  mutate(
+    transition_prob = round(transition_prob, digits = 3),
+    from = factor(from, levels = c("Normal Cognition", "MCI", "Dementia"))
+  )
+
+DT::datatable(
+  tran_prob_long,
+  filter = "top",
+  colnames = c("Probability" = "transition_prob"),
+  options = list(pageLength = 6, autoWidth = TRUE)
+)
+```
+
+```{r transition-matrix-longitudinal-plot, fig.width=8, fig.show="animate", ffmpeg.format="gif", dev="png"}
+for(wave in c(seq(2016, 2020, by = 2))){
+  print(plot_transition_wave(data = tran_prob_long, wave = wave))
+}
+```
+
+# Multi-State Markov Model
+
+Now that we have an idea of the disease progression across time we are interested in the effect of different covariates on these transitions. For this, we can fit a multi-state Markov model. Multi-state models (MSMs) provide a comprehensive view of the disease process and make risk-factors analysis and long-term predictions more easily. The conditional distribution of the status of an individual participant at an arbitrary examination given their status at previous examinations was assumed to have the **Markov property**. That is the distribution of the forthcoming state $X_{n+1}$ depends only on the current state $X_n$ and doesn't depend on the previous ones $X_{n-1}, X_{n-2}, \dots, X_1$.
+
+$$Pr(X_{n+1} = x_{n+1} \; \vert \; X_1 = x_1, X_2 = x_2, \dots, X_n = x_n) = Pr(X_{n+1} = x_{n+1} \; \vert \; X_n = x_n)$$
+
+## Data preperation
+
+For our model we are going to look at several different covariates:
+
+- **Gender**: $0 = \text{Male;} \; 1 = \text{Female}$ 
+- **Age**: $\text{Range} \; = 50 - 91$ 
+- **Education**: $0 = \text{No Degree;} \; 1 = \text{High School Degree;} \; 2 = \text{Further Education}$ 
+- **Number of cardiovascular risk factors**: $\text{Range} \; = 0 - 4$
+- **Procrastination**: $\text{Range} \; = 4 - 60$
+
+```{r markov-prep}
+cols <- c(
+  "ID", "Gender", "Age", "Education_tri", 
+  paste0("Cardio_risk_", seq(16, 22, by = 2)), 
+  paste0("Total_dep_20", seq(16, 22, by = 2)), "Total_p")
+
+markov_data <- data |>
+  extract_years(seq(2016, 2022, by = 2)) |>
+  na.omit() |>
+  inner_join(data[, cols], by = "ID") |>
+  pivot_data() |>
+  backtrack_age(base_year = 2016, current_year = 2022) |>
+  group_by(ID) |>
+  mutate(
+    Age = min(Age), # Baseline age
+    Cardio_risk = Cardio_risk[Wave == 1],
+    Depression = Depression[Wave == 1]
+    ) |>
+  ungroup() |>
+  filter(Age >= 50) # Only looking at older adults
+
+DT::datatable(
+  markov_data,
+  filter = "top",
+  options = list(pageLength = 6, autoWidth = TRUE)
+)
+```
+
+Let's look at a state table to visualize the amount of transitions over time
+
+```{r state-table}
+markov_data |>
+  select(ID, Wave, Status) |>
+  mutate(Status = case_when(
+    Status == 1 ~ "Normal Cognition", 
+    Status == 2 ~ "MCI", 
+    Status == 3 ~ "Dementia")) |>
+  msm::statetable.msm(state = Status, subject = ID)
+```
+
+## Modelling
+
+### Defining a q-matrix
+
+The Q matrix (also known as the transition intensity matrix or generator matrix) defines the rates at which transitions occur between states in the model. 
+
+It is a square matrix where:
+
+- Each row corresponds to a **from** state in the model.
+- Each column corresponds to a **to** state in the model.
+- The off-diagonal elements $q_{ij}$ represent the transition rate from state $i$ to state $j$.
+
+For a model with $n$ states, the Q matrix has the following structure
+
+$$
+Q = \begin{bmatrix} 
+q_{11} & q_{12} & \cdots & q_{1n} \\
+q_{21} & q_{22} & \cdots & q_{2n} \\
+\vdots & \vdots & \ddots &\vdots  \\
+q_{n1} & q_{n2} & \cdots & q_{nn}
+\end{bmatrix}
+$$
+
+
+```{r q-matrix}
+# Creating transition matrix
+# Define possible transitions
+states <- c("Normal Cognition", "MCI", "Dementia")
+
+# Theoretical transition probabilities
+q_matrix <- rbind(
+  c(0.75, 0.20, 0.05),  # From Normal, can transition to MCI or Dementia
+  c(0.25, 0.50, 0.25),  # From MCI, can transition to Normal or Dementia
+  c(0.00, 0.00, 1.00)         # From Dementia, no transitions (absorbing state)
+)
+
+rownames(q_matrix) <- states
+colnames(q_matrix) <- states
+
+q_matrix
+```
+
+## Fitting
+
+We will fit three different multi-state models
+
+1. A model with no covariates
+2. A multivariate model with covariates acting on all transitions
+3. A multivariate model with covariates (and interactions) acting on all transitions
+4. A multivariate model with covariates acting on only NC <-> MCI & MCI - Dementia
+5. A multivariate model with covariates (and interactions) acting on only NC <-> MCI & MCI - Dementia
+
+```{r model-fitting}
+# Fitting model with no covariates
+model_1 <- msm::msm(
+  formula = Status ~ Wave,
+  subject = ID,
+  data = markov_data,
+  qmatrix = q_matrix,
+  obstype = 1,
+  method = "BFGS", 
+  gen.inits = TRUE,
+  control = list(
+    fnscale = 5000, 
+    maxit = 2000 # To reach convergence
+  ))
+
+# Multivariate model: covariates acting on all transitions
+model_2 <- msm::msm(
+  formula = Status ~ Wave,
+  subject = ID,
+  data = markov_data,
+  qmatrix = q_matrix,
+  covariates = ~ Gender + Age + Education_tri + Cardio_risk + Depression + Total_p,
+  obstype = 1,
+  gen.inits = TRUE,
+  method = "BFGS",
+  control = list(
+    fnscale = 5000, 
+    maxit = 2000 # To reach convergence
+  ))
+
+# Multivariate model: covariates acting on all transitions (with interaction)
+model_3 <- msm::msm(
+  formula = Status ~ Wave,
+  subject = ID,
+  data = markov_data,
+  qmatrix = q_matrix,
+  covariates = ~ Gender + Age + Education_tri + Cardio_risk + (Depression * Total_p),
+  obstype = 1,
+  gen.inits = TRUE,
+  method = "BFGS",
+  control = list(
+    fnscale = 5000, 
+    maxit = 2000 # To reach convergence
+  ))
+
+# Multivariate model: covariates acting on NC <-> MCI and MCI -> D
+model_4 <- msm::msm(
+  formula = Status ~ Wave,
+  subject = ID,
+  data = markov_data,
+  qmatrix = q_matrix,
+  covariates = list(
+    "1-2" = ~ Gender + Age + Education_tri + Cardio_risk + Depression + Total_p,
+    "2-1" = ~ Gender + Age + Education_tri + Cardio_risk + Depression + Total_p,
+    "2-3" = ~ Gender + Age + Education_tri + Cardio_risk + Depression + Total_p
+  ),
+  obstype = 1,
+  gen.inits = TRUE,
+  method = "BFGS",
+  control = list(
+    fnscale = 5000, 
+    maxit = 2000 # To reach convergence
+  ))
+
+
+# Multivariate model: covariates acting on NC <-> MCI and MCI -> D (with interaction)
+model_5 <- msm::msm(
+  formula = Status ~ Wave,
+  subject = ID,
+  data = markov_data,
+  qmatrix = q_matrix,
+  covariates = list(
+    "1-2" = ~ Gender + Age + Education_tri + Cardio_risk + (Depression * Total_p),
+    "2-1" = ~ Gender + Age + Education_tri + Cardio_risk + (Depression * Total_p),
+    "2-3" = ~ Gender + Age + Education_tri + Cardio_risk + (Depression * Total_p)
+  ),
+  obstype = 1,
+  gen.inits = TRUE,
+  method = "BFGS",
+  control = list(
+    fnscale = 5000, 
+    maxit = 20002 # To reach convergence
+  ))
+
+```
+
+### Model Checking
+
+After fitting each of our models we can extract some goodness of fit criteria
+
+```{r model-goodness}
+log_l <- c(logLik(model_1), 
+           logLik(model_2), 
+           logLik(model_3), 
+           logLik(model_4), 
+           logLik(model_5))
+
+aic <- AIC(model_1, model_2, model_3, model_4, model_5)
+
+# Very small difference between model 2 and 3 (makes sense)
+cbind(log_l, aic) |>
+  tibble::rownames_to_column("Model") |>
+  mutate(Model = stringr::str_remove(Model, "model_"))
+
+# Likelihood ratio test
+lmtest::lrtest(model_1, model_2, model_3, model_4, model_5)
+```
+
+We can also look at a measure of how well the model fits the data using a test proposed by [@gentleman1994]. The function plots the observed numbers of individuals occupying a state at a series of times against forecasts from the fitted model, for each state (@fig-gentleman).
+
+```{r gentleman_test}
+#| fig-width: 12
+#| fig-height: 12
+#| label: fig-gentleman
+#| fig-cap: Fitted values versus observed values
+
+# Plotting fitted vs. observed values
+g1 <- gentleman_test(data = msm::prevalence.msm(model_1), 
+                     model = "Model 1")
+g2 <- gentleman_test(data = msm::prevalence.msm(model_2), 
+                     model = "Model 2")
+g3 <- gentleman_test(data = msm::prevalence.msm(model_3), 
+                     model = "Model 3")
+g4 <- gentleman_test(data = msm::prevalence.msm(model_4), 
+                     model = "Model 4")
+g5 <- gentleman_test(data = msm::prevalence.msm(model_5), 
+                     model = "Model 5")
+
+ggpubr::ggarrange(g1, g2, g3, g4, g5, 
+                  common.legend = TRUE, 
+                  nrow = 5,
+                  heights = c(2, 2, 2, 2, 2), 
+                  legend = "bottom")
+```
+
+### Hazard ratios
+
+We now present hazard ratios for each of our fitted models. These ratios represent how the instantaneous risk of making a particular transition is modified by the covariate.
+
+::: {.panel-tabset}
+
+## Model 2
+
+@fig-hazard-ratio-1 presents hazard ratios from model 2 (our multivariate model with covariates acting on all transitions) for each covariate.
+
+```{r}
+#| fig-width: 12
+#| fig-height: 12
+#| label: fig-hazard-ratio-1
+#| fig-cap: Ouputted hazard ratios from Markov model. Green bars represent a decreased risk of transition while red bars indicate an increased risk of transition. 
+
+# Plotting hazard ratios
+model_2 |>
+  msm::hazard.msm() |>
+  process_hr() |>
+  calculate_p_value() |>
+  plot_hr()
+```
+
+## Model 3
+
+@fig-hazard-ratio-2 presents hazard ratios from model 3 (our multivariate model with covariates **(and interactions)** acting on all transitions) for each covariate.
+
+```{r}
+#| fig-width: 12
+#| fig-height: 12
+#| label: fig-hazard-ratio-2
+#| fig-cap: Ouputted hazard ratios from Markov model. Green bars represent a decreased risk of transition while red bars indicate an increased risk of transition. 
+
+# Plotting hazard ratios
+model_3 |>
+  msm::hazard.msm() |>
+  process_hr() |>
+  calculate_p_value() |>
+  plot_hr()
+```
+
+## Model 4
+
+@fig-hazard-ratio-3 presents hazard ratios for model 4 (our multivariate model with covariates acting on only NC <-> MCI & MCI -> Dementia) for each covariate
+
+```{r}
+#| fig-width: 12
+#| fig-height: 12
+#| label: fig-hazard-ratio-3
+#| fig-cap: Ouputted hazard ratios from Markov model. Green bars represent a decreased risk of transition while red bars indicate an increased risk of transition. 
+
+# Plotting hazard ratios
+model_4 |>
+  msm::hazard.msm() |>
+  process_hr() |>
+  calculate_p_value() |>
+  plot_hr()
+```
+
+## Model 5
+
+@fig-hazard-ratio-4 presents hazard ratios for model 5 (our multivariate model with covariates **(and interactions)** acting on only NC <-> MCI & MCI -> Dementia) for each covariate
+
+```{r}
+#| fig-width: 12
+#| fig-height: 12
+#| label: fig-hazard-ratio-4
+#| fig-cap: Ouputted hazard ratios from Markov model. Green bars represent a decreased risk of transition while red bars indicate an increased risk of transition. 
+
+# Plotting hazard ratios
+model_5 |>
+  msm::hazard.msm() |>
+  process_hr() |>
+  calculate_p_value() |>
+  plot_hr()
+```
+
+:::
