@@ -3,6 +3,7 @@ title: "Hypotheses"
 format: 
   html:
     code-tools: false
+    toc: false
 ---
 
 ## Primary Hypothesis

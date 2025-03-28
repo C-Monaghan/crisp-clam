@@ -9,8 +9,8 @@ format:
 The cleaned data is available in three formats:
 
 - CSV file for any program
-- `.rds` file for R <span class="small">(load with `df <- readRDS("weekly_panel.rds")`)</span>
-- `.dta` file for Stata <span class="small">(load with `use "weekly_panel.dta"`)</span>
+- `.rds` file for R <span class="small">(load with `df <- readRDS("data.rds")`)</span>
+- `.dta` file for Stata <span class="small">(load with `use "data.dta"`)</span>
 
 ## Data
 

@@ -48,9 +48,5 @@ rsconnect/
 # Quarto stuff
 /.quarto/
 
-# Site output
-**/_site/*
-**/site_libs/*
-
 # My stuff (for now)
 data-raw/
