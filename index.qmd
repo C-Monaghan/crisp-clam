@@ -1,0 +1,28 @@
+---
+title: "Procrastination and Dementia"
+author: 
+  - name: "Cormac Monaghan"
+    url: "https://c-monaghan.github.io/"
+    orcid: "https://orcid.org/0000-0001-9012-3060"
+    affiliation:
+      - "Hamilton Institute, Maynooth University, Ireland"
+      - "Department of Psychology, Maynooth University, Ireland"
+  - name: "Rafael de Andrade Moral"
+    url: "https://rafamoral.github.io/"
+    orcid: "https://orcid.org/0000-0002-0875-3563"
+    affiliation:
+      - "Department of Mathematics and Statistics, Maynooth University, Ireland"
+  - name: "Joanna McHugh Power"
+    orcid: "https://orcid.org/0000-0002-7387-3107"
+    affiliation: 
+      - "Department of Psychology, Maynooth University, Ireland"
+format: 
+  html:
+    toc: false
+sidebar: false
+---
+
+### Abstract
+
+**This will come eventually**
+

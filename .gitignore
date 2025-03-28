@@ -39,14 +39,18 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# pkgdown site
-docs/
-
 # translation temp files
 po/*~
 
 # RStudio Connect folder
 rsconnect/
 
-# HRS Tracker file
-data-raw/02__Tracker.sav
+# Quarto stuff
+/.quarto/
+
+# Site output
+**/_site/*
+**/site_libs/*
+
+# My stuff (for now)
+data-raw/

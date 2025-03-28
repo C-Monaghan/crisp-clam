@@ -1,0 +1,19 @@
+---
+title: "Hypotheses"
+format: 
+  html:
+    code-tools: false
+---
+
+## Primary Hypothesis
+
+We hypothesize that:
+
+- **H1:** Higher levels of procrastination are associated with:
+  - Increased risk of transitioning from Normal Cognition to MCI $(\beta = x, p < .05)$
+  - Increased risk of transitioning from MCI to Dementia $(\beta = y, p < .05)$
+  
+- **H0:** There is no association between procrastination and cognitive decline transitions
+
+
+In order to test this hypothesis we will be using a **discrete time Markov Model**
