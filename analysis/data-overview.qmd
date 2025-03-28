@@ -1,0 +1,28 @@
+---
+title: "Data Overview"
+format: 
+  html:
+    code-tools: false
+---
+
+# Overview
+
+The Health and Retirement Study (HRS) collects an extensive array of data related to cognitive health, physical well-being, economic status, and psychosocial factors. Among the information gathered, specific variables are used to assess and classify individuals into distinct categories of cognitive functioning. These classifications help to better understand the progression of cognitive decline, enabling researchers to track trends and identify factors that may influence cognitive health over time.
+
+## Cognitive Function Categories
+
+- **Normal Cognition:** Individuals in this category show no significant signs of cognitive impairment and are able to function independently in daily activities.
+- **Mild Cognitive Impairment (MCI):** This stage reflects a slight but noticeable decline in cognitive abilities, such as memory or thinking skills, that goes beyond what would be expected with normal aging but does not yet interfere significantly with daily life.
+- **Dementia:** This classification is marked by more severe cognitive deficits, impacting memory, reasoning, and the ability to perform everyday tasks. Dementia encompasses various neurodegenerative conditions, with Alzheimer's disease being the most common.
+
+By tracking transitions between these categories, researchers can gain insights into the factors that contribute to cognitive decline and identify potential interventions to promote healthy aging.
+
+# Langa-Weir Classifications
+
+For previous waves of HRS data (1995 - 2020) there is a researcher contributed dataset of dementia classifications [@langa2023]. Researchers have used this dataset to study the trajectories of cognitive aging, dementia risk, and related health outcomes in older adults. However, with the recent release of the 2022 HRS data, **these classifications have yet to be updated**
+
+## LWC2022 Package
+
+In order to address this we developed the `LWC2022` package [@Monaghan2024] to replicate the methodology of @langa2023. This package automates the classification process, ensuring consistency with previous waves and providing researchers with an up-to-date resource for studying cognitive decline and dementia across all available HRS waves. @fig-lwc illustrates the LWC workflow.
+
+![LWC Workflow](../files/workflow.svg){#fig-lwc}

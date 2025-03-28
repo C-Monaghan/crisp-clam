@@ -1,0 +1,305 @@
+---
+title: "Exploratory Data Analysis"
+---
+
+# Setting up {.unnumbered}
+
+## Loading packages {.unnumbered}
+
+```{r packages}
+#| code-fold: true
+#| code-summary: "Check our my packages"
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggalluvial)
+```
+
+## Loading functions {.unnumbered}
+
+```{r functions}
+#| code-fold: true
+#| code-summary: "Check our my functions"
+
+count_transitions <- function(data, years, absorbing = FALSE) {
+  # Counts the occurrences of cognitive status transitions across specified 
+  # years.
+  # Converts numeric cognitive status codes (1, 2, 3) into descriptive labels
+  # ("Normal Cognition", "MCI", "Dementia") and handles missing or unexpected values.
+  # Aggregates the data to count transitions and reshapes it into a long format for analysis.
+  # Arguments:
+  #    - data: The input dataset containing cognitive function data.
+  #    - years: A vector of years for which transitions should be counted.
+  # Returns:
+  #   - A dataset with counts of cognitive status transitions, including
+  #   "Missing" and "Other" categories.
+  
+  # Create dynamic column names based on the years provided
+  cogfunction_cols <- paste0("cogfunction", years)
+  
+  data <- data |>
+    select(ID, all_of(cogfunction_cols)) |>
+    na.omit() |>
+    tidyr::pivot_longer(
+      cols = !ID,
+      names_to = "Wave",
+      values_to = "Classification"
+    ) |>
+    mutate(
+      Wave = stringr::str_replace(Wave, "cogfunction", "HRS "),
+      Wave = factor(Wave, levels = c(paste0("HRS ", years))),
+      
+      Classification = case_when(
+        Classification == 1 ~ "Normal Cognition",
+        Classification == 2 ~ "MCI",
+        Classification == 3 ~ "Dementia")
+    )
+  
+  if(absorbing == TRUE){
+    data <- data |>
+      group_by(ID) |>
+      mutate(
+        Classification = ifelse(
+          cumany(Classification == "Dementia"), "Dementia", Classification)) |>
+      ungroup()
+  }
+  
+  data <- data |>
+    mutate(Classification = factor(
+      Classification,
+      levels = c("Normal Cognition", "MCI", "Dementia")))
+  
+  return(data)
+}
+
+plot_cognitive_scores <- function(data, year) {
+  # Plots the distribution of cognitive scores over a range of years.
+  # Converts the data from wide to long format and generates histograms for each wave.
+  # Arguments:
+  #   - data: The dataset containing cognitive scores.
+  #   - year: The starting year for the range of cognitive scores to plot.
+  # Returns:
+  #   - A ggplot object showing the distribution of cognitive scores across waves.
+  # Plotting dementia transitions
+  data |>
+    select(ID, any_of(paste0("cogtot27_imp", year:2022))) |>
+    na.omit() |>
+    tidyr::pivot_longer(cols = !ID,
+                        names_to = "Wave",
+                        values_to = "Score") |>
+    mutate(Wave = as.double(stringr::str_replace(Wave, "cogtot27_imp", ""))) |>
+    ggplot(aes(x = Score)) +
+    geom_histogram(fill = "#56B4E9",
+                   colour = "black",
+                   alpha = 0.5) +
+    scale_x_continuous(breaks = seq(0, 27, by = 3)) +
+    labs(
+      title = paste0("Distribution of cognitive scores ", year, "- 2022"),
+      x = "Cognitive Score", y = "") +
+    facet_wrap( ~ Wave)
+}
+
+plot_transitions <- function(data, size) {
+  # Visualizes cognitive status transitions over time using an alluvial plot.
+  # Represents the flow of individuals between cognitive states across waves.
+  # Arguments:
+  #   - data: The dataset containing transition data.
+  #   - size: The font size for labels in the plot.
+  # Returns:
+  #   - A ggplot object showing transitions between cognitive states over time.
+  
+  require(ggalluvial)
+  
+  data |>
+    ggplot(aes(x = Wave, y = n, stratum = Classification, 
+               fill = Classification, alluvium = ID
+    )) +
+    geom_stratum(alpha = 0.5, width = 0.5) +
+    geom_flow(width = 0.5) +
+    geom_text(
+      stat = "stratum",
+      aes(label = stringr::str_wrap(Classification, width = 10)),
+      hjust = 0.5,
+      vjust = 0.5,
+      size = size
+    ) +
+    labs(title = "Dementia transitions across time", 
+         x = "", y = "Frequency") +
+    scale_fill_viridis_d(direction = -1) +
+    theme(axis.text = element_text(size = 10), 
+          text = element_text(size = 10)) +
+    ggeasy::easy_remove_legend()
+}
+```
+
+## Setting theme {.unnumbered}
+
+```{r theme}
+#| code-fold: true
+#| code-summary: "Check our my theme"
+
+colour = "#212427"
+
+theme_set(
+theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold", colour = colour),
+    plot.subtitle = element_text(hjust = 0.5, size = 10, colour = colour),
+    axis.title = element_text(size = 10, face = "bold", colour = colour),
+    strip.text = element_text(size = 10, face = "bold", colour = colour)
+    ))
+```
+
+
+## Reading in data {.unnumbered}
+
+```{r data}
+data <- read.csv(here::here("analysis/data/data.csv")) 
+```
+
+# Dementia Dataset
+
+Our updated dataset contains 13 columns of cognitive classifications spanning from 1996 to 2022. These columns reflect dementia status across each wave, using the same criteria and structure as the original Langa-Weir dataset, now extended to include the most recent 2022 wave.
+
+```{r count-transitions}
+dementia_data <- data |>
+  count_transitions(years = seq(1996, 2022, by = 2))
+
+glimpse(dementia_data)
+```
+
+
+## Missing data
+
+Since the participant pool is drawn from the 2020 wave of the HRS data, any analysis that looks back at previous waves will inevitably encounter missing data. Not all participants were included in earlier waves, leading to gaps in the data. @fig-missing-data displays the frequency of missing cognitive test data across each HRS wave.
+
+```{r missing-data}
+#| warning: false
+#| fig-width: 8
+#| label: fig-missing-data
+#| fig-cap: Occurance of missing data across HRS waves (participants were gathered from the 2020 HRS wave [in red])
+
+# Dynamic colours
+colours <- c(rep("#2e2e2e", times = 12), "red", "#2e2e2e")
+
+data |>
+  select(any_of(paste0("cogtot27_imp", 1996:2022))) |>
+  rename_with( ~ stringr::str_replace(., "cogtot27_imp", ""), starts_with("cogtot27")) |>
+  visdat::vis_dat() +
+  labs(title = "Missing data across HRS Waves (1996 - 2022)",
+       subtitle = "Total Cognitive Scores") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold", colour = colour),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "bold", colour = colour),
+    panel.grid = element_blank(),
+    axis.text.x = element_text(colour = colours)) +
+  ggeasy::easy_remove_legend() +
+  ggeasy::easy_x_axis_labels_size(size = 9)
+
+```
+
+The HRS had its most recent participant intake in 2016, which explains the notable decline in missing data occurrences from that point onward. As new participants were not added after 2016, the dataset becomes more complete in subsequent waves, with fewer missing values. 
+
+Given this shift, we will conduct our analysis **the reduced dataset (2016 - 2022)** (@fig-complete-data) along with removing the missing values from 2016 and 2018.
+
+```{r complete-data}
+#| fig-width: 8
+#| label: fig-complete-data
+#| fig-cap: HRS dataset after processing
+
+data |>
+  select(any_of(paste0("cogtot27_imp", 2016:2022))) |>
+  rename_with( ~ stringr::str_replace(., "cogtot27_imp", ""), starts_with("cogtot27")) |>
+  na.omit() |>
+  visdat::vis_dat() +
+  labs(
+    title = "Complete dataset across HRS Waves (2016 - 2022)",
+    subtitle = "Total Cognitive Scores") +
+    theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold", colour = colour),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "bold", colour = colour),
+    panel.grid = element_blank()) +
+  ggeasy::easy_remove_legend() +
+  ggeasy::easy_x_axis_labels_size(size = 9)
+```
+
+
+## Exploratory Data Analysis
+
+### Cognitive Test Scores
+
+Initially, we will plot a distribution of the cognitive test scores (ranging from 0 - 27) across time for all HRS participants.
+
+```{r cog-scores}
+#| message: false
+#| fig-width: 12
+#| label: fig-cognitive-test-scores
+#| fig-cap: Cognitive test scores (2016 - 2022)
+
+plot_cognitive_scores(data = data, year = 2016)
+```
+
+### Classification proportion per year
+
+@fig-dementia-proportions shows the proportion of dementia classifications from HRS 2016 - 2022. The variable **Missing** represents the procrastination HRS respondents who were not yet interviewed by the HRS. Since the analysis focuses on participants included in the 2020 HRS wave, any retroactive analysis of prior waves may result in missing data for certain individuals
+
+```{r cog-class}
+#| fig-width: 12
+#| label: fig-dementia-proportions
+#| fig-cap: Proportion of dementia classifications per year
+
+# Plotting proportions --------------------------------------------------------
+data |>
+  count_transitions(years = seq(2016, 2022, by = 2), absorbing = TRUE) |>
+  ggplot(aes(x = Wave, fill = Classification)) +
+  geom_bar(position = "fill", alpha = 0.5, colour = "black") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Proportion of Cognitive Status Classifications (2016 - 2022)", 
+       x = "", y = "Percentage") +
+  scale_fill_viridis_d(direction = -1) +
+  theme(
+    axis.text = element_text(size = 10),
+    text = element_text(size = 10)) +
+  ggeasy::easy_move_legend("bottom") +
+  ggeasy::easy_remove_legend_title()
+```
+
+### Dementia transitions per year
+
+@fig-dementia-transitions is an alluvial graph illustrating the transitions in cognitive classifications from one HRS wave to the next.
+
+```{r cog-transition}
+#| fig-width: 12
+#| label: fig-dementia-transitions
+#| fig-cap: Dementia transitions (2016 - 2022)
+
+data |>
+  count_transitions(years = seq(2016, 2022, by = 2)) |>
+  group_by(ID, Wave) |>
+  reframe(plyr::count(Classification)) |>
+  rename(Classification = x, n = freq) |>
+  plot_transitions(size = 2.5)
+```
+
+From this figure we can see that some individuals classified with dementia in one wave transition out of dementia in a subsequent wave. Let's fix this by adding an additional parameter to our `count_transitions()` function to turn dementia into an absorbing state (@fig-dementia-transitions-absorbing). We can do this by using the `cumany()` function from the `dplyr` [@Wickham2023] package.
+
+```{r cog-transition-absorbing}
+#| fig-width: 12
+#| label: fig-dementia-transitions-absorbing
+#| fig-cap: Dementia transitions with dementia as an absorbing state (2016 - 2022)
+
+data |>
+  count_transitions(years = seq(2016, 2022, by = 2), absorbing = TRUE) |>
+  group_by(ID, Wave) |>
+  reframe(plyr::count(Classification)) |>
+  rename(Classification = x, n = freq) |>
+  plot_transitions(size = 2.5)
+```
+
+
+
+

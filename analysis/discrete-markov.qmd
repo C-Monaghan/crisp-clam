@@ -1,32 +1,6 @@
 ---
-title: "Discrete Time Markov Model Analysis of Cognitive Decline"
+title: "Discrete Time Markov Model"
 subtitle: "Examining the Association Between Procrastination and Cognitive Transitions"
-author: 
-  - name: "Cormac Monaghan"
-    url: "https://c-monaghan.github.io/"
-    orcid: "https://orcid.org/0000-0001-9012-3060"
-    affiliation:
-      - "Hamilton Institute, Maynooth University, Ireland"
-      - "Department of Psychology, Maynooth University, Ireland"
-abstract: |
-  This analysis examines transitions between cognitive states (Normal Cognition, MCI, Dementia) using discrete-time Markov models, with particular focus on procrastination as a risk factor.
-toc: true
-toc-depth: 3
-toc-title: On this page
-number-sections: true
-format: 
-  html:
-    theme: 
-      light: cosmo
-    page-layout: full
-    shift-heading-level-by: 1
-    html-math-method: katex
-    code-tools: true
-    code-copy: true
-    code-block-bg: "#333A3F"
-    highlight-style: monokai
-    fig-align: center
-    self-contained: true
 ---
 
 # Setting up {.unnumbered}
