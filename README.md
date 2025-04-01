@@ -1,28 +1,12 @@
-# Procrastination and Dementia
 
-
-- [Note on “crisp clam” project name](#note-on-crisp-clam-project-name)
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
-``` r
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-",
-  fig.retina = 3
-)
-```
+## 🥔🐚: Note on “crisp clam” project name
 
-------------------------------------------------------------------------
-
-[Cormac Monaghan](https://c-monaghan.github.io/)
-
-------------------------------------------------------------------------
-
-## Note on “crisp clam” project name
-
-Because project titles change all the time we used [{codename}](http://svmiller.com/codename/) to generate an [Ubuntu-style](https://wiki.ubuntu.com/DevelopmentCodeNames)
+Because project titles change all the time we used
+[{codename}](http://svmiller.com/codename/) to generate an
+[Ubuntu-style](https://wiki.ubuntu.com/DevelopmentCodeNames)
 internal-to-us project name that won’t change.
 
 ``` r
