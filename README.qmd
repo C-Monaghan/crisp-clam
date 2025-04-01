@@ -27,7 +27,7 @@ format:
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",

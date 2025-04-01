@@ -3,14 +3,16 @@ project:
   type: website
   output-dir: "docs"
   pre-render:
-    - "quarto render manuscript"
+    - "quarto render manuscript" # Will render manuscript to docs/manuscript
   
   render:
     - "**/*.qmd"
-    - "!manuscript/"
+    - "!manuscript"
     
   resources: 
-    - "manuscript/output"
+  # We need to include the libs folder so that the html file renders correctly
+    - "manuscript/output/manuscript_files"
+    - "manuscript/output/"
     
   preview:
     port: 44

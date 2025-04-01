@@ -62,6 +62,35 @@ h2.hide {
 }
 </style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -74,9 +103,14 @@ h2.hide {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#method" id="toc-method" class="nav-link" data-scroll-target="#method">Method</a>
+  <ul class="collapse">
+  <li><a href="#data-and-study-population" id="toc-data-and-study-population" class="nav-link" data-scroll-target="#data-and-study-population">Data and study population</a></li>
+  <li><a href="#measures" id="toc-measures" class="nav-link" data-scroll-target="#measures">Measures</a></li>
+  </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="manuscript.pdf"><i class="bi bi-file-pdf"></i>PDF (hikmah)</a></li><li><a href="manuscript+ms.pdf"><i class="bi bi-file-pdf"></i>Manuscripty PDF (hikmah-manuscript)</a></li><li><a href="manuscript.docx"><i class="bi bi-file-word"></i>Manuscripty Word (hikmah-manuscript)</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="manuscript.pdf"><i class="bi bi-file-pdf"></i>PDF (apaquarto)</a></li><li><a href="manuscript.docx"><i class="bi bi-file-word"></i>Word (apaquarto)</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -141,6 +175,29 @@ h2.hide {
 <p>Given these parallels, it is worth exploring whether chronic procrastination could serve as an early behavioural marker for cognitive impairment, or even a risk factor for dementia, especially in older adults. Procrastination may exacerbate existing cognitive decline by reinforcing patterns of inaction and passivity. Individuals who chronically delay tasks may inadvertently engage in fewer cognitively stimulating activities, such as physical activity, problem-solving, decision-making, and goal-setting—activities that are known to build cognitive resilience and reduce dementia risk <span class="citation" data-cites="Chowdhary2022">(<a href="#ref-Chowdhary2022" role="doc-biblioref">Chowdhary et al., 2022</a>)</span>. By limiting engagement in such activities, procrastination could contribute to the acceleration of cognitive decline. Therefore, while apathy has already been established as a significant risk factor for dementia, the role of procrastination, especially when chronic, may represent an overlooked behavioural trait that warrants similar attention.</p>
 <p>Although current research on procrastination in relation to dementia is non-existent, this possible association warrants exploration. Identifying procrastination as a potential risk factor could expand the scope of early interventions aimed at preventing or slowing the progression of dementia. As such, the purpose of this study was to test the hypothesis that higher levels of procrastination would be associated with an increased probability of transitioning from normal cognitive function or MCI to dementia.</p>
 </section>
+<section id="method" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="method">Method</h2>
+<section id="data-and-study-population" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="data-and-study-population">Data and study population</h3>
+<p>Analyses were conducted using a secondary data source; a multi-wave prospective cohort study called the Health and Retirement Study (HRS; <span class="citation" data-cites="Fisher2018">(<a href="#ref-Fisher2018" role="doc-biblioref">Fisher &amp; Ryan, 2018</a>)</span>), which tracks the health, economic, and social well-being of over <span class="math inline">\(18,000\)</span> American adults primarily aged <span class="math inline">\(&gt;50\)</span>. The HRS is managed by the Institute for Social Research at the University of Michigan, with data collected every two years. Initial data collection of a participant is conducted through a face-to-face interview, with follow-up biennial interviews conducted either by phone or face-to-face. The average re-interview response rate ranges from <span class="math inline">\(68.8\%\)</span> to <span class="math inline">\(92.3\%\)</span> <span class="citation" data-cites="HRS2017">(<a href="#ref-HRS2017" role="doc-biblioref">Health and Retirement Study, 2017</a>)</span>. At the time of writing, fifteen years of HRS data are currently archived.</p>
+<p>For this study, we focused on four waves of HRS data (from 2016 to 2022). Specifically our study sample consisted of respondents who participated in an experimental module assessing procrastination during the 2020 wave. These experimental modules, administered at the end of the core HRS interview, consist of concise questionnaires designed to explore new topics or supplement existing core survey data. Each respondent receives only one experimental module, with sample sizes for each module constituting approximately 10% of the core sample. As a result, while the core HRS sample includes approximately <span class="math inline">\(18,000\)</span> respondents, our initial sample of interest consisted of <span class="math inline">\(1,368\)</span> respondents. We excluded respondents with missing cognitive assessment data for any wave <span class="math inline">\((n = 445)\)</span> and those under 50 years of age <span class="math inline">\((n = 39)\)</span>. This resulted in a final analytic sample of <span class="math inline">\(884\)</span> respondents.</p>
+</section>
+<section id="measures" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="measures">Measures</h3>
+<section id="outcome-cognitive-function-and-cognitive-category" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="outcome-cognitive-function-and-cognitive-category">Outcome: Cognitive Function and Cognitive Category</h4>
+<p>Cognitive function in the HRS is assessed using a series of tests adapted from the Telephone Interview for Cognitive Status (TICS; <span class="citation" data-cites="Brandt1988 Fong2009">(<a href="#ref-Brandt1988" role="doc-biblioref">Brandt et al., 1988</a>; <a href="#ref-Fong2009" role="doc-biblioref">Fong et al., 2009</a>)</span>). These tests include an immediate and delayed <span class="math inline">\(10\)</span>-noun free recall test, a serial seven subtraction test, and a backward count from <span class="math inline">\(20\)</span> test. Based on these assessments, <span class="citation" data-cites="Crimmins2011">Crimmins et al. (<a href="#ref-Crimmins2011" role="doc-biblioref">2011</a>)</span> developed both a <span class="math inline">\(27\)</span>-point cognitive scale and validated cut-off points to assess and classify cognitive status. Using these points, respondents who scored <span class="math inline">\(12 - 27\)</span> were classified as having normal cognition, <span class="math inline">\(7 - 11\)</span> as having MCI, and <span class="math inline">\(0 - 6\)</span> as having dementia.</p>
+</section>
+<section id="predictor-procrastination" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="predictor-procrastination">Predictor: Procrastination</h4>
+<p>Procrastination was measured using the Pure Procrastination Scale <span class="citation" data-cites="steel2010">(<a href="#ref-steel2010" role="doc-biblioref">Steel, 2010</a>)</span>, which consists of 12 items rated on a Likert scale ranging from <span class="math inline">\(1\)</span> (strongly disagree) to <span class="math inline">\(5\)</span> (strongly agree). The total procrastination score ranges from <span class="math inline">\(12\)</span> to <span class="math inline">\(60\)</span>, with higher scores indicating greater procrastination. The Pure Procrastination Scale conducted in 2020 (wave 3) had a Cronbach’s <span class="math inline">\(\alpha\)</span> score of <span class="math inline">\(0.91\)</span> in this sample, indicating high internal consistency. An example of a question from the scale includes “I delay making decisions until it’s too late”.</p>
+</section>
+<section id="confounders" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="confounders">Confounders</h4>
+<p>To account for potential confounding, we controlled for variables with established associations with cognitive function and procrastination. These included baseline measures conducted in 2016 (wave 1) of age, sex, educational attainment, number of cardiovascular risk factors (history of hypertension, stroke, or heart disease, and a classification on “overweight" on a body mass index (BMI) scale <span class="math inline">\((\text{BMI} \ge 30)\)</span>), and depressive symptoms <span class="citation" data-cites="Abner2012 Freedman2024 monaghan2024a Yu2013">(<a href="#ref-Abner2012" role="doc-biblioref">Abner et al., 2012</a>; <a href="#ref-Freedman2024" role="doc-biblioref">Freedman &amp; Cornman, 2024</a>; <a href="#ref-monaghan2024a" role="doc-biblioref">Monaghan et al., 2024</a>; <a href="#ref-Yu2013" role="doc-biblioref">Yu et al., 2013</a>)</span>. Educational attainment was classified into three categories: no formal education, GED (General Educational Development)/high school diploma, and college/further education. Depressive symptoms were measured using an eight-item version of the Center for Epidemiological Studies Depression (CES-D) scale <span class="citation" data-cites="Briggs2018">(<a href="#ref-Briggs2018" role="doc-biblioref">Briggs et al., 2018</a>)</span>, with scores ranging from 0 to 8, demonstrating good internal consistency <span class="math inline">\((\alpha = 0.82)\)</span>.</p>
+</section>
+</section>
+</section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
@@ -149,6 +206,12 @@ Abbasi, I. S., &amp; Alghamdi, N. G. (2015). The prevalence, predictors, causes,
 </div>
 <div id="ref-Abner2012" class="csl-entry" role="listitem">
 Abner, E. L., Kryscio, R. J., Cooper, G. E., Fardo, D. W., Jicha, G. A., Mendiondo, M. S., Van Eldik, L. J., Wan, L., &amp; Schmitt, F. A. (2012). Mild cognitive impairment: Statistical models of transition using longitudinal clinical data. <em>International Journal of Alzheimer’s Disease</em>, <em>2012</em>(1), 291920.
+</div>
+<div id="ref-Brandt1988" class="csl-entry" role="listitem">
+Brandt, J., Spencer, M., &amp; Folstein, Marshal. (1988). The telephone interview for cognitive status. <em>Neuropsychiatry Neuropsychol Behav Neurol</em>, <em>1</em>(2), 111–117.
+</div>
+<div id="ref-Briggs2018" class="csl-entry" role="listitem">
+Briggs, R., Carey, D., O’Halloran, A. M., Kenny, R. A., &amp; Kennelly, S. P. (2018). Validation of the 8-item centre for epidemiological studies depression scale in a cohort of community-dwelling older people: Data from the irish longitudinal study on ageing (TILDA). <em>European Geriatric Medicine</em>, <em>9</em>, 121–126.
 </div>
 <div id="ref-Cao2020" class="csl-entry" role="listitem">
 Cao, Q., Tan, C.-C., Xu, W., Hu, H., Cao, X.-P., Dong, Q., &amp; Lan Tan, and J.-T. Y. (2020). The prevalence of dementia: A systematic review and meta-analysis’. <em>Journal of Alzheimer’s Disease</em>, <em>73</em>(3), 1157–1166. <a href="https://doi.org/10.3233/JAD-191092">https://doi.org/10.3233/JAD-191092</a>
@@ -159,6 +222,9 @@ Chowdhary, N., Barbui, C., Anstey, K. J., Kivipelto, M., Barbera, M., Peters, R.
 <div id="ref-Cooper2015" class="csl-entry" role="listitem">
 Cooper, C., Sommerlad, A., Lyketsos, C. G., &amp; Livingston, G. (2015). Modifiable predictors of dementia in mild cognitive impairment: A systematic review and meta-analysis. <em>American Journal of Psychiatry</em>, <em>172</em>(4), 323–334.
 </div>
+<div id="ref-Crimmins2011" class="csl-entry" role="listitem">
+Crimmins, E. M., Kim, J. K., Langa, K. M., &amp; Weir, D. R. (2011). Assessment of cognition using surveys and neuropsychological assessment: The health and retirement study and the aging, demographics, and memory study. <em>Journals of Gerontology Series B: Psychological Sciences and Social Sciences</em>, <em>66</em>(suppl_1), i162–i171.
+</div>
 <div id="ref-vanDalen2018" class="csl-entry" role="listitem">
 Dalen, J. W. van, Wanrooij, L. L. van, Charante, E. P. M. van, Brayne, C., Gool, W. A. van, &amp; Richard, E. (2018). Association of apathy with risk of incident dementia: A systematic review and meta-analysis. <em>JAMA Psychiatry</em>, <em>75</em>(10), 1012–1021.
 </div>
@@ -168,14 +234,29 @@ Fahed, M., &amp; Steffens, D. C. (2021). Apathy: Neurobiology, assessment and tr
 <div id="ref-Ferrari2010" class="csl-entry" role="listitem">
 Ferrari, J. R. (2010). <em>Still procrastinating: The no regrets guide to getting it done</em>. Turner Publishing Company.
 </div>
+<div id="ref-Fisher2018" class="csl-entry" role="listitem">
+Fisher, G. G., &amp; Ryan, L. H. (2018). Overview of the health and retirement study and introduction to the special issue. <em>Work, Aging and Retirement</em>, <em>4</em>(1), 1–9.
+</div>
+<div id="ref-Fong2009" class="csl-entry" role="listitem">
+Fong, T. G., Fearing, M. A., Jones, R. N., Shi, P., Marcantonio, E. R., Rudolph, J. L., Yang, F. M., Kiely, D. K., &amp; Inouye, S. K. (2009). Telephone interview for cognitive status: Creating a crosswalk with the mini-mental state examination. <em>Alzheimer’s &amp; Dementia</em>, <em>5</em>(6), 492–497.
+</div>
+<div id="ref-Freedman2024" class="csl-entry" role="listitem">
+Freedman, V. A., &amp; Cornman, J. C. (2024). Dementia prevalence, incidence, and mortality trends among US adults ages 72 and older, 2011–2021. <em>The Journals of Gerontology, Series A: Biological Sciences and Medical Sciences</em>, <em>79</em>(Supplement_1), S22–S31.
+</div>
 <div id="ref-Fresnais2023" class="csl-entry" role="listitem">
 Fresnais, D., Humble, M. B., Bejerot, S., Meehan, A. D., &amp; Fure, B. (2023). Apathy as a predictor for conversion from mild cognitive impairment to dementia: A systematic review and meta-analysis of longitudinal studies. <em>Journal of Geriatric Psychiatry and Neurology</em>, <em>36</em>(1), 3–17.
 </div>
 <div id="ref-Friden2020" class="csl-entry" role="listitem">
 Fridén, I. (2020). <em>Procrastination as a form of self-regulation failure: A review of the cognitive and neural underpinnings</em>.
 </div>
+<div id="ref-HRS2017" class="csl-entry" role="listitem">
+Health and Retirement Study. (2017). <em>Sample sizes and response rates</em>. <a href="https://hrs.isr.umich.edu/sites/default/files/biblio/ResponseRates_2017.pdf">https://hrs.isr.umich.edu/sites/default/files/biblio/ResponseRates_2017.pdf</a>
+</div>
 <div id="ref-Kirova2015" class="csl-entry" role="listitem">
 Kirova, A. M., Bays, R. B., &amp; Lagalwar, S. (2015). Working memory and executive function decline across normal aging, mild cognitive impairment, and alzheimer’s disease. <em>BioMed Research International</em>, <em>2015</em>(1), 748212.
+</div>
+<div id="ref-monaghan2024a" class="csl-entry" role="listitem">
+Monaghan, C., Avila-Palencia, I., Han, S. D., &amp; McHugh Power, J. (2024). Procrastination, depressive symptomatology, and loneliness in later life. <em>Aging &amp; Mental Health</em>, 1–8. <a href="https://doi.org/10.1080/13607863.2024.2345781">https://doi.org/10.1080/13607863.2024.2345781</a>
 </div>
 <div id="ref-Nichols2022" class="csl-entry" role="listitem">
 Nichols, E., Steinmetz, J. D., Vollset, S. E., Fukutaki, K., Chalek, J., Abd-Allah, F., Abdoli, A., Abualhasan, A., Abu-Gharbieh, E., Akram, T. T., et al. (2022). Estimation of the global prevalence of dementia in 2019 and forecasted prevalence in 2050: An analysis for the global burden of disease study 2019. <em>The Lancet Public Health</em>, <em>7</em>(2), e105–e125.
@@ -212,6 +293,9 @@ Skogseth, R., Mulugeta, E., Ballard, C., Rongve, A., Nore, S., Alves, G., &amp; 
 </div>
 <div id="ref-Steel2007" class="csl-entry" role="listitem">
 Steel, P. (2007). The nature of procrastination: A meta-analytic and theoretical review of quintessential self-regulatory failure. <em>Psychological Bulletin</em>, <em>3</em>(1).
+</div>
+<div id="ref-steel2010" class="csl-entry" role="listitem">
+Steel, P. (2010). Arousal, avoidant and decisional procrastinators: Do they exist? <em>Personality and Individual Differences</em>, <em>48</em>(8), 926–934.
 </div>
 <div id="ref-Stopford2012" class="csl-entry" role="listitem">
 Stopford, C. L., Thompson, J. C., Neary, D., Richardson, A. M., &amp; Snowden, J. S. (2012). Working memory, attention, and executive function in alzheimer’s disease and frontotemporal dementia. <em>Cortex</em>, <em>48</em>(4), 429–446.

@@ -5,11 +5,6 @@ project:
   render: 
     - "manuscript.qmd"
 
-# This is necessary to keep intermediate files/folders hanging around when
-# rendering to the same output format (like two different PDFs)
-# https://github.com/quarto-dev/quarto-cli/issues/8373#issuecomment-1979245883
-keep-md: true
-
 format:
   # Nice HTML output
   html:
@@ -25,14 +20,11 @@ format:
       title-block-published: "Latest version"
     format-links:
       - html
-      - format: hikmah-pdf
+      - format: apaquarto-pdf
         text: PDF
         icon: file-pdf
-      - format: hikmah-manuscript-pdf+ms
-        text: Manuscripty PDF
-        icon: file-pdf
-      - format: hikmah-manuscript-docx
-        text: Manuscripty Word
+      - format: apaquarto-docx
+        text: Word
         icon: file-word
     shift-heading-level-by: 1
     theme:
@@ -48,48 +40,6 @@ format:
       opts_chunk:
         dev: "ragg_png"
         dpi: 300
-
-  # Nice PDF output
-  hikmah-pdf:
-    cite-method: citeproc
-
-    # Custom fonts
-    mainfont: "Linux Libertine O"
-    mainfontoptions:
-      - "Numbers=Proportional"
-      - "Numbers=OldStyle"
-    sansfont: "Noto Sans"
-    mathfont: "Libertinus Math"
-    # linestretch: 1.05
-
-    # include-in-header:
-      # The \everydisplay thing makes all math blocks use \small font
-      # text: |
-        # \usepackage{mathtools}
-        # \everydisplay\expandafter{\the\everydisplay\small }
-
-        # \SetTblrStyle{foot}{font=\footnotesize}
-
-    knitr:
-      opts_chunk:
-        dev: "cairo_pdf"
-
-  # Manuscript-y PDF output
-  hikmah-manuscript-pdf+ms:
-    cite-method: citeproc
-    left-aligned: true
-    endnotes: false
-
-    # Custom fonts
-    mainfont: "Linux Libertine O"
-    mainfontoptions:
-      - "Numbers=Proportional"
-      - "Numbers=OldStyle"
-    mathfont: "Libertinus Math"
-
-    knitr:
-      opts_chunk:
-        dev: "cairo_pdf"
-
-  # Manuscript-y Word output
-  hikmah-manuscript-docx: default
+    
+  apaquarto-pdf: default
+  apaquarto-docx: default
