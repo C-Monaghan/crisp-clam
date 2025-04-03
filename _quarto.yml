@@ -2,17 +2,17 @@ project:
   title: "Procrastination and Dementia"
   type: website
   output-dir: "docs"
-  pre-render:
-    - "quarto render manuscript" # Will render manuscript to docs/manuscript
+  # pre-render:
+  #  - "quarto render manuscript" # Will render manuscript to docs/manuscript
   
   render:
     - "**/*.qmd"
     - "!manuscript"
     
-  resources: 
+  # resources: 
   # We need to include the libs folder so that the html file renders correctly
-    - "manuscript/output/manuscript_files"
-    - "manuscript/output/"
+  #  - "manuscript/output/manuscript_files"
+  #  - "manuscript/output/"
     
   preview:
     port: 44
