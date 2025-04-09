@@ -663,7 +663,8 @@ data_stack <- data_stack |>
   inner_join(data[, cols], by = "ID") |>
   pivot_and_factorise() |>
   group_by(ID) |>
-  mutate(Age = Age - (2022 - as.numeric(as.character(wave))))
+  mutate(Age = Age - (2022 - as.numeric(as.character(wave)))) |>
+  select(!starts_with("Cardio") & !starts_with(paste0("Total_dep_20", 18:22)))
 
 head(data_stack)
 ``` 
