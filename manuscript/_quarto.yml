@@ -16,6 +16,7 @@ format:
             display: none;
           }
           </style>
+          \usepackage{asmath}
     language: 
       title-block-published: "Latest version"
     format-links:

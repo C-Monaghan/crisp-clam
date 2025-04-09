@@ -44,27 +44,78 @@ Given these parallels, it is worth exploring whether chronic procrastination cou
 
 Although current research on procrastination in relation to dementia is non-existent, this possible association warrants exploration. Identifying procrastination as a potential risk factor could expand the scope of early interventions aimed at preventing or slowing the progression of dementia. As such, the purpose of this study was to test the hypothesis that higher levels of procrastination would be associated with an increased probability of transitioning from normal cognitive function or MCI to dementia.
 
-# Method {#method .unnumbered}
+# Method
 
 ## Data and study population {#data-and-study-population .unnumbered}
 
 Analyses were conducted using a secondary data source; a multi-wave prospective cohort study called the Health and Retirement Study (HRS; [@Fisher2018]), which tracks the health, economic, and social well-being of over $18,000$ American adults primarily aged $>50$. The HRS is managed by the Institute for Social Research at the University of Michigan, with data collected every two years. Initial data collection of a participant is conducted through a face-to-face interview, with follow-up biennial interviews conducted either by phone or face-to-face. The average re-interview response rate ranges from $68.8\%$ to $92.3\%$ [@HRS2017]. At the time of writing, fifteen years of HRS data are currently archived.
 
-For this study, we focused on four waves of HRS data (from 2016 to 2022). Specifically our study sample consisted of respondents who participated in an experimental module assessing procrastination during the 2020 wave. These experimental modules, administered at the end of the core HRS interview, consist of concise questionnaires designed to explore new topics or supplement existing core survey data. Each respondent receives only one experimental module, with sample sizes for each module constituting approximately 10% of the core sample. As a result, while the core HRS sample includes approximately $18,000$ respondents, our initial sample of interest consisted of $1,368$ respondents. We excluded respondents with missing cognitive assessment data for any wave $(n = 445)$ and those under 50 years of age $(n = 39)$. This resulted in a final analytic sample of $884$ respondents.
+For this study, we focused on four biennial waves of HRS data (from 2016 to 2022). Specifically our study sample consisted of respondents who participated in an experimental module assessing procrastination during the 2020 wave. These experimental modules, administered at the end of the core HRS interview, consist of concise questionnaires designed to explore new topics or supplement existing core survey data. Each respondent receives only one experimental module, with sample sizes for each module constituting approximately 10% of the core sample. As a result, while the core HRS sample includes approximately $18,000$ respondents, our initial sample of interest consisted of $1,368$ respondents. We excluded respondents with missing cognitive assessment data for any wave $(n = 445)$, missing procrastination data $(n = 4)$, and those under 50 years of age $(n = 16)$. This resulted in a final analytic sample of $903$ respondents.
 
-## Measures {#measures .unnumbered}
+## Measures
 
-### Outcome: Cognitive Function and Cognitive Category {#outcome-cognitive-function-and-cognitive-category .unnumbered}
+### Outcome: Cognitive Function and Cognitive Category
 
 Cognitive function in the HRS is assessed using a series of tests adapted from the Telephone Interview for Cognitive Status (TICS; [@Brandt1988; @Fong2009]). These tests include an immediate and delayed $10$-noun free recall test, a serial seven subtraction test, and a backward count from $20$ test. Based on these assessments, @Crimmins2011 developed both a $27$-point cognitive scale and validated cut-off points to assess and classify cognitive status. Using these points, respondents who scored $12 - 27$ were classified as having normal cognition, $7 - 11$ as having MCI, and $0 - 6$ as having dementia.
 
-### Predictor: Procrastination {#predictor-procrastination .unnumbered}
+### Predictor: Procrastination
 
 Procrastination was measured using the Pure Procrastination Scale [@steel2010], which consists of 12 items rated on a Likert scale ranging from $1$ (strongly disagree) to $5$ (strongly agree). The total procrastination score ranges from $12$ to $60$, with higher scores indicating greater procrastination. The Pure Procrastination Scale conducted in 2020 (wave 3) had a Cronbach's $\alpha$ score of $0.91$ in this sample, indicating high internal consistency. An example of a question from the scale includes "I delay making decisions until it's too late".
 
-### Confounders {#confounders .unnumbered}
+### Confounders
 
 To account for potential confounding, we controlled for variables with established associations with cognitive function and procrastination. These included baseline measures conducted in 2016 (wave 1) of age, sex, educational attainment, number of cardiovascular risk factors (history of hypertension, stroke, or heart disease, and a classification on "overweight\" on a body mass index (BMI) scale $(\text{BMI} \ge 30)$), and depressive symptoms [@Abner2012; @Freedman2024; @monaghan2024a; @Yu2013]. Educational attainment was classified into three categories: no formal education, GED (General Educational Development)/high school diploma, and college/further education. Depressive symptoms were measured using an eight-item version of the Center for Epidemiological Studies Depression (CES-D) scale [@Briggs2018], with scores ranging from 0 to 8, demonstrating good internal consistency $(\alpha = 0.82)$.
+
+## Data analysis
+
+All data analysis was carried out in R [@R2024]. Within the final dataset, $0.69\%$ of the data was missing, with all all missing values occurring within the educational attainment variable. To examine longitudinal patterns of cognitive transitions, we implemented a discrete time, first-order Markov model [@braun2020]. This framework estimates probabilities of transitioning between three discrete states: normal cognition (State 1), mild cognitive impairment (MCI; State 2), and dementia (State 3). The model relies on the Markov property, which assumes that the probability of transitioning to a future state depends only on the current state, not the full history of prior states.
+
+### Model specification
+Formally, let $X_t$ denote an individual’s cognitive state at time $t$, where $X_t \in S = \{1, 2, 3\}$. Under the Markov property, the probability of transitioning to state $j$ at time $t + 1$ depends only on state $i$ at time $t$, independent of all earlier states. We can write this conditional probability as:
+
+$$
+P(X_{t+1} = j \vert X_t = i, X_{t-1} = i_{t-1}, \dots X_0 = i_0) = P(X_{t+1} = j \vert X_t = i)
+$$
+
+These conditional probabilities, denoted $p_{ij} = P(X_{t+1} = j \vert X_t = i$ are called transition probabilities and can be organised into a $3 \times 3$ transition matrix $P$:
+
+$$
+P = 
+\begin{bmatrix} 
+p_{11} & p_{12} & p_{13} \\
+p_{21} & p_{22} & p_{23} \\
+p_{31} & p_{32} & p_{33} \\
+\end{bmatrix}
+$$
+
+wherein, each row represents the cognitive state at time $t$, each column represents the cognitive state at time $t + 1$, and each entry $p_{ij}$ represents the probability of transitioning from state $i$ to state $j$. 
+
+### Non-stationary transition probabilities
+
+In a stationary Markov model, transition probabilities $p_{ij}$ are assumed constant over time. However, cognitive transitions may vary with age, time since diagnosis, or other covariates. To account for this, we generalize to a non-stationary Markov model, where $p_{ij}^{(t)}$ depends on covariates $\boldsymbol{x}^{(t)}$
+
+$$
+p_{ij}^{(t)} = P(X_{t+1} = j \vert X_t = i, \boldsymbol{x}^{(t)})
+$$
+
+#### Multinomial Logistic Regression
+
+We model these time-varying transition probabilities using multinomial logistic regression. For a system with $K = 3$ states (using state $K$ as reference), the log-odds of transitioning to state $j$ relative to state $K$ are linear functions of covariates $\boldsymbol{x}(t)$:
+
+$$
+log \left( \frac{p_{ij}^{(t)}}{p_{ik}^{(t)}} \right) = \alpha_j^{(t)} + \beta_j^{T \;(t)} \boldsymbol{x}^{(t)} \qquad \text{for } j = 1, \dots K-1
+$$
+where, $\alpha_j^{(t)}$ is the intercept for state $j$ at time $t$, $\beta_j^{(t)}$ is the vector of regression coefficients for state $j$ at time $t$, and $\boldsymbol{x}^{(t)}$ is the vector of covariates at time $t$. The model estimates the transition probabilities as a function of covariates, allowing us to assess how procrastination and other factors influence cognitive transitions. 
+
+# Results
+
+In our sample of $903$ older American adults aged 50 years or older, $63.01\%$ were female $(n = 569)$, with a mean sample age of $67.73$ years $(\pm 9.84)$. At baseline, $84.81\%$ of the sample was classified as having normal cognition, $14.96\%$ as having MCI, and $1.35\%$ as having dementia. 
+
+
+The mean procrastination score was $36.73$ $(\pm 8.23)$, with a range of $12 - 60$. The sample characteristics are presented in Table \ref{tab:sample-characteristics}.
+
+
+
 
 
 # References
