@@ -50,7 +50,7 @@ Although current research on procrastination in relation to dementia is non-exis
 
 Analyses were conducted using a secondary data source; a multi-wave prospective cohort study called the Health and Retirement Study (HRS; [@Fisher2018]), which tracks the health, economic, and social well-being of over $18,000$ American adults primarily aged $>50$. The HRS is managed by the Institute for Social Research at the University of Michigan, with data collected every two years. Initial data collection of a participant is conducted through a face-to-face interview, with follow-up biennial interviews conducted either by phone or face-to-face. The average re-interview response rate ranges from $68.8\%$ to $92.3\%$ [@HRS2017]. At the time of writing, fifteen years of HRS data are currently archived.
 
-For this study, we focused on four biennial waves of HRS data (from 2016 to 2022). Specifically our study sample consisted of respondents who participated in an experimental module assessing procrastination during the 2020 wave. These experimental modules, administered at the end of the core HRS interview, consist of concise questionnaires designed to explore new topics or supplement existing core survey data. Each respondent receives only one experimental module, with sample sizes for each module constituting approximately 10% of the core sample. As a result, while the core HRS sample includes approximately $18,000$ respondents, our initial sample of interest consisted of $1,368$ respondents. We excluded respondents with missing cognitive assessment data for any wave $(n = 445)$, missing procrastination data $(n = 4)$, and those under 50 years of age $(n = 16)$. This resulted in a final analytic sample of $903$ respondents.
+For this study, we focused on four biennial waves of HRS data (from 2016 to 2022). Specifically our study sample consisted of respondents who participated in an experimental module assessing procrastination during the 2020 wave. These experimental modules, administered at the end of the core HRS interview, consist of concise questionnaires designed to explore new topics or supplement existing core survey data. Each respondent receives only one experimental module, with sample sizes for each module constituting approximately 10% of the core sample. As a result, while the core HRS sample includes approximately $18,000$ respondents, our initial sample of interest consisted of $1,368$ respondents. We excluded respondents with missing cognitive assessment data for any wave $(n = 445)$, missing procrastination data $(n = 4)$, and those under 50 years of age  $(n = 16)$. This resulted in a final analytic sample of $903$ respondents.
 
 ## Measures
 
@@ -92,27 +92,24 @@ wherein, each row represents the cognitive state at time $t$, each column repres
 
 ### Non-stationary transition probabilities
 
-In a stationary Markov model, transition probabilities $p_{ij}$ are assumed constant over time. However, cognitive transitions may vary with age, time since diagnosis, or other covariates. To account for this, we generalize to a non-stationary Markov model, where $p_{ij}^{(t)}$ depends on covariates $\boldsymbol{x}^{(t)}$
+In a stationary Markov model, transition probabilities $p_{ij}$ are assumed constant over time. However, cognitive transitions may vary with age, time since diagnosis, or other covariates. To account for this, we generalize to a non-stationary Markov model, where $p_{ij}^{(t)}$ depends on covariates $\boldsymbol{X}^{(t)}$
 
 $$
-p_{ij}^{(t)} = P(X_{t+1} = j \vert X_t = i, \boldsymbol{x}^{(t)})
+p_{ij}^{(t)} = P(X_{t+1} = j \vert X_t = i, \boldsymbol{X}^{(t)})
 $$
 
 #### Multinomial Logistic Regression
 
-We model these time-varying transition probabilities using multinomial logistic regression. For a system with $K = 3$ states (using state $K$ as reference), the log-odds of transitioning to state $j$ relative to state $K$ are linear functions of covariates $\boldsymbol{x}(t)$:
+We model these time-varying transition probabilities using multinomial logistic regression. For a system with $K = 3$ states (using state $K$ as reference), the log-odds of transitioning to state $j$ relative to state $K$ are linear functions of covariates $\boldsymbol{X}(t)$:
 
 $$
-log \left( \frac{p_{ij}^{(t)}}{p_{ik}^{(t)}} \right) = \alpha_j^{(t)} + \beta_j^{T \;(t)} \boldsymbol{x}^{(t)} \qquad \text{for } j = 1, \dots K-1
+log \left( \frac{p_{ij}^{(t)}}{p_{ik}^{(t)}} \right) = \alpha_j^{(t)} + \beta_j^{T \;(t)} \boldsymbol{X}^{(t)} \qquad \text{for } j = 1, \dots K-1
 $$
-where, $\alpha_j^{(t)}$ is the intercept for state $j$ at time $t$, $\beta_j^{(t)}$ is the vector of regression coefficients for state $j$ at time $t$, and $\boldsymbol{x}^{(t)}$ is the vector of covariates at time $t$. The model estimates the transition probabilities as a function of covariates, allowing us to assess how procrastination and other factors influence cognitive transitions. 
+where, $\alpha_j^{(t)}$ is the intercept for state $j$ at time $t$, $\beta_j^{(t)}$ is the vector of regression coefficients for state $j$ at time $t$, and $\boldsymbol{X}^{(t)}$ is the vector of covariates at time $t$. The model estimates the transition probabilities as a function of covariates, allowing us to assess how procrastination and other factors influence cognitive transitions. 
 
 # Results
 
-In our sample of $903$ older American adults aged 50 years or older, $63.01\%$ were female $(n = 569)$, with a mean sample age of $67.73$ years $(\pm 9.84)$. At baseline, $84.81\%$ of the sample was classified as having normal cognition, $14.96\%$ as having MCI, and $1.35\%$ as having dementia. 
-
-
-The mean procrastination score was $36.73$ $(\pm 8.23)$, with a range of $12 - 60$. The sample characteristics are presented in Table \ref{tab:sample-characteristics}.
+In our sample of $903$ older American adults aged 50 years or older, $63.01\%$ were female $(n = 569)$, with a mean sample age of $67.73$ years $(\pm 9.84)$. At baseline, $84.81\%$ of the sample was classified as having normal cognition, $14.96\%$ as having MCI, and $1.35\%$ as having dementia. A
 
 
 

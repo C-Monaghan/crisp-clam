@@ -61,7 +61,6 @@ h2.hide {
   display: none;
 }
 </style>
-</head><body>\usepackage{asmath}
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -93,9 +92,9 @@ window.Quarto = {
 };
 </script>
 
+</head>
 
-
-
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -222,24 +221,23 @@ p_{31} &amp; p_{32} &amp; p_{33} \\
 </section>
 <section id="non-stationary-transition-probabilities" class="level4">
 <h4 class="anchored" data-anchor-id="non-stationary-transition-probabilities">Non-stationary transition probabilities</h4>
-<p>In a stationary Markov model, transition probabilities <span class="math inline">\(p_{ij}\)</span> are assumed constant over time. However, cognitive transitions may vary with age, time since diagnosis, or other covariates. To account for this, we generalize to a non-stationary Markov model, where <span class="math inline">\(p_{ij}^{(t)}\)</span> depends on covariates <span class="math inline">\(\boldsymbol{x}^{(t)}\)</span></p>
+<p>In a stationary Markov model, transition probabilities <span class="math inline">\(p_{ij}\)</span> are assumed constant over time. However, cognitive transitions may vary with age, time since diagnosis, or other covariates. To account for this, we generalize to a non-stationary Markov model, where <span class="math inline">\(p_{ij}^{(t)}\)</span> depends on covariates <span class="math inline">\(\boldsymbol{X}^{(t)}\)</span></p>
 <p><span class="math display">\[
-p_{ij}^{(t)} = P(X_{t+1} = j \vert X_t = i, \boldsymbol{x}^{(t)})
+p_{ij}^{(t)} = P(X_{t+1} = j \vert X_t = i, \boldsymbol{X}^{(t)})
 \]</span></p>
 <section id="multinomial-logistic-regression" class="level5">
 <h5 class="anchored" data-anchor-id="multinomial-logistic-regression">Multinomial Logistic Regression</h5>
-<p>We model these time-varying transition probabilities using multinomial logistic regression. For a system with <span class="math inline">\(K = 3\)</span> states (using state <span class="math inline">\(K\)</span> as reference), the log-odds of transitioning to state <span class="math inline">\(j\)</span> relative to state <span class="math inline">\(K\)</span> are linear functions of covariates <span class="math inline">\(\boldsymbol{x}(t)\)</span>:</p>
+<p>We model these time-varying transition probabilities using multinomial logistic regression. For a system with <span class="math inline">\(K = 3\)</span> states (using state <span class="math inline">\(K\)</span> as reference), the log-odds of transitioning to state <span class="math inline">\(j\)</span> relative to state <span class="math inline">\(K\)</span> are linear functions of covariates <span class="math inline">\(\boldsymbol{X}(t)\)</span>:</p>
 <p><span class="math display">\[
-log \left( \frac{p_{ij}^{(t)}}{p_{ik}^{(t)}} \right) = \alpha_j^{(t)} + \beta_j^{T \;(t)} \boldsymbol{x}^{(t)} \qquad \text{for } j = 1, \dots K-1
-\]</span> where, <span class="math inline">\(\alpha_j^{(t)}\)</span> is the intercept for state <span class="math inline">\(j\)</span> at time <span class="math inline">\(t\)</span>, <span class="math inline">\(\beta_j^{(t)}\)</span> is the vector of regression coefficients for state <span class="math inline">\(j\)</span> at time <span class="math inline">\(t\)</span>, and <span class="math inline">\(\boldsymbol{x}^{(t)}\)</span> is the vector of covariates at time <span class="math inline">\(t\)</span>. The model estimates the transition probabilities as a function of covariates, allowing us to assess how procrastination and other factors influence cognitive transitions.</p>
+log \left( \frac{p_{ij}^{(t)}}{p_{ik}^{(t)}} \right) = \alpha_j^{(t)} + \beta_j^{T \;(t)} \boldsymbol{X}^{(t)} \qquad \text{for } j = 1, \dots K-1
+\]</span> where, <span class="math inline">\(\alpha_j^{(t)}\)</span> is the intercept for state <span class="math inline">\(j\)</span> at time <span class="math inline">\(t\)</span>, <span class="math inline">\(\beta_j^{(t)}\)</span> is the vector of regression coefficients for state <span class="math inline">\(j\)</span> at time <span class="math inline">\(t\)</span>, and <span class="math inline">\(\boldsymbol{X}^{(t)}\)</span> is the vector of covariates at time <span class="math inline">\(t\)</span>. The model estimates the transition probabilities as a function of covariates, allowing us to assess how procrastination and other factors influence cognitive transitions.</p>
 </section>
 </section>
 </section>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<p>In our sample of <span class="math inline">\(903\)</span> older American adults aged 50 years or older, <span class="math inline">\(63.01\%\)</span> were female <span class="math inline">\((n = 569)\)</span>, with a mean sample age of <span class="math inline">\(67.73\)</span> years <span class="math inline">\((\pm 9.84)\)</span>. At baseline, <span class="math inline">\(84.81\%\)</span> of the sample was classified as having normal cognition, <span class="math inline">\(14.96\%\)</span> as having MCI, and <span class="math inline">\(1.35\%\)</span> as having dementia.</p>
-<p>The mean procrastination score was <span class="math inline">\(36.73\)</span> <span class="math inline">\((\pm 8.23)\)</span>, with a range of <span class="math inline">\(12 - 60\)</span>. The sample characteristics are presented in Table <span class="math inline">\(\ref{tab:sample-characteristics}\)</span>.</p>
+<p>In our sample of <span class="math inline">\(903\)</span> older American adults aged 50 years or older, <span class="math inline">\(63.01\%\)</span> were female <span class="math inline">\((n = 569)\)</span>, with a mean sample age of <span class="math inline">\(67.73\)</span> years <span class="math inline">\((\pm 9.84)\)</span>. At baseline, <span class="math inline">\(84.81\%\)</span> of the sample was classified as having normal cognition, <span class="math inline">\(14.96\%\)</span> as having MCI, and <span class="math inline">\(1.35\%\)</span> as having dementia. A</p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>

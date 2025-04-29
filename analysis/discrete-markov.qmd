@@ -4,611 +4,26 @@ title: "Discrete Time Markov Model"
 
 # Setting up
 
-## Loading packages
-
-```{r packages}
-#| code-fold: true
-#| code-summary: "Check out my packages"
+```{r}
+#| label: setup
 #| warning: false
+#| message: false
+#| output: false
+#| code-fold: true
+#| code-summary: "Check out my code"
 
 # Packages ---------------------------------------------------------------------
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(patchwork)
-```
-
-## Loading functions
-
-```{r functions}
-#| code-fold: true
-#| code-summary: "Check out my functions"
-#| warning: false
 
 # Functions --------------------------------------------------------------------
-extract_years <- function(data, years, impute = TRUE, cog_total = FALSE, absorbing = TRUE) {
-  # Extracts cognitive function data for specified years from a dataset.
-  # Converts numeric cognitive status codes (1, 2, 3) into descriptive labels
-  # ("Normal Cognition", "MCI", "Dementia") for easier interpretation.
-  # Arguments:
-  #   - data: The input dataset containing cognitive function data.
-  #   - years: A vector of years for which data should be extracted.
-  # Returns:
-  #   - A dataset with ID and cognitive status columns for the specified years.
-  
-  # Create dynamic column names based on the years provided
-  cogfunction_cols <- paste0("cogfunction", years)
-  cogtotal_cols    <- paste0("cogtot27_imp", years)
-  
-  if(cog_total == FALSE) {
-    data <- data |>
-      # Select only the ID column and cognitive function columns for the specified years
-      select(ID, any_of(cogfunction_cols)) |>
-      mutate(across(!c(ID), ~ case_when(
-        .x == 1 ~ "Normal Cognition",
-        .x == 2 ~ "MCI",
-        .x == 3 ~ "Dementia",
-        TRUE ~ NA_character_  # To handle missing/other cases
-      )))
-  } else {
-    data <- data |>
-      # Select only the ID column and cognitive function columns for the specified years
-      select(ID, any_of(cogtotal_cols)) |>
-      rename_with( .cols = !ID, .fn = ~ stringr::str_replace(
-        string = .x,
-        pattern = "cogtot27_imp", 
-        replacement = "cog_score_"))
-  }
-  
-  if(impute == TRUE){
-    data <- data |>
-      tidyr::pivot_longer(
-        cols = !ID,
-        names_to = "Wave",
-        values_to = "Status") |>
-      group_by(ID) |>
-      tidyr::fill(Status, .direction = "down") |>
-      ungroup() |>
-      tidyr::pivot_wider(names_from = "Wave", values_from = "Status")
-  }
-  
-  if(absorbing == TRUE) {
-    data <- data |>
-      tidyr::pivot_longer(
-        cols = !ID,
-        names_to = "Wave",
-        values_to = "Status") |>
-      group_by(ID) |>
-      mutate(Status = ifelse(cumany(Status == "Dementia"), "Dementia", Status)) |>
-      ungroup() |>
-      tidyr::pivot_wider(names_from = "Wave", values_from = "Status")
-  }
-  
-  return(data)
-}
+files <- list.files(here::here("R/"), full.names = TRUE)
 
-pivot_and_factorise <- function(data) {
-  # Converts cognitive function data from wide to long format and factorizes key variables.
-  # Pivots multiple cogfunction columns into wave/status pairs and converts categorical
-  # variables (Gender, Education, status) to factors with meaningful labels.
-  # Arguments:
-  #   - data: Dataset containing cognitive function variables in wide format
-  # Returns:
-  #   - Long-format dataset with factorized variables, ordered by ID and wave
-  # 
-  
-  # Pivoting depression variables
-  # depression <- data |>
-  #   select(starts_with("Total_dep")) |>
-  #   tidyr::pivot_longer(
-  #     cols = everything(), names_to = "Remove", values_to = "Depression") |>
-  #   select(Depression)
+sapply(files, source)
 
-  # Pivoting cardio variables
-  # cardio <- data |>
-  #   select(starts_with("Cardio_risk")) |>
-  #   tidyr::pivot_longer(
-  #     cols = everything(), names_to = "Remove", values_to = "Cardio") |>
-  #   select(Cardio)
-
-
-  data |>
-    # select(!starts_with(c("Total_dep", "Cardio_risk"))) |>
-    tidyr::pivot_longer(
-      cols = starts_with("cogfunction"), names_to = "wave",
-      names_prefix = "cogfunction", values_to = "status") |>
-    mutate(
-      Gender = factor(Gender, levels = c(0, 1)),
-      Education_tri = factor(Education_tri, levels = c(0, 1, 2)),
-      wave = factor(wave),
-      status = factor(status, 
-                      levels = c("Normal Cognition", "MCI", "Dementia"),
-                      labels = c(1, 2, 3))) |>
-    relocate(wave, .after = ID) |>
-    relocate(status, .after = wave)
-    #cbind(depression, cardio)
-}
-
-create_transition_table <- function(year_to, year_from) {
-  # Creates a transition frequency table between two specified years of cognitive status data.
-  # Calculates row sums and total observations for transition analysis.
-  # Arguments:
-  #   - year_to: Target year for transitions (character or numeric)
-  #   - year_from: Origin year for transitions (character or numeric)
-  # Returns:
-  #   - List containing: 
-  #     - transition frequency table
-  #     - row sums
-  #     - total observations
-  # 
-  tbl <- table(
-    table_data[[paste0("HRS_", year_to)]],
-    table_data[[paste0("HRS_", year_from)]],
-    dnn = c(year_to, year_from)
-  )
-  
-  # Calculate row sums and total
-  row_sums <- rowSums(tbl)
-  total <- sum(row_sums)
-  
-  # Return as a list with both the table and summary stats
-  list(
-    table = tbl,
-    row_sums = row_sums,
-    total = total
-  )
-}
-
-create_transition_dataset <- function(data, transition_results) {
-  # Combines multiple transition tables into a single analysis-ready dataset.
-  # Formats period labels, ensures consistent factor levels, and structures data for visualization.
-  # Arguments:
-  #   - data: List of year pairs to process (e.g., list(c(2016,2018)))
-  #   - transition_results: List containing transition tables from create_transition_table()
-  # Returns:
-  #   - Tidy dataset with transition frequencies between all specified periods
-  # 
-  data |>
-    purrr::map_dfr(~ {
-      period_name <- paste(.x[2], .x[1], sep = " - ")
-      tbl <- transition_results[[paste(.x[2], .x[1], sep = "-")]]$table
-      
-      as.data.frame(tbl) |>
-        rename(t_minus_1 = 1, t = 2) %>%  # Positional renaming
-        mutate(Period = period_name, .before = t_minus_1)
-    }) |>
-    mutate(
-      Period = stringr::str_replace(Period, "(\\d+) - (\\d+)", "\\2 - \\1"),
-      Period = factor(Period, levels = c("2016 - 2018", "2018 - 2020", "2020 - 2022")),
-      t_minus_1 = factor(t_minus_1, levels = c("Normal Cognition", "MCI", "Dementia")),
-      t = factor(t, levels = c("Normal Cognition", "MCI", "Dementia"))
-    )
-}
-
-create_transitions <- function(data, absorbing = FALSE){
-  # Reshapes data from wide to long format to track cognitive status transitions over time.
-  # Calculates the next wave's cognitive status for each individual and creates a transition column.
-  # Optionally treats "Dementia" as an absorbing state, meaning once an individual is classified
-  # with dementia, their status cannot change in subsequent waves.
-  # Arguments:
-  #   - data: The dataset containing cognitive status data.
-  #   - absorbing: A logical flag indicating whether "Dementia" should be treated 
-  #   as an absorbing state.
-  # Returns:
-  #   - A dataset with transition information, including current and next wave statuses.
-  
-  # Reshape the data from wide to long format to track cognitive status over waves
-  data <- data |>
-    select(ID, starts_with("cogfunction")) |>
-    tidyr::pivot_longer(cols = !ID,
-                        names_to = "Wave",
-                        values_to = "Status") |>
-    mutate(Wave = as.factor(stringr::str_replace(Wave, "cogfunction", ""))) |>
-    # Arrange by ID and Wave to prepare for transition calculation
-    arrange(ID, Wave) |>
-    group_by(ID) |>
-    # Get the next wave's cognitive status for each person
-    mutate(next_wave_status = lead(Status)) |>
-    ungroup()
-  
-  # We can optionally specify dementia as an absorbing state
-  # Once an individual is classified with dementia they cannot be classified
-  # with anything else 
-  if(absorbing == TRUE) {
-    data <- data |>
-      group_by(ID) |>
-      mutate(
-        Status = ifelse(cumany(Status == "Dementia"), "Dementia", Status),
-        next_wave_status = ifelse(cumany(Status == "Dementia"), "Dementia", next_wave_status),
-        transition = paste(Status, next_wave_status, sep = " to ")
-      ) |>
-      filter(Wave %in% c(2016, 2018, 2020))
-  }
-  
-  # Filter out rows where either the current or next status is missing
-  data <- data |>
-    group_by(ID) |>
-    filter(!is.na(Status), !is.na(next_wave_status)) |>
-    ungroup() |>
-    # Create a new column representing the transition from one status to the next
-    mutate(
-      transition = paste(Status, next_wave_status, sep = " to "),
-      transition = factor(
-        transition, 
-        levels = c("Normal Cognition to Normal Cognition", "Normal Cognition to MCI",
-                   "Normal Cognition to Dementia", "MCI to Normal Cognition", "MCI to MCI",
-                   "MCI to Dementia", "Dementia to Dementia") 
-      ))
-  
-  return(data)
-}
-
-observed_transition_matrix <- function(data) {
-  # Converts transition data into a properly formatted probability transition matrix.
-  # Ensures consistent state ordering and converts proportions to matrix format suitable
-  # for multi-state modeling and visualization.
-  # Arguments:
-  #   - data: Transition dataset from create_transitions()
-  # Returns:
-  #   - Square transition probability matrix with states as row/column names
-  # 
-  # The order I want my matrix in
-  state_order <- c("Normal Cognition", "MCI", "Dementia")
-  
-  data |>
-    group_by(Status, next_wave_status) |>
-    summarise(freq = n(),  .groups = "drop") |>
-    group_by(Status) |>
-    mutate(freq = round(proportions(freq), 3)) |>
-    ungroup() |>
-    complete(Status, next_wave_status, fill = list(freq = 0)) |>
-    tidyr::pivot_wider(names_from = next_wave_status, values_from = freq, names_sort = TRUE) |>
-    tibble::column_to_rownames("Status") |>
-    select(all_of(state_order)) |>
-    _[state_order, ] |>
-    as.matrix()
-}
-
-normalise <- function(x) {
-  # Normalizes a matrix so that each row sums to 1.
-  # Arguments:
-  #   - x: The input matrix to normalize.
-  # Returns:
-  #   - A normalized matrix where each row sums to 1.
-  x / rowSums(x)
-}
-
-reshape_matrix <- function(matrix) {
-  # Converts a transition probability matrix into a tidy format suitable for visualization.
-  # Transforms the matrix into long format with explicit factor levels for cognitive states,
-  # preserving the original ordering while preparing for ggplot compatibility.
-  # Arguments:
-  #   - matrix: A square transition probability matrix with states as row/column names
-  # Returns:
-  #   - Tidy data frame with columns:
-  #     * from_state: Factor indicating origin cognitive state
-  #     * to_state: Factor indicating destination cognitive state (reversed for plotting)
-  #     * probability: Numeric transition probability values
-  
-  matrix |>
-    as.data.frame() |>
-    mutate(
-      from_state = factor(c(
-        "Normal cognition", "MCI", "Dementia"),
-        levels = c("Normal cognition", "MCI", "Dementia"))
-    ) |>
-    reshape2::melt(
-      id.vars = "from_state", 
-      variable.name = "to_state", 
-      value.name = "probability") |>
-    mutate(to_state = factor(to_state, levels = rev(levels(to_state))))
-}
-
-plot_transition_matrix <- function(matrix, observed = TRUE) {
-  # Creates a heatmap visualization of cognitive state transition probabilities.
-  # Generates either observed or estimated transition plots with consistent formatting,
-  # including labeled probability values and a diverging color scale for emphasis.
-  # Arguments:
-  #   - matrix: Tidy transition matrix from reshape_matrix()
-  #   - observed: Logical flag indicating whether data represents observed (TRUE) 
-  #               or estimated (FALSE) transitions
-  # Returns:
-  #   - ggplot heatmap object with:
-  #     * State transitions as cells
-  #     * Probability values displayed numerically
-  #     * Custom color scale and axis formatting
-  
-  if(observed == TRUE) {
-    subtitle <- "Observed state transitions between assessment waves"
-  } else {
-    subtitle <- "Estimated state transitions between assessment waves"
-  }
-  
-  matrix |>
-    ggplot(aes(x = from_state, y = to_state, fill = probability)) +
-    geom_tile(color = "white", linewidth = 0.5) +
-    geom_text(
-      aes(label = format(round(probability, 3), nsmall = 3)),
-      size = 4.5, 
-      color = "#212427",
-      fontface = "bold") +
-    colorspace::scale_fill_continuous_diverging(
-      palette = "Blue-Red 3", mid = 0.50, alpha = 0.5, 
-      limits = c(0, 1), name = "Transition \nProbability") +
-    labs(title = "Transition Probabilities Across Cognitive States",
-         subtitle = subtitle,
-         x = "Previous State (t - 1)", 
-         y = "Current State (t)") +
-    theme(
-      axis.text = element_text(size = 10),
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-      legend.position = "right",
-      legend.text = element_text(size = 9),
-      panel.grid = element_blank()
-    )
-}
-
-tran_stack_graph <- function(data) {
-  # Creates stacked bar charts visualizing cognitive state transitions across time periods.
-  # Shows composition of current states by previous state, faceted by observation period.
-  # Arguments:
-  #   - data: Transition dataset from create_transition_dataset()
-  # Returns:
-  #   - ggplot object showing stacked transition proportions
-  # 
-  data |>
-    ggplot(aes(x = t_minus_1, y = Freq, fill = t)) +
-    geom_col(position = "stack", colour = "black") +
-    facet_wrap(~ Period, ncol = 3) +
-    labs(
-      x = "Previous State (t-1)", 
-      y = "Count",
-      title = "Outcomes by Prior Cognitive State",
-      fill = "Current State (t)"
-    ) +
-    ggokabeito::scale_fill_okabe_ito() +
-    ggeasy::easy_move_legend("bottom")
-}
-
-tran_heat_map <- function(data) {
-  # Generates heatmap visualization of transition frequencies between cognitive states.
-  # Uses color intensity and labeled values to show transition patterns across time periods.
-  # Arguments:
-  #   - data: Transition dataset from create_transition_dataset()
-  # Returns:
-  #   - ggplot heatmap with state transitions as cells
-  # 
-  data |>
-    ggplot(aes(x = t_minus_1, y = t, fill = Freq)) +
-    geom_tile(color = "white") +
-    geom_text(aes(label = Freq), color = "black", size = 3.5) +  # Add counts
-    scale_fill_gradient(low = "white", high = "steelblue") +
-    facet_wrap(~ Period, ncol = 3) +  # Split by time period
-    labs(
-      x = "Previous State (t-1)", 
-      y = "Current State (t)",
-      title = "Cognitive State Transitions Between Time Periods",
-      fill = "Frequency"
-    ) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    ggeasy::easy_move_legend("bottom")
-}
-
-tidy_output <- function(fit, multiplicative = FALSE) {
-  output <- broom::tidy(fit, conf.int = TRUE) |>
-    filter(term != "(Intercept)") |>
-  mutate(across(c(estimate:p.value), ~ round(x = ., digits = 3)))
-  
-  if(any(output$y.level == "1")) {
-    output <- output |>
-      mutate(y.level = case_when(
-      y.level == "1" ~ "MCI - NC",
-      y.level == "3" ~ "MCI - Dementia"))
-  } else {
-    output <- output |>
-      mutate(y.level = case_when(
-      y.level == "2" ~ "NC - MCI",
-      y.level == "3" ~ "NC - Dementia"))
-  }
-  
-  if(multiplicative == FALSE) {
-    output <- output |>
-      mutate(
-      term = case_when(
-      term == "Gender1" ~ "Being female",
-      term == "Education_tri1" ~ "High school degree vs. No education",
-      term == "Education_tri2" ~ "Further education vs. No education",
-      term == "Total_dep_2016" ~ "Depression Scores (2016)",
-      term == "Total_p" ~ "Procrastination (2020)",
-      term == "status_prev2" ~ "Previous state: MCI",
-      term == "status_prev3" ~ "Previous state: Dementia",
-      term == "wave" ~ "Time",
-      TRUE ~ term))
-  } else {
-    output <- output |>
-      mutate(
-      term = case_when(
-      term == "Gender1" ~ "Being female",
-      term == "Education_tri1" ~ "High school degree vs. No education",
-      term == "Education_tri2" ~ "Further education vs. No education",
-      term == "Depression" ~ "Depression Scores (2016)",
-      term == "Total_p" ~ "Procrastination (2020)",
-      term == "status_prev2" ~ "Previous state: MCI",
-      term == "status_prev3" ~ "Previous state: Dementia",
-      term == "wave" ~ "Time",
-      term == "Gender1:wave" ~ "Gender & Time",
-      term == "Age:wave" ~ "Age & Time",
-      term == "Education_tri1:wave" ~ "Education (0 - 1) & Time",
-      term == "Education_tri2:wave" ~ "Education (0 - 2) & Time",
-      term == "Depression:wave" ~ "Depression & Time",
-      term == "Total_p:wave" ~ "Procrastination & Time",
-      term == "status_prev2:wave" ~ "Previous state: MCI & Time",
-      term == "status_prev3:wave" ~ "Previous state: Dementia & Time",
-      TRUE ~ term))
-  }
-  
-  return(output)
-}
-
-tidy_predictions <- function(predictions) {
-  # Restructures model prediction matrices into tidy format for visualization.
-  # Converts numeric codes to factor labels and reshapes multiple prediction columns
-  # into key-value pairs suitable for ggplot.
-  # Arguments:
-  #   - predictions: Raw prediction matrix from model output
-  # Returns:
-  #   - Long-format dataset with probabilities for each cognitive state
-  #   
-  predictions |>
-    as.matrix() |>
-    as_tibble() |>
-    mutate(
-      Gender = factor(ifelse(Gender == 0, "Male", "Female"), levels = c("Male", "Female")),
-      status_prev = case_when(
-        status_prev == 1 ~ "Normal Cognition",
-        status_prev == 2 ~ "MCI",
-        status_prev == 3 ~ "Dementia",
-      ),
-      status_prev = factor(status_prev, levels = c("Normal Cognition", "MCI", "Dementia")),
-      Total_p = as.numeric(Total_p),
-      across(c(pred.1:pred.3), as.numeric)) |>
-    tidyr::pivot_longer(cols = c(pred.1:pred.3), names_to = "status", values_to = "prob") |>
-    mutate(status = case_when(
-      status == "pred.1" ~ "Normal Cognition",
-      status == "pred.2" ~ "MCI",
-      status == "pred.3" ~ "Dementia"
-    ),
-    status = factor(status, levels = c("Normal Cognition", "MCI", "Dementia")),
-    status_prev = factor(status_prev, levels = c("Normal Cognition", "MCI", "Dementia")))
-}
-
-plot_predictions_stationary <- function(predictions, variable, x_axis) {
-  # Visualizes predicted transition probabilities from stationary multi-state models.
-  # Shows probability curves by procrastination level, stratified by baseline state.
-  # Arguments:
-  #   - predictions: Tidy predictions from tidy_predictions()
-  # Returns:
-  #   - Faceted ggplot showing predicted probability curves
-  # 
-  predictions |>
-    ggplot(aes(x = {{variable}}, y = prob, colour = status_prev)) +
-    geom_line(linewidth = 1) +
-    ggokabeito::scale_colour_okabe_ito() +
-    labs(
-      title = "Predicted transition probabilities (stationary model)",
-      x = x_axis, y = "Probability", colour = "Previous State") +
-    facet_wrap(~ status, labeller = labeller(
-      status = function(x){paste0("Transition to: ", x)}
-    ))
-}
-
-create_additive_predictions <- function(
-    data, model, var, var_seq, hold_constant = list(Gender = factor(0), Education_tri = factor(0))) {
-  
-  # Set default prediction sequence based on variable type
-  if (is.null(var_seq)) {
-    if (is.numeric(data[[var]])) {
-      predict_seq <- seq(min(data[[var]], max(data[[var]]), length = 200))
-    } else if (is.factor(data[[var]])) {
-      predict_seq <- levels(data[[var]])
-    } else {
-      predict_seq <- unique(data[[var]])
-    }
-  }
-  
-  # Create list of all variables needed for prediction
-  all_vars <- all.vars(formula(model)[-2])  # Get RHS variables from model formula
-  
-  # Create base grid with all variables EXCEPT the prediction variable
-  base_grid <- expand.grid(
-    lapply(all_vars, function(v) {
-      if (v == var) return(NULL)  # Skip prediction variable
-      
-      # Special cases - keep all levels
-      if (v %in% c("status_prev", "wave")) {
-        return(unique(data[[v]]))
-      }
-      
-      if (v %in% names(hold_constant)) {
-        # Use user-specified constant value
-        hold_constant[[v]]
-      } else if (is.numeric(data[[v]])) {
-        # Use mean for numeric variables
-        mean(data[[v]], na.rm = TRUE)
-      } else if (is.factor(data[[v]])) {
-        # Use first level for factors
-        factor(levels(data[[v]])[1], levels = levels(data[[v]]))
-      } else {
-        # Default to most common value
-        names(sort(table(data[[v]]), decreasing = TRUE))[1]
-      }
-    }) |> purrr::compact() |> setNames(all_vars[all_vars != var]),
-    KEEP.OUT.ATTRS = FALSE
-  )
-  
-  # Create full prediction grid
-  pred_grid <- base_grid |> 
-    tidyr::crossing(!!var := var_seq) |>
-    modelr::add_predictions(model = model, var = "pred", type = "probs") |>
-    tidy_predictions() |>
-    mutate(wave = factor(wave))
-  
-  return(pred_grid)
-}
-
-
-plot_additive_predictions <- function(data, var, x_label, subtitle) {
-    
-  # Generating predictions
-  data |>
-    ggplot(aes(x = as.numeric(.data[[var]]), y = prob, color = status_prev)) +
-    geom_line(linewidth = 1) +
-    ggokabeito::scale_color_okabe_ito() +
-    labs(
-      title = "Transition Probabilities (Additive Model)",
-      subtitle = subtitle,
-      x = x_label, 
-      y = "Predicted Probability", 
-      color = "Previous State"
-    ) +
-    facet_grid(wave ~ status, labeller = labeller(
-      wave = function(x) case_when(
-        x == 2 ~ "Year = 2018",
-        x == 3 ~ "Year = 2020",
-        x == 4 ~ "Year = 2022",
-      ),
-      status = function(x) paste("Transition to:", x)
-    )) +
-    theme(
-      plot.subtitle = element_text(hjust = 0.5, size = 12, face = "bold"),
-      panel.spacing = unit(1, "lines")) 
-}
-
-get_time_varying_matrix <- function(model, time_point) {
-  expand.grid(
-    Gender = factor(0),
-    Age = mean(data_stack$Age),
-    Education_tri = factor(0),
-    Total_dep_2016 = mean(data_stack$Total_dep_2016),
-    Total_p = mean(data_stack$Total_p),
-    status_prev = factor(1:3),
-    wave = time_point) |> 
-    modelr::add_predictions(model, var = "prob", type = "probs") |> 
-    select(status_prev, starts_with("prob")) |> 
-    mutate(
-      status_prev = factor(status_prev, labels = state_names),
-      across(starts_with("prob"), ~round(., 3))) |>
-    tibble::column_to_rownames("status_prev") |>
-    as.matrix() |> `colnames<-`(state_names)
-}
-```
-
-## Setting theme
-
-```{r set-theme}
-#| code-fold: true
-#| code-summary: "Check out my theme"
-
+# Theme ------------------------------------------------------------------------
 colour <- "#212427"
 
 theme_set(
@@ -620,12 +35,8 @@ theme_set(
       strip.text = element_text(size = 10, colour = colour, face = "bold"),
       legend.title = element_text(hjust = 0.5, colour = colour, face = "bold"),
       ))
-```
 
-
-## Reading in data {.unnumbered}
-
-```{r data}
+# Data -------------------------------------------------------------------------
 data <- read.csv(here::here("analysis/data/data.csv"))
 ```
 
@@ -636,7 +47,6 @@ Before preparing the data, we want to create a vector of covariates that we are 
 ```{r covariates}
 cols <- c(
   "ID", "Gender", "Age", "Education_tri",
-  paste0("Cardio_risk_", seq(16, 22, by = 2)), 
   paste0("Total_dep_", seq(2016, 2022, by = 2)),
   "Total_p")
 ```
@@ -661,10 +71,11 @@ For each respondent we will now add in their relevant covariate data. Following 
 ```{r long_data}
 data_stack <- data_stack |>
   inner_join(data[, cols], by = "ID") |>
-  pivot_and_factorise() |>
+  # mutate(Age = Age - (2022 - 2016)) |>  # Age of person in 2016
+  # filter(Age >= 50) |>                  # Remove those with were not initially 50+ in 2016
+  pivot_and_factorise(time_vary = FALSE) |>
   group_by(ID) |>
-  mutate(Age = Age - (2022 - as.numeric(as.character(wave)))) |>
-  select(!starts_with("Cardio") & !starts_with(paste0("Total_dep_20", 18:22)))
+  mutate(Age = Age - (2022 - as.numeric(as.character(wave)))) # Make age time varying
 
 head(data_stack)
 ``` 
@@ -861,39 +272,39 @@ We estimate three progressively complex stationary models using `nnet::multinom(
 #| 
 # Baseline model (only gender; reference: NC)
 fit_1a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016, 
+  status ~ Gender + Age + Education_tri + Depression, 
   family = multinomial, 
   data = data_stack, trace = FALSE)
 
 # Baseline model (only gender; reference: MCI)
 fit_1b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016, 
+  status ~ Gender + Age + Education_tri + Depression, 
   family = multinomial, 
   data = data_stack |> mutate(status = relevel(status, ref = 2)), 
   trace = FALSE)
 
 # With procrastination (reference: NC)
 fit_2a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016 + Total_p, 
+  status ~ Gender + Age + Education_tri + Depression + Total_p, 
   family = multinomial, 
   data = data_stack, trace = FALSE)
 
 # With procrastination (reference: MCI)
 fit_2b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016 + Total_p, 
+  status ~ Gender + Age + Education_tri + Depression + Total_p, 
   family = multinomial, 
   data = data_stack |> mutate(status = relevel(status, ref = 2)), 
   trace = FALSE)
 
 # Full model with previous state (reference NC)
 fit_3a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016 + Total_p + status_prev, 
+  status ~ Gender + Age + Education_tri + Depression + Total_p + status_prev, 
   family = multinomial, 
   data = data_stack, trace = FALSE)
 
 # Full model with previous state (reference MCI)
 fit_3b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016 + Total_p + status_prev, 
+  status ~ Gender + Age + Education_tri + Depression + Total_p + status_prev, 
   family = multinomial, 
   data = data_stack |> mutate(status = relevel(status, ref = 2)), 
   trace = FALSE)
@@ -957,7 +368,7 @@ stationary_results <- rbind(tidy_output(fit_3a), tidy_output(fit_3b)) |>
     term = factor(
       term, 
       levels = c("Being female", "Age", "High school degree vs. No education",
-                 "Further education vs. No education", "Depression Scores (2016)",
+                 "Further education vs. No education", "Depression",
                  "Procrastination (2020)", "Previous state: MCI", 
                  "Previous state: Dementia")),
     
@@ -985,7 +396,7 @@ stationary_results |>
 
 ### Model visualisation
 
-Let's visualise the estimated odds ratios (@fig-odds-ratio) and the predicted transition probabilities (@fig-model-predictions) for the stationary model .
+Let's visualize the estimated odds ratios (@fig-odds-ratio) and the predicted transition probabilities (@fig-model-predictions) for the stationary model .
 
 ```{r}
 #| message: false
@@ -1036,7 +447,7 @@ pred_data <- expand.grid(
   Gender = factor(0),
   Age = mean(data_stack$Age),
   Education_tri = factor(0),
-  Total_dep_2016 = mean(data_stack$Total_dep_2016),
+  Depression = mean(data_stack$Depression),
   status_prev = levels(data_stack$status_prev),
   Total_p = seq(0, 60, length = 200))
 
@@ -1070,7 +481,7 @@ estimated_probs <- expand.grid(
   Gender = factor(0),
   Age = mean(data_stack$Age),
   Education_tri = factor(0),
-  Total_dep_2016 = mean(data_stack$Total_dep_2016),
+  Depression = mean(data_stack$Depression),
   Total_p = mean(data_stack$Total_p),
   status_prev = states) |>
   modelr::add_predictions(model = fit_3a, var = "pred", type = "probs")
@@ -1124,31 +535,31 @@ data_stack <- data_stack |>
 
 # Model 4: Additive time effects
 fit_4a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016 + Total_p + status_prev + wave, family = multinomial, 
+  status ~ Gender + Age + Education_tri + Depression + Total_p + status_prev + wave, family = multinomial, 
   data = data_stack, trace = FALSE)
 
 fit_4b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016 + Total_p + status_prev + wave, family = multinomial, 
+  status ~ Gender + Age + Education_tri + Depression + Total_p + status_prev + wave, family = multinomial, 
   data = data_stack |> mutate(status = relevel(status, ref = 2)), 
   trace = FALSE)
 
 # Model 5: State-specific time effects
 fit_5a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016 + Total_p + (status_prev * wave), family = multinomial, 
+  status ~ Gender + Age + Education_tri + Depression + Total_p + (status_prev * wave), family = multinomial, 
   data = data_stack, trace = FALSE)
 
 fit_5b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Total_dep_2016 + Total_p + (status_prev * wave), family = multinomial, 
+  status ~ Gender + Age + Education_tri + Depression + Total_p + (status_prev * wave), family = multinomial, 
   data = data_stack |> mutate(status = relevel(status, ref = 2)), 
   trace = FALSE)
 
 # Model 6: Full time interactions
 fit_6a <- nnet::multinom(
-  status ~ (Gender + Age + Education_tri + Total_dep_2016 + Total_p + status_prev) * wave, family = multinomial, 
+  status ~ (Gender + Age + Education_tri + Depression + Total_p + status_prev) * wave, family = multinomial, 
   data = data_stack, trace = FALSE)
 
 fit_6b <- nnet::multinom(
-  status ~ (Gender + Age + Education_tri + Total_dep_2016 + Total_p + status_prev) * wave, family = multinomial, 
+  status ~ (Gender + Age + Education_tri + Depression + Total_p + status_prev) * wave, family = multinomial, 
   data = data_stack |> mutate(status = relevel(status, ref = 2)), 
   trace = FALSE)
 ```
