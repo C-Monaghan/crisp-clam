@@ -26,6 +26,7 @@ tidy_output <- function(fit, multiplicative = FALSE) {
           term == "Total_p" ~ "Procrastination (2020)",
           term == "status_prev2" ~ "Previous state: MCI",
           term == "status_prev3" ~ "Previous state: Dementia",
+          term == "Age:Total_p" ~ "Age x Procrastination",
           term == "wave" ~ "Time",
           TRUE ~ term))
   } else {
@@ -39,6 +40,7 @@ tidy_output <- function(fit, multiplicative = FALSE) {
           term == "Total_p" ~ "Procrastination (2020)",
           term == "status_prev2" ~ "Previous state: MCI",
           term == "status_prev3" ~ "Previous state: Dementia",
+          # term == "Age:Total_p" ~ "Age x Procrastination",
           term == "wave" ~ "Time",
           term == "Gender1:wave" ~ "Gender & Time",
           term == "Age:wave" ~ "Age & Time",
