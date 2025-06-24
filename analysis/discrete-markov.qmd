@@ -39,7 +39,7 @@ theme_set(
       ))
 
 # Data -------------------------------------------------------------------------
-data <- read.csv(here::here("analysis/data/data.csv"))
+data <- read.csv(here::here("analysis/data/data_apathy.csv"))
 ```
 
 # Data Preparation
@@ -49,7 +49,7 @@ Before preparing the data, we want to create a vector of covariates that we are 
 ```{r covariates}
 cols <- c(
   "ID", "Gender", "Age", "Education_tri",
-  paste0("Total_dep_", seq(2016, 2022, by = 2)),
+  paste0("apathy_", seq(2016, 2022, by = 2)),
   "Total_p")
 ```
 
@@ -539,7 +539,7 @@ interaction_results <- rbind(tidy_output(fit_4a), tidy_output(fit_4b)) |>
       levels = c("NC - MCI", "MCI - NC", 
                  "NC - Dementia", "MCI - Dementia")),
     term = factor(
-      term, =
+      term,
       levels = c("Being female", "Age", 
                  "High school degree vs. No education",
                  "Further education vs. No education", "Depression",

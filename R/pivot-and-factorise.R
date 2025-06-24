@@ -11,7 +11,7 @@ pivot_and_factorise <- function(data, time_vary = FALSE) {
   if(time_vary == TRUE) {
     # Pivoting depression variable
     dep_scores <- data |>
-      select(ID, starts_with("Total_dep")) |>
+      select(ID, starts_with("apathy")) |>
       pivot_longer(
         cols = !ID,
         names_to = "remove",
@@ -20,7 +20,7 @@ pivot_and_factorise <- function(data, time_vary = FALSE) {
     
     # Pivoting whole dataset
     data <- data |>
-      select(!starts_with("Total_dep")) |>
+      select(!starts_with("apathy")) |>
       pivot_longer(
         cols = starts_with("cogfunction"),
         names_to = "wave",
