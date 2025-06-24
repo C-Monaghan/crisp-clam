@@ -1,0 +1,70 @@
+\begin{longtable}[]{@{}llll@{}}
+\caption{Frequencies (and transition probabilities) of cognitive status
+transitions from HRS waves.}\tabularnewline
+\toprule\noalign{}
+\textbf{2016} & & & \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\textbf{2016} & & & \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& NC & MCI & Dementia \\
+NC & (0.75) & (0.07) & (0.001) \\
+MCI & (0.09) & (0.06) & (0.01) \\
+Dementia & (0) & (0) & (0.02) \\
+\textbf{2018} & & & \\
+& NC & MCI & Dementia \\
+NC & (0.75) & (0.09) & (0) \\
+MCI & (0.07) & (0.03) & (0.02) \\
+Dementia & (0) & (0) & (0.03) \\
+\textbf{2020} & & & \\
+& NC & MCI & Dementia \\
+NC & (0.68) & (0.13) & (0.02) \\
+MCI & (0.05) & (0.05) & (0.01) \\
+Dementia & (0) & (0) & (0.05) \\
+\end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1290}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2177}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2177}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2177}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2177}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Intercept
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Gender
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Age
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+GED
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+NC - MCI & 0.114*** (0.113 - 0.114) & 0.941 (0.690 - 1.284) & 1.008**
+(1.002 - 1.014) & 0.446*** (0.360 - 0.551) \\
+NC - Dementia & 0.009*** (0.009 - 0.009) & 0.669*** (0.662 - 0.687) &
+1.023*** (1.010 - 1.035) & 0.295*** (0.289 - 0.302) \\
+MCI - NC & 9.008*** (8.986 - 9.030) & 1.061 (0.789 - 1.482) & 0.992**
+(0.986 - 0.997) & 2.46*** (1.829 - 2.759) \\
+MCI - Dementia & 0.13*** (0.129 - 0.130) & 0.708*** (0.678 - 0.740) &
+1.008 (0.995 - 1.021) & 0.646*** (0.630 - 0.662) \\
+& Further Education & Depression & Procrastination & Procrastination x
+Age \\
+NC - MCI & 0.310*** (0.264 - 0.363) & 1.147*** (1.067 - 1.233) &
+0.921*** (0.882 - 0.962) & 1.001*** (1.001 - 1.002) \\
+NC - Dementia & 0.068*** (0.068 - 0.068) & 1.150 (0.979 - 1.353) & 0.981
+(0.888 - 1.084) & 1.000 (0.888 - 1.084) \\
+MCI - NC & 3.240*** (2.789 - 3.762) & 0.872*** (0.811 - 0.937) &
+1.085*** (1.039 - 1.134) & 0.999*** (0.998 - 0.999) \\
+MCI - Dementia & 0.214*** (0.212 - 0.216) & 1.004 (0.852 - 1.184) &
+1.005 (0.952 - 1.168) & 0.999 (0.998 - 1.001) \\
+\end{longtable}
