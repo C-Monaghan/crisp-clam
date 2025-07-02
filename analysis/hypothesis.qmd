@@ -6,15 +6,20 @@ format:
     toc: false
 ---
 
-## Primary Hypothesis
+## Hypothesis 1
 
 We hypothesize that:
 
-- **H1:** Higher levels of procrastination are associated with:
-  - Increased risk of transitioning from Normal Cognition to MCI $(\beta = x, p < .05)$
-  - Increased risk of transitioning from MCI to Dementia $(\beta = y, p < .05)$
-  
+- **H0:** There are no group differences in procrastination scores between cognitive groups (normative cognitive function; MCI; Dementia).
+- **H1:** There are group differences in procrastination scores between cognitive groups (normative cognitive function; MCI; Dementia)
+
+## Hypothesis 2
+
+We hypothesize that:
+
 - **H0:** There is no association between procrastination and cognitive decline transitions
+- **H1:** Higher scores on a measure of procrastination are associated with:
+  - Increased risk of transitioning from normative cognitive function to MCI / dementia $(\beta = x, p < .05)$
+  - Increased risk of transitioning from MCI to Dementia $(\beta = y, p < .05)$
 
-
-In order to test this hypothesis we will be using a **discrete time Markov Model**
+In order to test our hypotheses we will be using both a **non-parametric ANOVA** and a post-hoc test to compare procrastination scores between cognitive groups, and a **discrete time Markov Model** to assess the association between procrastination and cognitive decline transitions.

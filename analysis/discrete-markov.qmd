@@ -39,7 +39,7 @@ theme_set(
       ))
 
 # Data -------------------------------------------------------------------------
-data <- read.csv(here::here("analysis/data/data_apathy.csv"))
+data <- read.csv(here::here("analysis/data/data.csv"))
 ```
 
 # Data Preparation
