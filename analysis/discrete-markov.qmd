@@ -584,21 +584,49 @@ design <- "
 
 interaction_results |>
   filter(!term %in% c("Previous state: MCI", "Previous state: Dementia")) |>
+  # Adding text labels
+  mutate(
+    label_pos = case_when(
+      stringr::str_detect(term, "Further") & 
+        stringr::str_detect(transition, "MCI - NC") ~ estimate - 0.5,
+      stringr::str_detect(term, "Further") ~ estimate - 0.5,
+      TRUE ~ estimate
+    ),
+    label_text = sprintf(
+    "<span style='line-height:3.5'>OR = %.3f<br><br>[%.3f, %.3f]</span>",
+    estimate, conf.low, conf.high)) |>
+  # Plotting
   ggplot(aes(x = estimate, y = transition, colour = colour)) +
   geom_vline(xintercept = 1, linetype = "dashed", color = "gray50") +
+  # Odds ratios
   ggstance::geom_pointrangeh(
     aes(xmin = conf.low, xmax = conf.high),
-    position = ggstance::position_dodgev(height = 0.5),
-    size = 1.25,
-    fatten = 3) +
+    position = ggstance::position_dodgev(height = 0.6),
+    size = 1,
+    fatten = 2) +
+  # Estimates and CIS
+  ggtext::geom_richtext(
+    aes(x = label_pos, label = label_text),
+    position = ggstance::position_dodge2v(height = 0.5),
+    hjust = 0,
+    size = 3,
+    fill = NA, label.colour = NA,
+    show.legend = FALSE) +
+  # Customization
   scale_colour_manual(values = c(
     "Positive" = "#0072B2", 
     "Negative" = "#E69F00", 
     "NS"       = "#B2BEB5")) +
-  labs(title = "Odds ratios (stationary model)",
+  # scale_x_continuous(expand = expansion(mult = 0.025, add = 0.025)) +
+  labs(# title = "Odds ratios (stationary model)",
        x = "Odds Ratio", y = "Predictor") +
   guides(colour = "none") +
-  ggh4x::facet_manual(~ term, scales = "free_x", design = design) +
+  ggh4x::facet_manual(
+    ~ term, scales = "free_x", 
+    design = design, labeller = labeller(
+     term = c("Depression" = "Apathy")
+    )) +
+  coord_cartesian(clip = "off") +
   theme_bw() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
@@ -751,7 +779,10 @@ ggplot(data = age_cohots, aes(x = Total_p, y = prob,
   labs(
     title = "Predicted transition probabilities for different age cohorts",
     x = "Procrastination", y = "Probability", colour = NULL) +
-  facet_grid(status ~ status_prev) +
+  facet_grid(status ~ status_prev, labeller = labeller(
+    status = c("Normal Cognition" = "Normal Cognitive Function"),
+    status_prev = c("Normal Cognition" = "Normal Cognitive Function")
+  )) +
   theme_bw() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),

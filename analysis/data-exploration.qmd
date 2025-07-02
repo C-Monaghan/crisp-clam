@@ -158,7 +158,7 @@ theme_minimal() +
 ## Reading in data {.unnumbered}
 
 ```{r data}
-data <- read.csv(here::here("analysis/data/data.csv")) 
+data <- read.csv(here::here("analysis/data/data_apathy.csv")) 
 ```
 
 # Dementia Dataset
