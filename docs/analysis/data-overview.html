@@ -20,7 +20,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -197,7 +251,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/data-final.html">Data</a></li><li class="breadcrumb-item"><a href="../analysis/data-overview.html">Data Overview</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Data Overview</h1>
+<div class="quarto-title-block"><div><h1 class="title">Data Overview</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -220,7 +274,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="cognitive-function-categories" class="level3">
 <h3 class="anchored" data-anchor-id="cognitive-function-categories">Cognitive Function Categories</h3>
 <ul>
-<li><strong>Normal Cognition:</strong> Individuals in this category show no significant signs of cognitive impairment and are able to function independently in daily activities.</li>
+<li><strong>Normative Cognitive Function:</strong> Individuals in this category show no significant signs of cognitive impairment and are able to function independently in daily activities.</li>
 <li><strong>Mild Cognitive Impairment (MCI):</strong> This stage reflects a slight but noticeable decline in cognitive abilities, such as memory or thinking skills, that goes beyond what would be expected with normal aging but does not yet interfere significantly with daily life.</li>
 <li><strong>Dementia:</strong> This classification is marked by more severe cognitive deficits, impacting memory, reasoning, and the ability to perform everyday tasks. Dementia encompasses various neurodegenerative conditions, with Alzheimer’s disease being the most common.</li>
 </ul>
@@ -229,26 +283,26 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="langa-weir-classifications" class="level2">
 <h2 class="anchored" data-anchor-id="langa-weir-classifications">Langa-Weir Classifications</h2>
-<p>For previous waves of HRS data (1995 - 2020) there is a researcher contributed dataset of dementia classifications <span class="citation" data-cites="langa2023">[@langa2023]</span>. Researchers have used this dataset to study the trajectories of cognitive aging, dementia risk, and related health outcomes in older adults. However, with the recent release of the 2022 HRS data, <strong>these classifications have yet to be updated</strong></p>
+<p>For previous waves of HRS data (1995 - 2020) there is a researcher contributed dataset of dementia classifications <span class="citation" data-cites="Langa2023">(<a href="#ref-Langa2023" role="doc-biblioref">Langa et al., 2023</a>)</span>. Researchers have used this dataset to study the trajectories of cognitive aging, dementia risk, and related health outcomes in older adults. However, with the recent release of the 2022 HRS data, <strong>these classifications have yet to be updated</strong></p>
 <section id="lwc2022-package" class="level3">
 <h3 class="anchored" data-anchor-id="lwc2022-package">LWC2022 Package</h3>
-<p>In order to address this we developed the <code>LWC2022</code> package <span class="citation" data-cites="Monaghan2024">[@Monaghan2024]</span> to replicate the methodology of <span class="citation" data-cites="langa2023">@langa2023</span>. This package automates the classification process, ensuring consistency with previous waves and providing researchers with an up-to-date resource for studying cognitive decline and dementia across all available HRS waves. <a href="#fig-lwc" class="quarto-xref">Figure&nbsp;1</a> illustrates the LWC workflow.</p>
-<div id="fig-lwc" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-lwc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../files/workflow.svg" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lwc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: LWC Workflow
-</figcaption>
-</figure>
-</div>
+<p>In order to address this we developed the <code>LWC2022</code> package <span class="citation" data-cites="Monaghan2024b">(<a href="#ref-Monaghan2024b" role="doc-biblioref">Monaghan et al., 2024</a>)</span> to replicate the methodology of <span class="citation" data-cites="Langa2023">Langa et al. (<a href="#ref-Langa2023" role="doc-biblioref">2023</a>)</span>. This package automates the classification process, ensuring consistency with previous waves and providing researchers with an up-to-date resource for studying cognitive decline and dementia across all available HRS waves.</p>
+
+
+<!-- -->
 
 
 </section>
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-Langa2023" class="csl-entry" role="listitem">
+Langa, K. M., Weir, D. R., Kabeto, M., &amp; Sonnega, A. (2023). <em>Langa-weir classification of cognitive function (1995-2020)</em>. Survey Research.
+</div>
+<div id="ref-Monaghan2024b" class="csl-entry" role="listitem">
+Monaghan, C., Andrade Moral, R. de, &amp; McHugh Power, J. (2024). <em>lwc2022: Langa-weir classification of cognitive function for 2022 HRS data</em>. <a href="https://c-monaghan.github.io/lwc2022/">https://c-monaghan.github.io/lwc2022/</a>
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -336,6 +390,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
     clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
@@ -677,7 +782,33 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span class="nav-page-text">Exploratory Data Analysis</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data Overview"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">bibliography:</span><span class="co"> ../manuscript/references.bib</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">csl:</span><span class="co"> ../manuscript/csl/apa.csl</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu"># Overview</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>The Health and Retirement Study (HRS) collects an extensive array of data related to cognitive health, physical well-being, economic status, and psychosocial factors. Among the information gathered, specific variables are used to assess and classify individuals into distinct categories of cognitive functioning. These classifications help to better understand the progression of cognitive decline, enabling researchers to track trends and identify factors that may influence cognitive health over time.</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cognitive Function Categories</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Normative Cognitive Function:** Individuals in this category show no significant signs of cognitive impairment and are able to function independently in daily activities.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Mild Cognitive Impairment (MCI):** This stage reflects a slight but noticeable decline in cognitive abilities, such as memory or thinking skills, that goes beyond what would be expected with normal aging but does not yet interfere significantly with daily life.</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Dementia:** This classification is marked by more severe cognitive deficits, impacting memory, reasoning, and the ability to perform everyday tasks. Dementia encompasses various neurodegenerative conditions, with Alzheimer's disease being the most common.</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>By tracking transitions between these categories, researchers can gain insights into the factors that contribute to cognitive decline and identify potential interventions to promote healthy aging.</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu"># Langa-Weir Classifications</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>For previous waves of HRS data (1995 - 2020) there is a researcher contributed dataset of dementia classifications <span class="co">[</span><span class="ot">@Langa2023</span><span class="co">]</span>. Researchers have used this dataset to study the trajectories of cognitive aging, dementia risk, and related health outcomes in older adults. However, with the recent release of the 2022 HRS data, **these classifications have yet to be updated**</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## LWC2022 Package</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>In order to address this we developed the <span class="in">`LWC2022`</span> package <span class="co">[</span><span class="ot">@Monaghan2024b</span><span class="co">]</span> to replicate the methodology of @Langa2023. This package automates the classification process, ensuring consistency with previous waves and providing researchers with an up-to-date resource for studying cognitive decline and dementia across all available HRS waves.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
