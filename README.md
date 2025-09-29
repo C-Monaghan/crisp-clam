@@ -5,11 +5,11 @@
 ## Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population
 
 - [Cormac Monaghan](https://c-monaghan.github.io/) • Maynooth University
+- [Rafael de Andrade Moral](https://rafamoral.github.io/) • Maynooth
+  University
 - [Michelle
   Kelly](https://www.ncirl.ie/About/A-Z-Staff-Directory/Staff/346) •
   National College of Ireland
-- [Rafael de Andrade Moral](https://rafamoral.github.io/) • Maynooth
-  University
 - [Joanna McHugh
   Power](https://www.maynoothuniversity.ie/people/joanna-mchugh-power) •
   Maynooth University
