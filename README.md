@@ -1,10 +1,8 @@
-# Procrastination as a Marker of Cognitive Decline: Evidence from
-Longitudinal Transitions in the Older Adult Population
 
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
-------------------------------------------------------------------------
+## Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population
 
 - [Cormac Monaghan](https://c-monaghan.github.io/) • Maynooth University
 - [Rafael de Andrade Moral](https://rafamoral.github.io/) • Maynooth
@@ -15,8 +13,6 @@ Longitudinal Transitions in the Older Adult Population
 - [Joanna McHugh
   Power](https://www.maynoothuniversity.ie/people/joanna-mchugh-power) •
   Maynooth University
-
-------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
