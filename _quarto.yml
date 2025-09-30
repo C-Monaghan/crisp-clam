@@ -28,19 +28,23 @@ website:
   repo-actions: [edit, issue]
   
   page-navigation: true
+  bread-crumbs: false
   
   navbar:
     pinned: true
-    background: primary
-    search: false
+    background: "#1D6996"
+    search: true
     
     left:
       - text: "Data"
         file: "analysis/data-final.qmd"
-      - text: "Analysis"
+      - text: "Hypotheses"
         file: "analysis/hypothesis.qmd"
+      - text: "Analysis"
+        file: "analysis/data-analysis.qmd"
       - text: "Manuscript"
-        file: "analysis/paper.qmd"
+        file: "analysis/manuscript.qmd"
+        
     right:
       - icon: github
         aria-label: github
@@ -63,34 +67,35 @@ website:
       style: docked
       background: dark
       contents: 
-        - section: "Hypothesis"
+        - section: "Analysis Plan"
           contents: 
-            - analysis/hypothesis.qmd
+            - analysis/data-analysis.qmd
           
         - section: "Models"
           contents:
-            - analysis/continous-markov.qmd
+            - analysis/kruskal-wallis.qmd
             - analysis/discrete-markov.qmd
             
     - title: "Empty space"
           
   page-footer: 
+    left:  |
+      Content {{< fa brands creative-commons >}} 2024–2025 by Cormac Monaghan, Rafael de Andrade Moral, Michelle Kelly, and Joanna McHugh Power<br>
+      All content licensed under a {{< fa brands creative-commons >}}
+      {{< fa brands creative-commons-by >}} 
+      [Creative Commons Attribution 4.0 International license (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
     right: |
       Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)<br>
       [View the source at {{< fa brands github >}} GitHub](https://github.com/C-Monaghan/crisp-clam)
 
 format:
   html:
-    shift-heading-level-by: 1
     theme:
       - zephyr
       - html/theme.scss
     toc: true
-    toc-depth: 3
     toc-title: On this page
-    html-math-method: katex
+    toc-location: right
     code-tools: true
     code-copy: true
-    code-block-bg: "#333A3F"
     highlight-style: monokai
-    fig-align: center

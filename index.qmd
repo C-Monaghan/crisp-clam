@@ -1,28 +1,19 @@
 ---
-title: "Procrastination and Dementia"
-author: 
-  - name: "Cormac Monaghan"
-    url: "https://c-monaghan.github.io/"
-    orcid: "https://orcid.org/0000-0001-9012-3060"
-    affiliation:
-      - "Hamilton Institute, Maynooth University, Ireland"
-      - "Department of Psychology, Maynooth University, Ireland"
-  - name: "Rafael de Andrade Moral"
-    url: "https://rafamoral.github.io/"
-    orcid: "https://orcid.org/0000-0002-0875-3563"
-    affiliation:
-      - "Department of Mathematics and Statistics, Maynooth University, Ireland"
-  - name: "Joanna McHugh Power"
-    orcid: "https://orcid.org/0000-0002-7387-3107"
-    affiliation: 
-      - "Department of Psychology, Maynooth University, Ireland"
+title: "Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population"
+author: "Cormac Monaghan, Rafael de Andrade Moral, <br>Michelle Kelly, and Joanna McHugh Power"
 format: 
   html:
     toc: false
-sidebar: false
+    code-tools: false
+    page-layout: full
 ---
 
 ### Abstract
 
-**This will come eventually**
+Cognitive decline is a global health concern, making the identification of early, modifiable risk factors essential. While apathy is a recognized prodromal marker, procrastination may also signal early executive dysfunction. We used longitudinal secondary data from the United States Health and Retirement Study among adults aged 60+ $(n = 549; \bar{x} =69.70; \sigma = 7.58)$. Cognitive function, procrastination, and a proxy measure of apathy were assessed. Transitions between normative cognitive function, mild cognitive impairment (MCI), and dementia were modeled using a discrete-time first-order Markov model. Procrastination scores were higher among individuals with MCI or dementia than those with normative cognitive function. Procrastination also interacted with age, disproportionately increasing the risk of decline in the oldest participants. Procrastination was associated with cognitive impairment and predicted transitions to MCI, suggesting it may serve as both an early behavioral marker and compounding risk factor. 
+
+### Code
+
+All the raw code and data for this paper is available in a [GitHub repository](https://github.com/C-Monaghan/crisp-clam).
+
 

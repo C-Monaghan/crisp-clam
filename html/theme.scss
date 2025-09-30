@@ -46,20 +46,15 @@ $headings-font-weight:        700 !default;
 
 /*-- scss:rules --*/
 
-// ul,
-// ol {
-//   font-family: $font-family-serif;
-// }
 
-pre.sourceCode {
-  font-size: 0.8em;
-}
-
-
+// Stop ALL CAPS in table headers
 thead th {
   text-transform: none;
 }
 
+div.sidebar-item-container .active {
+  color: $red;
+}
 
 // Footer stuff
 .nav-footer-left {
@@ -77,30 +72,4 @@ thead th {
 
 .nav-footer-left {
   flex-grow: 3;
-}
-
-
-// Slight bottom margin to output
-.cell-output {
-  margin: 0 0 1em;
-}
-
-// Remove margin on pre in output
-.cell-output pre {
-  margin-bottom: 0;
-  color: #ffffff;
-}
-
-// Format output and plain text blocks like code
-.cell-output, pre.text {
-  border: none;
-  padding: .4em;
-  background-color: $monokai-bg;
-  border: 1px solid $monokai-bg;
-  border-radius: .25rem;
-}
-
-pre.text {
-  color: #ffffff;
-  font-size: 0.8em;
 }

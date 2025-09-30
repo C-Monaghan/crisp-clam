@@ -50,3 +50,4 @@ rsconnect/
 
 # My stuff (for now)
 data-raw/
+**/*.quarto_ipynb

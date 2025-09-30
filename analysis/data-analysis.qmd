@@ -1,0 +1,56 @@
+---
+title: "Analysis Plan"
+format: 
+  html:
+    toc: false
+---
+
+## Cross sectional analysis
+
+To examine whether procrastination scores differed by cognitive status, we employed the **Kruskal–Wallis test**, a non-parametric alternative to one-way ANOVA. This test is appropriate when the assumption of homogeneity of variance is violated. The Kruskal–Wallis test evaluates whether the distribution of ranks differs across groups and is formally expressed as:
+
+$$
+H = \frac{n - 1}{n} \times \sum^k_{i = 1}\frac{n_i \times (\bar{R} - E_R)^2}{\sigma^2}
+$$
+
+where $k$ denotes the number of groups, $n_i$ the number of participants in group $i$, $n$ the total sample size, $\bar{R}$ the mean rank sum of each group, $E_R$ the expected value of the rankings and $\sigma^2$ the rank variance. Under the null hypothesis that all groups have the same distribution, $H$ approximately follows a $\chi^2$ distribution with $k-1$ degrees of freedom.
+
+## Longitudinal analysis
+
+To model transitions in cognitive states over time, we employed a **first order discrete-time Markov model**, a class of stochastic processes that satisfy the Markov property, which can be formally expressed as:
+
+$$
+P(X_{t+1} = j \; \vert \; X_t = i, X_{t-1} = i_{t-1}, \dots X_0 = i_0) = P(X_{t+1} = j \; \vert x_t = 1)
+$$
+
+This property asserts that the probability of transitioning from state $X_t = i$ to a future state $X_{t+1} = j$ depends only on the current state $X_t$, and not on the full history of preceding states.
+
+Unlike continuous-time models, discrete-time Markov models are not readily supported by a dedicated R package for deriving transition probabilities. Therefore, we implemented the model manually using multinomial logistic regression from the *nnet* package. This approach estimates the log-odds of transitioning to each non-reference state as a linear function of covariates, relative to a chosen reference state. For a system with $K$ cognitive states (with state $K$ as the reference), the model takes the form:
+
+$$
+log \left( \frac{P(Y = j \vert x)}{P(Y = k \vert x)} \right) = \beta_0 + \beta_j^Tx \qquad \text{for } j = 1, \dots K-1
+$$
+
+For non-reference states $j = 1, \dots, K - 1$
+
+$$
+P(Y = j \vert x) = \frac{e^{\beta_{0j} + \beta_j^Tx}}{1 + \sum^{k - 1}_{k = 1} e^{\beta_{0k} + \beta_k^Tx}}
+$$
+
+For the reference state $K$:
+
+$$
+P(Y = k \vert x) = \frac{1}{1 + \sum^{k - 1}_{k = 1} e^{\beta_{0k} + \beta_j^Tx }}
+$$
+
+Additional, to assess model fit and guide model selection for the covariates in the $\beta_j$ vectors, we conducted likelihood-ratio tests comparing full and reduced models. Such tests are defined as:
+
+$$
+D = 2 \times (\ell_{reduced} - \ell_{full})
+$$
+
+where $\ell_{full}$ and $\ell_{reduced}$ denote the log-likelihoods of the respective models. Under the null hypothesis that the full model does not represent an improved fit when compared to the reduced model, $D$ has an asymptotic $\chi^2$ distribution with degrees of freedom corresponding to the difference between the numbers of parameters estimated by the two models.
+
+
+
+

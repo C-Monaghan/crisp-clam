@@ -46,7 +46,9 @@ data <- read.csv(here::here("analysis/data/data.csv"))
 
 Before preparing the data, we want to create a vector of covariates that we are interested in using in our analysis
 
-```{r covariates}
+```{r}
+#| label: covariates
+#| 
 cols <- c(
   "ID", "Gender", "Age", "Education_tri",
   paste0("apathy_", seq(2016, 2022, by = 2)),
@@ -58,7 +60,9 @@ Following this, we can now use the `extract_years()` function to extract the cog
 - We will also impute some missing values `impute = TRUE` using logical reasoning (if a respondent has an NA value in 2018, but has a classification of "normal cognition" in 2020, then the missing 2018 value becomes "normal cognition").
 - We will also treat dementia as an absorbing state `absorbing = TRUE`.
 
-```{r extract-years}
+```{r}
+#| label: extract-years
+#| collapse: true
 data_stack <- data |> 
   extract_years(years = seq(2016, 2022, by = 2), impute = TRUE, absorbing = TRUE) |>
   na.omit()
@@ -70,14 +74,17 @@ head(data_stack)
 
 For each respondent we will now add in their relevant covariate data. Following this, we transform the data to long format and convert categorical variables to factors using the `pivot_and_factorise()` function. Additionally, we will fix the `Age` column to properly represent the age of the respondent at each time point
 
-```{r long_data}
+```{r}
+#| label: long_data
+#| collapse: true
 data_stack <- data_stack |>
+  # Join covariate data
   inner_join(data[, cols], by = "ID") |>
   # Removing baseline age below 60
   filter(Age - (2022 - 2016) >= 60) |>
   pivot_and_factorise(time_vary = TRUE) |>
   group_by(ID) |>
-  # ^ Make age time varying
+  # Make age time varying
   mutate(Age = Age - (2022 - as.numeric(as.character(wave))))
 
 head(data_stack)
@@ -85,7 +92,10 @@ head(data_stack)
 
 Finally, we will create a new variable `status_prev` that notes the cognitive status of the respondent in the previous wave $(t - 1)$. This will be done by using the `lag` function from the `dplyr` package.
 
-```{r stack-data}
+```{r}
+#| label: stack-data
+#| collapse: true
+#| 
 data_stack <- data_stack |>
   mutate(status_prev = lag(status), .after = status) |>
   filter(!is.na(Total_p)) |>
@@ -95,88 +105,7 @@ data_stack <- data_stack |>
 head(data_stack)
 ```
 
-# Transition frequencies
-
-We will now calculate the transition frequencies between cognitive states for each time period. We will use the `create_transition_table()` function to create a transition table for each time period. This will be done with the help of the `map()` function from the `purrr` package. Finally, to combine all the transition tables into one dataset, we will use the `create_transition_dataset()` function.
-
-```{r transition-tables}
-# Creating a table dataset
-table_data <- data |>
-  extract_years(seq(2016, 2022, by = 2)) |>
-  rename_with(~ gsub("cogfunction", "HRS_", .)) |>
-  mutate(
-    across(c(HRS_2016:HRS_2022), ~ factor(.x, levels = c("Normal Cognition", "MCI", "Dementia")))
-  )
-
-# Creating transition frequencies ---------------------------------------------
-## These are the time periods we are interested in
-time_periods <- list(
-  c("2016", "2018"),
-  c("2018", "2020"), 
-  c("2020", "2022")
-)
-
-# Applying function
-transition_results <- purrr::map(time_periods, ~ create_transition_table(.x[1], .x[2]))
-names(transition_results) <- purrr::map_chr(time_periods, ~ paste(.x[2], .x[1], sep = "-"))
-
-### Creating one dataset
-transition_frequencies <- time_periods |>
-  create_transition_dataset(transition_results = transition_results)
-
-head(transition_frequencies)
-```
-
-## Observed transition matrix
-
-The probability distribution of transitions from one state to another can be represented into a transition matrix $P = (p_{ij})_{i,j}$ where each element of position $(i, j)$ represents the transition probability $p_{ij}$. 
-
-In order to create this matrix we will use both the `create_transitions()` and `observed_transition_matrix()` functions.
-
-```{r observed-matrix}
-## Creating observed transition matrix -----------------------------------------
-transition_matrix_observed <- data |>
-  extract_years(seq(2016, 2022, by = 2)) |>
-  create_transitions() |>
-  observed_transition_matrix()
-
-transition_matrix_observed
-```
-
-## Visualisation
-
-Let's visualize both the transition frequencies (@fig-frequencies) and matrix (@fig-matrix).
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| fig-width: 12
-#| fig-height: 10
-#| label: fig-frequencies
-#| fig-cap: "Transition frequencies between cognitive states for each time period."
-
-fig_1 <- transition_frequencies |> tran_stack_graph()
-fig_2 <- transition_frequencies |> tran_heat_map()
-
-fig_1 / fig_2
-```
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| fig-width: 12
-#| label: fig-matrix
-#| fig-cap: "Observed transition matrix between cognitive states for the years 2016 - 2022." 
-
-fig_3 <- transition_matrix_observed |>
-  reshape_matrix() |>
-  plot_transition_matrix()
-
-fig_3
-```
-
 # Modelling
-
 ## Markov Process Fundamentals
 
 Discrete-time Markov models belong to a class of stochastic processes that satisfy the **Markov property**, which can be formally expressed as:
@@ -187,23 +116,6 @@ $$ {#eq-markov}
 
 This property establishes that the future state $X_{t+1}$ depends only on the current state $X_t$, not on the entire history of states.
 
-### Transition Probability Matrix
-
-For our three-state system (Normal Cognition, Mild Cognitive Impairment [MCI], Dementia), the transition matrix $P$ captures all possible transition probabilities:
-
-$$
-P = \begin{bmatrix} 
-p_{11} & p_{12} & p_{13} \\
-p_{21} & p_{22} & p_{23} \\
-p_{31} & p_{32} & p_{33} \\
-\end{bmatrix}
-$$ {#eq-t-matrix}
-
-where:
-
-- $p_{ij} = P(X_{t+1} = j \vert X_t = i)$ represents the probability of transitioning from state $i$ to state $j$.
-- Each row sums to 1, $\sum^3_{j=1} p_{ij} = 1 \quad  \forall_i \in \{1, 2, 3\}$
-
 ### Multinomial Logistic Regression Formulation
 
 We model the transition probabilities using **multinomial logistic regression**, where the log-odds of each transition relative to a reference state are linear functions of covariates.
@@ -211,7 +123,7 @@ We model the transition probabilities using **multinomial logistic regression**,
 For a system with $K$ states (using state $K$ as reference), we have:
 
 $$
-log \left( \frac{P(Y = j \vert x)}{P(Y = k \vert x)} \right) = \beta_{j0} + \beta_j^Tx \qquad \text{for } j = 1, \dots K-1
+log \left( \frac{P(Y = j \vert x)}{P(Y = k \vert x)} \right) = \beta_0 + \beta_j^Tx \qquad \text{for } j = 1, \dots K-1
 $$ {#eq-multinomial}
 
 For non-reference states $j = 1, \dots, K - 1$
@@ -226,18 +138,7 @@ $$
 P(Y = k \vert x) = \frac{1}{1 + \sum^{k - 1}_{k = 1} e^{\beta_{0k} + \beta_j^Tx }}
 $$ {#eq-reference}
 
-### Time-Homogeneous Approach
-
-Our implementation assumes time-homogeneous transitions, but the framework can be extended to time-varying probabilities:
-
-$$
-P^{(t)} = \begin{bmatrix} 
-p_{11}^{(t)} & p_{12}^{(t)} & \cdots & p_{1n}^{(t)} \\
-p_{21}^{(t)} & p_{22}^{(t)} & \cdots & p_{2n}^{(t)} \\
-\vdots & \vdots & \ddots & \vdots \\
-p_{n1}^{(t)} & \cdots & \cdots & p_{nn}^{(t)} \\
-\end{bmatrix}
-$$ {#eq-non-stationary}
+### Absorbing State Specification
 
 Our primary analysis assumes the transition matrix remains fixed:
 
@@ -245,9 +146,7 @@ $$
 P^{(t)} \equiv P \qquad \forall \; t
 $$ {#eq-assumption}
 
-### Absorbing State Specification
-
-We model Dementia as an absorbing state:
+However, we model Dementia as an absorbing state:
 
 $$
 p_{3j} = \begin{cases} 
@@ -265,273 +164,37 @@ p_{21} & p_{22} & p_{23} \\
 \end{bmatrix}
 $$ {#eq-t-matrix-constrained}
 
-## Stationary model
+## Our model
 
-We estimate three progressively complex stationary models using `nnet::multinom()`
-
-```{r model-fitting}
-#| code-fold: true
-#| code-summary: "Check out my models"
-#| 
-# Baseline model (only gender; reference: NC)
-fit_1a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression, 
-  family = multinomial, 
-  data = data_stack, trace = FALSE)
-
-# Baseline model (only gender; reference: MCI)
-fit_1b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression, 
-  family = multinomial, 
-  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
-  trace = FALSE)
-
-# With procrastination (reference: NC)
-fit_2a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p, 
-  family = multinomial, 
-  data = data_stack, trace = FALSE)
-
-# With procrastination (reference: MCI)
-fit_2b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p, 
-  family = multinomial, 
-  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
-  trace = FALSE)
-
-# Full model with previous state (reference NC)
-fit_3a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p + status_prev, 
-  family = multinomial, 
-  data = data_stack, trace = FALSE)
-
-# Full model with previous state (reference MCI)
-fit_3b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p + status_prev, 
-  family = multinomial, 
-  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
-  trace = FALSE)
-
-# Full model with interaction (reference NC)
-fit_4a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p + (Total_p * Age) + status_prev, 
-  family = multinomial, 
-  data = data_stack, trace = FALSE)
-
-# Full model with interaction (reference MCI)
-fit_4b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p + (Total_p * Age) + status_prev, 
-  family = multinomial, 
-  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
-  trace = FALSE)
-```
-
-### Model comparison
-
-We evaluate model improvement (@tbl-stationary-comparison) using likelihood ratio tests:
-
-$$
-D = -2 \times \ell_{\text{reduced}} - \ell_{\text{full}}
-$$ {#eq-liklihood}
+As mentioned, we estimate our Markov model using `nnet::multinom()`
 
 ```{r}
-#| label: tbl-stationary-comparison
-#| tbl-cap: "Likelihood ratio test for stationary models"
-#| tbl-cap-location: bottom
+#| label: model-fit
 
-anova(fit_1a, fit_2a, fit_3a, fit_4a) |>
-  mutate(
-    Model = c("Baseline", 
-              "Procrastination", 
-              "Procrastination + Previous Status",
-              "Interaction Model"),
-    `Resid. Dev`= round(`Resid. Dev`, digits = 3),
-    `LR stat.` = round(`LR stat.`, digits = 3),
-    `Pr(Chi)` = round(`Pr(Chi)`, digits = 3)
-    ) |>
-  DT::datatable(
-    options = list(
-      pageLength = 4,
-      dom = "t",
-      ordering = FALSE,
-      columnDefs = list(list(className = "dt-center", targets = "_all"))
-    ),
-    rownames = FALSE
-  )
+fit_a <- nnet::multinom(
+  status ~ Gender + Education_tri + Depression + (Total_p * Age) + status_prev, 
+  family = multinomial, 
+  data = data_stack, trace = FALSE)
+
+fit_b <- nnet::multinom(
+  status ~ Gender + Education_tri + Depression + (Total_p * Age) + status_prev, 
+  family = multinomial, 
+  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
+  trace = FALSE)
 ```
-
-::: {.panel-tabset .nav-pills}
-## Non-interaction model
 
 ### Estimated parameters
 
-Below we present the estimated parameters for the stationary model (fit 3) (@tbl-stationary-output). We will transform the estimates to odds ratios and colour them based on significance.
+Below we present the estimated parameters for the interaction model (@tbl-interaction-output). We will transform the estimates to odds ratios and colour them based on significance.
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| label: tbl-stationary-output
-#| tbl-cap: "Estimated parameters for the stationary model"
-#| tbl-cap-location: bottom
-
-stationary_results <- rbind(tidy_output(fit_3a), tidy_output(fit_3b)) |>
-  mutate(
-    # Mutating to factors
-    transition = factor(
-      transition, 
-      levels = c("NC - MCI", "MCI - NC", 
-                 "NC - Dementia", "MCI - Dementia")),
-    term = factor(
-      term, 
-      levels = c("Being female", "Age", "High school degree vs. No education",
-                 "Further education vs. No education", "Depression",
-                 "Procrastination (2020)", "Previous state: MCI", 
-                 "Previous state: Dementia"))
-    )
-
-stationary_results |>
-  mutate(across(c(estimate, conf.low, conf.high), ~ round(x = ., digits = 3))) |>
-  DT::datatable(
-    options = list(
-      pageLength = 6,
-      dom = "tip",
-      ordering = FALSE,
-      columnDefs = list(list(className = "dt-center", targets = "_all"))
-    ),
-    rownames = FALSE
-  )
-```
-
-### Model visualisation
-
-Let's visualize the estimated odds ratios (@fig-odds-ratio) and the predicted transition probabilities (@fig-model-predictions) for the stationary model .
-
-```{r}
-#| message: false
-#| warning: false
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| fig-width: 12
-#| label: fig-odds-ratio
-#| fig-cap: "Estimated odds ratios for the stationary model."
-
-fig_4a <- stationary_results |>
-  filter(!term %in% c("Previous state: MCI", "Previous state: Dementia")) |>
-  ggplot(aes(x = estimate, y = transition, colour = colour)) +
-  geom_vline(xintercept = 1, linetype = "dashed", color = "gray50") +
-  ggstance::geom_pointrangeh(
-    aes(xmin = conf.low, xmax = conf.high),
-    position = ggstance::position_dodgev(height = 0.5),
-    size = 1.25,
-    fatten = 3) +
-  scale_colour_manual(values = c(
-    "Positive" = "#0072B2", 
-    "Negative" = "#E69F00", 
-    "NS"       = "#B2BEB5")) +
-  labs(title = "Odds ratios (stationary model)",
-       x = "Odds Ratio", y = "Predictor") +
-  guides(colour = "none") +
-  facet_wrap(~ term, scales = "free_x") +
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    axis.title = element_text(size = 12, face = "bold"),
-    strip.text = element_text(size = 10, face = "bold"),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank())
-
-fig_4a
-```
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| fig-width: 12
-#| label: fig-model-predictions
-#| fig-cap: "Predicted transition probabilities from the stationary model."
-#| 
-## Making a prediction dataset -------------------------------------------------
-pred_data <- expand.grid(
-  Gender = factor(0),
-  Age = mean(data_stack$Age),
-  Education_tri = factor(0),
-  Depression = mean(data_stack$Depression, na.rm = TRUE),
-  status_prev = levels(data_stack$status_prev),
-  Total_p = seq(0, 60, length = 200))
-
-## Plotting predictions
-fig_4b <- pred_data |>
-  modelr::add_predictions(model = fit_3a, var = "pred", type = "probs") |>
-  tidy_predictions() |>
-  plot_predictions_stationary(variable = Total_p, x_axis = "Total Procrastination")
-
-fig_4b
-```
-
-### Estimated transition matrix
-
-Finally, we can compare the observed and predicted transition matrices. We will use the estimated probabilities from the model to fill in the transition matrix.
-
-```{r estimated-matrix}
-# Get all unique states
-names <- c("Normal Cognition", "MCI", "Dementia")
-states <- sort(unique(data_stack$status))
-n_states <- length(states)
-
-# Create empty transition matrix
-transition_matrix_estimated <- matrix(
-  0, nrow = n_states, ncol = n_states,
-  dimnames = list(paste("From", names), paste("To", names))
-  )
-
-# Getting estimated probabilities
-estimated_probs <- expand.grid(
-  Gender = factor(0),
-  Age = mean(data_stack$Age),
-  Education_tri = factor(0),
-  Depression = mean(data_stack$Depression, na.rm = TRUE),
-  Total_p = mean(data_stack$Total_p),
-  status_prev = states) |>
-  modelr::add_predictions(model = fit_3a, var = "pred", type = "probs")
-
-# Filling in matrix
-for(i in 1:n_states) {
-  transition_matrix_estimated[i, ] <- estimated_probs$pred[i, ]
-}
-
-transition_matrix_estimated |> round(digits = 3)
-```
-
-Let's plot this and then compare with our observed matrix
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| fig-width: 12
-#| label: fig-matrix-comparison
-#| fig-cap: "Comparison of observed and estimated transition matrices."
-
-fig_5 <- transition_matrix_estimated |>
-  reshape_matrix() |>
-  plot_transition_matrix(observed = FALSE)
-
-fig_3 + fig_5 + plot_layout(axis_titles = "collect", guides = "collect")
-```
-
-## Interaction model
-
-### Estimated parameters
-
-Below we present the estimated parameters for the interaction model (fit 4; @tbl-interaction-output). We will transform the estimates to odds ratios and colour them based on significance.
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
 #| label: tbl-interaction-output
 #| tbl-cap: "Estimated parameters for the interaction model"
 #| tbl-cap-location: bottom
+#| code-fold: true
+#| code-summary: "Check out my code"
 
-interaction_results <- rbind(tidy_output(fit_4a), tidy_output(fit_4b)) |>
+interaction_results <- rbind(tidy_output(fit_a), tidy_output(fit_b)) |>
   mutate(
     # Mutating to factors
     transition = factor(
@@ -566,14 +229,14 @@ interaction_results |>
 Let’s visualize the estimated odds ratios (@fig-odds-ratio-interaction) and predicted transition probabilities (@fig-interaction-predictions) for our interaction model.
 
 ```{r}
-#| message: false
-#| warning: false
-#| code-fold: true
-#| code-summary: "Check out my code"
+#| label: fig-odds-ratio-interaction
 #| fig-width: 12
 #| fig-height: 10
-#| label: fig-odds-ratio-interaction
+#| code-fold: true
+#| code-summary: "Check out my code"
 #| fig-cap: "Estimated odds ratios for the interaction model."
+#| message: false
+#| warning: false
 
 # Design matrix for faceting
 design <- "
@@ -638,13 +301,13 @@ interaction_results |>
 ```
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| warning: false
+#| label: fig-interaction-predictions
 #| fig-width: 12
 #| fig-height: 10
-#| label: fig-interaction-predictions
+#| code-fold: true
+#| code-summary: "Check out my code"
 #| fig-cap: "Predicted transition probabilities from the interaction model."
+#| warning: false
 
 # Making a new predicted dataset
 pred_data <- expand.grid(
@@ -679,7 +342,7 @@ data_plot <- data_stack |>
 # Plotting interaction effect ----------------------------------------------
 pred_data |>
   # Adding predictions
-  modelr::add_predictions(model = fit_4a, var = "pred", type = "probs") |>
+  modelr::add_predictions(model = fit_a, var = "pred", type = "probs") |>
   tidy_predictions() |>
   filter(status_prev %in% c("Normal Cognition", "MCI") & 
          status %in%  c("Normal Cognition", "MCI")) |>
@@ -719,13 +382,13 @@ pred_data |>
 Finally, (@fig-interaction-age-predictions) shows the the predicted transition probabilities for different age cohorts. 
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| warning: false
+#| label: fig-interaction-age-predictions
 #| fig-width: 12
 #| fig-height: 8
-#| label: fig-interaction-age-predictions
+#| code-fold: true
+#| code-summary: "Check out my code"
 #| fig-cap: "Predicted transition probabilities for different age cohorts."
+#| warning: false
 
 # Create predictions with age info
 age_cohots <- expand.grid(
@@ -735,7 +398,7 @@ age_cohots <- expand.grid(
   Depression = mean(data_stack$Depression, na.rm = TRUE),
   status_prev = levels(data_stack$status_prev),
   Total_p = seq(0, 60, length = 200)) |>
-  modelr::add_predictions(model = fit_4a, var = "pred", type = "probs") |>
+  modelr::add_predictions(model = fit_a, var = "pred", type = "probs") |>
   tidy_predictions() |>
   filter(status_prev %in% c("Normal Cognition", "MCI") &
          status %in%  c("Normal Cognition", "MCI")) |>
@@ -777,11 +440,11 @@ ggplot(data = age_cohots, aes(x = Total_p, y = prob,
     "90"    = 1.5,
     "Other" = 0.5)) +
   labs(
-    title = "Predicted transition probabilities for different age cohorts",
+    # title = "Predicted transition probabilities for different age cohorts",
     x = "Procrastination", y = "Probability", colour = NULL) +
   facet_grid(status ~ status_prev, labeller = labeller(
-    status = c("Normal Cognition" = "Normal Cognitive Function"),
-    status_prev = c("Normal Cognition" = "Normal Cognitive Function")
+    status = c("Normal Cognition" = "Normative Cognitive Function"),
+    status_prev = c("Normal Cognition" = "Normative Cognitive Function")
   )) +
   theme_bw() +
   theme(
@@ -793,595 +456,3 @@ ggplot(data = age_cohots, aes(x = Total_p, y = prob,
     legend.title = element_text(size = 10, face = "bold"),
     legend.position = "none")
 ```
-
-:::
-
-## Non-stationary model
-
-We can also estimate a non-stationary model (@eq-non-stationary) by incorporating time `(wave)` into our model. This model allows for time-varying transition probabilities $p^{(t)}_{ij}$.
-
-We estimate three progressively complex non-stationary models:
-
-- Additive time effects `(fit_4)`: Baseline covariates + wave
-- State-specific time effects `(fit_5)`: Interaction between previous state and wave
-- Full time interactions `(fit_6)`: All covariates interacting with wave
-
-```{r non-stationary}
-#| code-fold: true
-#| code-summary: "Check out my models"
-
-## Small processing to fix wave column
-data_stack <- data_stack |>
-  mutate(wave = case_when(
-    wave == "2016" ~ 1,
-    wave == "2018" ~ 2,
-    wave == "2020" ~ 3,
-    wave == "2022" ~ 4
-  ))
-
-# Model 5: Additive time effects
-fit_5a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p + (Total_p * Age) +  status_prev + wave, family = multinomial, 
-  data = data_stack, trace = FALSE)
-
-fit_5b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p + (Total_p * Age) + status_prev + wave, family = multinomial, 
-  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
-  trace = FALSE)
-
-# Model 6: State-specific time effects
-fit_6a <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p + (Total_p * Age) + (status_prev * wave), family = multinomial, 
-  data = data_stack, trace = FALSE)
-
-fit_6b <- nnet::multinom(
-  status ~ Gender + Age + Education_tri + Depression + Total_p + (Total_p * Age) + (status_prev * wave), family = multinomial, 
-  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
-  trace = FALSE)
-
-# Model 7: Full time interactions
-fit_7a <- nnet::multinom(
-  status ~ (Gender + Age + Education_tri + Depression + Total_p + (Total_p * Age) + status_prev) * wave, family = multinomial, 
-  data = data_stack, trace = FALSE)
-
-fit_7b <- nnet::multinom(
-  status ~ (Gender + Age + Education_tri + Depression + Total_p + (Total_p * Age) + status_prev) * wave, family = multinomial, 
-  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
-  trace = FALSE)
-```
-
-### Model comparison
-
-Again, we will evaluate model improvement using likelihood ratio tests (@eq-liklihood; @tbl-non-stationary-comparison). However, this time, we will also compare the best fitted non-stationary models `fit_3`.
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| label: tbl-non-stationary-comparison
-#| tbl-cap: "Likelihood ratio test for non-stationary models"
-#| tbl-cap-location: bottom
-
-# Fit statistics
-models <- list(
-  "Interaction" = fit_4a,
-  "Additive Time" = fit_5a,
-  "State-Time Interaction" = fit_6a,
-  "Full Interactions" = fit_7a
-)
-
-# Create comparison table
-comparison_table <- purrr::map_dfr(models, broom::glance, .id = "Model") |>
-  select(edf:AIC) |>
-  mutate(across(where(is.numeric), \(x) round(x, digits = 1)))
-
-# Outputting as table
-anova(fit_4a, fit_5a, fit_6a, fit_7a) |>
-  mutate(
-    Model = c("Interaction", "Additive", "State-Time Interactions", "Full Interactions"),
-    `Resid. Dev` = round(`Resid. Dev`, digits = 3),
-    `LR stat.` = round(`LR stat.`, digits = 3),
-    `Pr(Chi)` = round(`Pr(Chi)`, digits = 3)
-    ) |>
-  cbind(comparison_table) |>
-  DT::datatable(
-    options = list(
-      pagelength = 4,
-      dom = "t",
-      ordering = FALSE,
-      columnDefs = list(list(className = 'dt-center', targets = "_all"))
-    ),
-    rownames = FALSE
-  )
-```
-
-**This is interesting!! Looks like adding in time as an additive term improved things. However, having full time interactions is better than having state-time interactions**
-
-::: {.panel-tabset .nav-pills}
-## Additive Model
-
-### Estimated parameters
-
-Key coefficients from the selected non-stationary model `fit_4`
-
-```{r non-stationary-output}
-additive_results <- rbind(tidy_output(fit_5a), tidy_output(fit_5b))
-
-additive_results |>
-  mutate(across(c(estimate, conf.low, conf.high), ~ round(x = ., digits = 3))) |>
-  DT::datatable(
-    options = list(
-      pageLength = 6,
-      ordering = FALSE,
-      columnDefs = list(list(className = "dt-center", targets = "_all"))
-    ),
-    rownames = FALSE,
-    colnames = c("Transition", "Predictor", "Estimate", "Standard Error",
-                 "Statistic", "p-val", "Lower CI", "Upper CI")
-  )
-```
-
-### Model visualisation
-
-Let's visualize the predicted transition probabilities from the non-stationary model.
-
-- @fig-non-stationary-age shows the predicted transition probabilities for age
-- @fig-non-stationary-depression shows the predicted transition probabilities for depression
-- @fig-non-stationary-education shows the predicted transition probabilities for per education level
-- @fig-non-stationary-procrastination shows the predicted transition probabilities for procrastination
-
-::: {.panel-tabset .nav-pills}
-
-## Age
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check our my code"
-#| fig-width: 10
-#| fig-height: 8
-#| label: fig-non-stationary-age
-#| fig-cap: "Predicted transition probabilities from the non-stationary model (for age)."
-#| 
-
-create_additive_predictions(data = data_stack, model = fit_5a, var = "Age", var_seq = seq(50, 97, by = 5)) |>
-  plot_additive_predictions(var = "Age", x_label = "Age", subtitle = "By Age")
-
-```
-
-## Depression
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check our my code"
-#| fig-width: 10
-#| fig-height: 8
-#| label: fig-non-stationary-depression
-#| fig-cap: "Predicted transition probabilities from the non-stationary model (for depression)."
-#| 
-
-create_additive_predictions(data = data_stack, model = fit_5a, var = "Depression", var_seq = seq(0, 8, by = 1)) |>
-  plot_additive_predictions(var = "Depression", x_label = "Depression", subtitle = "By depression")
-
-```
-
-## Education Level
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check our my code"
-#| fig-width: 10
-#| fig-height: 8
-#| label: fig-non-stationary-education
-#| fig-cap: "Predicted transition probabilities from the non-stationary model (for having a high school degree)."
-
-create_additive_predictions(data = data_stack, model = fit_5a, var = "Education_tri", var_seq = factor(c(0:2)), hold_constant = list(Gender = factor(0))) |>
-  plot_additive_predictions(var = "Education_tri", x_label = "Education", subtitle = "By education level") +
-  geom_point(size = 2) +
-  scale_x_continuous(breaks = c(0, 1, 2), labels = c("No Education", "High School", "Further Education")) +
-  theme(axis.text.x = element_text(size = 8, angle = 60, vjust = 0.90, hjust = 1))
-```
-
-## Procrastination
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check our my code"
-#| fig-width: 10
-#| fig-height: 8
-#| label: fig-non-stationary-procrastination
-#| fig-cap: "Predicted transition probabilities from the non-stationary model (for procrastination)."
-#| 
-
-create_additive_predictions(data = data_stack, model = fit_5a, var = "Total_p", var_seq = seq(0, 60, by = 1)) |>
-  plot_additive_predictions(var = "Total_p", x_label = "Procrastination", subtitle = "By procrastination")
-
-```
-
-## Interaction
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check our my code"
-#| fig-width: 12
-#| fig-height: 10
-#| label: fig-non-stationary-interaction
-#| fig-cap: "Predicted transition probabilities from the non-stationary model (interaction effect)."
-
-# Making prediction dataset ----------------------------------------------------
-pred_data <- expand.grid(
-  Gender = factor(0),
-  Age = c(62:97),
-  Education_tri = factor(0),
-  Depression = mean(data_stack$Depression),
-  status_prev = levels(data_stack$status_prev),
-  Total_p = seq(0, 60, length = 200),
-  wave = c(2:4)
-) |>
-  modelr::add_predictions(model = fit_5a, var = "pred", type = "prob") |>
-  tidy_predictions() |>
-  filter(status_prev != "Dementia", status != "Dementia") |>
-  mutate(label = case_when(
-    Age %in% c(70, 80, 90) ~ as.character(Age), 
-    TRUE ~ "Other"
-  ))
-
-# For adding age labels --------------------------------------------------------
-label_data <- pred_data |>
-  filter(Age %in% c(70, 80, 90)) |>
-  group_by(status_prev, Age) |>
-  filter(Total_p == max(Total_p)) |>
-  ungroup()
-  
-pred_data |>
-  ggplot(aes(x = Total_p, y = prob, 
-             group = interaction(Age, status_prev, status),
-             colour = label)) +
-  geom_line(aes(linewidth = label)) +
-  ggrepel::geom_text_repel(
-    data = label_data,
-    aes(label = paste0("Age ", Age), colour = as.character(Age)),
-    direction = "y", nudge_x = 4, hjust = 0,
-    segment.size = 1, segment.colour = "grey50",
-    size = 2.5, show.legend = FALSE) +
-  scale_x_continuous(
-    breaks = seq(0, 60, by = 10), expand = expansion(mult = c(0, 0.2)),
-    sec.axis = sec_axis( ~., name = "Previous State", breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis( ~ ., name = "Current State", breaks = NULL, labels = NULL)) +
-  scale_colour_manual(values = c(
-    "70"    = "#E69F00", 
-    "80"    = "#56B4E9", 
-    "90"    = "#009E73",
-    "Other" = "grey80")) +
-  scale_linewidth_manual(values = c(
-    "70"    = 1.5, 
-    "80"    = 1.5, 
-    "90"    = 1.5,
-    "Other" = 0.5)) +
-  labs(
-    title = "Predicted transition probabilities for different age cohorts",
-    subtitle = "Across time",
-    x = "Procrastination", y = "Probability", colour = NULL) +
-  facet_grid(status ~ status_prev + wave, labeller = labeller(
-    wave = c("2" = "2016 - 2018", "3" = "2018 - 2020", "4" = "2020 - 2022"),
-  )) +
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    plot.subtitle = element_text(hjust = 0.5, size = 14, face = "bold"),
-    axis.title = element_text(size = 12, face = "bold"),
-    strip.text = element_text(size = 9, face = "bold"),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.position = "none")
-
-```
-
-
-:::
-
-### Estimated transition matrices
-
-@fig-non-stationary-matrix-plot shows the estimated time-varying transition matrices
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| fig-width: 12
-#| label: fig-non-stationary-matrix-plot
-#| fig-cap: "Estimated time-varying transition matrices."
-
-# Create prediction grid for each time point
-time_points <- unique(data_stack$wave)
-state_names <- c("Normal Cognition", "MCI", "Dementia")
-
-# Get matrices for all time points
-time_varying_matrices <- purrr::map(
-  setNames(time_points, paste(time_points, "Years")),
-  ~ get_time_varying_matrix(fit_4a, .x)
-)
-
-# Converting into a tidy data frame
-non_stationary_matrices <- purrr::imap_dfr(
-  time_varying_matrices,
-  ~ as.data.frame(.x) |> 
-    tibble::rownames_to_column("From") |> 
-    pivot_longer(-From, names_to = "To", values_to = "probability") |> 
-    mutate(Time = .y),
-  .id = "Time_point"
-) |> 
-  mutate(
-    From = factor(From, levels = state_names),
-    To = factor(To, levels = rev(state_names)),
-    Time_point = forcats::fct_inorder(Time_point)
-  )
-
-# Plotting 
-non_stationary_matrices |>
-ggplot(aes(x = From, y = To, fill = probability)) +
-  geom_tile(color = "white", linewidth = 0.5) +
-  geom_text(
-    aes(label = format(round(probability, 3), nsmall = 3)),
-    size = 4.5, 
-    color = "#212427",
-    fontface = "bold") +
-    colorspace::scale_fill_continuous_diverging(
-    palette = "Blue-Red 3", mid = 0.50, alpha = 0.5, 
-    limits = c(0, 1), name = "Transition \nProbability") +
-  labs(
-    title = "Estimated Time-Varying Transition Matrices",
-    subtitle = "Showing changes in transition probabilities over time",
-    x = "Previous State (t-1)",
-    y = "Next State (t)",
-    fill = "Probability"
-  ) +
-  facet_wrap(~ Time_point, ncol = 3, labeller = labeller(
-    Time_point = function(x){
-      case_when(x == "2 Years" ~ "2018",
-                x == "3 Years" ~ "2020",
-                x == "4 Years" ~ "2022")
-    })) +
-  theme(
-    axis.text = element_text(size = 10),
-    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-    legend.position = "right",
-    legend.text = element_text(size = 9),
-    panel.grid = element_blank()
-  )
-```
-
-## Multiplicative Model
-
-### Estimated parameters
-
-Key coefficients from the selected non-stationary model `fit_6`
-
-```{r multiplicative-output}
-multiplicative_output <- rbind(
-  tidy_output(fit_7a, multiplicative = TRUE),
-  tidy_output(fit_7b, multiplicative = TRUE))
-
-multiplicative_output |>
-  mutate(across(c(estimate, conf.low, conf.high), ~ round(x = ., digits = 3))) |>
-  DT::datatable(
-    options = list(
-      pageLength = 6,
-      ordering = FALSE,
-      columnDefs = list(list(className = "dt-center", targets = "_all"))
-    ),
-    rownames = FALSE,
-    colnames = c("Transition", "Predictor", "Estimate", "Standard Error",
-                 "Statistic", "p-val", "Lower CI", "Upper CI", "colour")
-  )
-```
-
-### Model visualisation
-
-```{r}
-multiplicative_output |>
-  filter(!term %in% c("Previous state: MCI", "Previous state: Dementia", "Previous state: MCI & Time", "Previous state: Dementia & Time")) |>
-  ggplot(aes(x = estimate, y = transition, colour = colour)) +
-  geom_vline(xintercept = 1, linetype = "dashed", colour = "grey50") +
-    ggstance::geom_pointrangeh(
-    aes(xmin = conf.low, xmax = conf.high),
-    position = ggstance::position_dodgev(height = 0.5),
-    size = 1.25,
-    fatten = 3) +
-  scale_colour_manual(values = c(
-    "Positive" = "#0072B2", 
-    "Negative" = "#E69F00", 
-    "NS"       = "#B2BEB5")) +
-  facet_wrap(~term, scales = "free_x")
-```
-
-:::
-
-# Matrix distance metrics
-
-Given two matrices $P = (p_{ij})$ and $\hat{P} = (\hat{p}_{ij})$ of size $m \times n$, we define the following distance measures
-
-**Frobenius Norm (Matrix Euclidean Distance)**
-
-$$D_{\text{Frobenius}}(P, \hat{P}) = \|P - \hat{P}\|_F = \sqrt{\sum_{i=1}^{m}\sum_{j=1}^{n} |p_{ij} - \hat{p}_{ij}|^2}$$
- 
-- Measures the Euclidean distance in matrix space
-- Sensitive to large differences due to squaring
-- Equivalent to the vector 2-norm of the flattened matrix
-
-**Manhattan Distance (L1 Norm)**
-
-$$D_{\text{Manhattan}}(P, \hat{P}) = \sum_{i=1}^{m}\sum_{j=1}^{n} |p_{ij} - \hat{p}_{ij}|$$
-
-- Sum of absolute differences between corresponding elements
-- Less sensitive to outliers than Frobenius norm
-- Useful when sparse differences are important
-
-**Maximum Difference (Infinity Norm)**
-
-$$D_{\text{Max}}(A, B) = \max_{\substack{1 \leq i \leq m \\ 1 \leq j \leq n}} |a_{ij} - b_{ij}|$$
-
-- Captures the single largest difference between elements
-- Useful for worst-case analysis
-- Ignores the distribution of other differences
-
-**Mean Absolute Difference**
-
-$$D_{\text{MeanAbs}}(P, \hat{P}) = \frac{1}{mn}\sum_{i=1}^{m}\sum_{j=1}^{n} |p_{ij} - \hat{p}_{ij}|$$
-
-- Average absolute difference across all elements
-- Scales with matrix size (unlike Manhattan distance)
-- Easy to interpret as average error per element
-
-**Root Mean Square Error (RMSE)**
-
-$$D_{\text{RMSE}}(P, \hat{P}) = \sqrt{\frac{1}{mn}\sum_{i=1}^{m}\sum_{j=1}^{n} (p_{ij} - \hat{p}_{ij})^2}$$
-
-- Similar to Frobenius but normalized by matrix size
--  Sensitive to large errors due to squaring
-- Common in statistical and machine learning applications
-
-**Correlation-Based Distance**
-
-$$D_{\text{Corr}}(P, \hat{P}) = 1 - \frac{\sum_{i=1}^{m}\sum_{j=1}^{n} (p_{ij} - \bar{P})(\hat{p}_{ij} - \bar{\hat{P}})}{\sqrt{\sum_{i=1}^{m}\sum_{j=1}^{n} (p_{ij} - \bar{P})^2 \sum_{i=1}^{m}\sum_{j=1}^{n} (\hat{p}_{ij} - \bar{\hat{p}})^2}}$$
-
-- Measures linear relationship between matrix elements
-- $\bar{P} = \frac{1}{mn}\sum_{i,j}p_{ij}$ (mean of all elements in $P$)
-- $\bar{\hat{P}} = \frac{1}{mn}\sum_{i,j}\hat{p}_{ij}$ (mean of all elements in $\hat{P}$)
-- Range: [0,2] where 0 = perfect positive correlation
-
-**Kullback-Leibler Divergence**
-
-For matrices where each row sums to 1 ($\sum_j p_{ij} = \sum_j \hat{P}_{ij} = 1$) and $p_{ij}, \hat{p}_{ij} > 0$:
-
-$$
-D_{\text{KL}}(P \parallel \hat{P}) = \sum_{i=1}^{m}\sum_{j=1}^{n} p_{ij} \log\left(\frac{p_{ij}}{\hat{p}_{ij}}\right)
-$$
-
-- Measures information loss when $\hat{P}$ approximates $P$
-- Asymmetric: $D_{\text{KL}}(P \parallel \hat{P}) \neq D_{\text{KL}}(\hat{P} \parallel P)$
-- $0\log0 = 0$ by convention
-- In practice, add $\epsilon > 0$ (e.g., $10^{-10}$) to avoid zeros
-
-## Implementation
-
-Let's calculate the distance metrics between the observed $P$ and estimated transition matrices $\hat{P}$.
-
-```{r matrix-distance}
-p       <- transition_matrix_observed
-p_hat   <- transition_matrix_estimated
-epsilon <- 1e-10
-
-# Creating tibble of distance metrics
-distances <- tibble(
-  Metric = c("Frobenius", "Manhattan", "Max", "MeanAbs", "RMSE", "Correlation", "KL"),
-  Value = c(
-    norm(p - p_hat, type = "F"),
-    sum(abs(p - p_hat)),
-    max(abs(p - p_hat)),
-    mean(abs(p - p_hat)),
-    sqrt(mean((p - p_hat)^2)),
-    1 - cor(c(p), c(p_hat)),
-    sum((p + epsilon) * log((p + epsilon) / (p_hat + epsilon)))
-  )) |>
-  mutate(Value = round(Value, 4))
-
-distances |>
-  mutate(Metric = case_when(
-    Metric == "Frobenius" ~ "Frobenius Distance",
-    Metric == "Manhattan" ~ "Manhattan Distance",
-    Metric == "Max" ~ "Max Difference",
-    Metric == "MeanAbs" ~ "Mean Absolute Difference",
-    Metric == "RMSE" ~ "Root Mean Square Error",
-    Metric == "Correlation" ~ "Correlation Distance",
-    Metric == "KL" ~ "Kullback-Leibler Divergence"
-  )) |>
-  knitr::kable(caption = "Distance based metrics", align = "c") |>
-  kableExtra::kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE)
-
-```
-
-## Visualisation
-
-Let's visualize the distance metrics between the observed and estimated transition matrices (@fig-metrics).
-
-```{r}
-#| code-fold: true
-#| code-summary: "Check out my code"
-#| fig-width: 12
-#| label: fig-metrics
-#| fig-cap: "Distance metrics between observed and estimated transition matrices."
-
-caption = stringr::str_glue(
-  "**RMSE:** Root Mean Squared Error\n
-   **KL:** Kullback-Leibler Divergence\n
-   **Correlation:** 1 - Pearson Correlation Coefficient")
-
-distances |>
-  ggplot(aes(x = reorder(Metric, -Value), y = Value, fill = Metric)) +
-  geom_col(colour = "black") +
-  geom_text(aes(label = Value), vjust = -0.5) +
-  ggokabeito::scale_fill_okabe_ito() +
-  scale_y_continuous(expand = expansion(mult = c(0.075, 0.075))) +
-  labs(
-    title = "Distance Between Transition Matrices",
-    x = "Distance Metric",
-    y = "Value",
-    caption = caption) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    axis.title = element_text(face = "bold", size = 12),
-    plot.caption = ggtext::element_markdown(size = 10),
-    legend.position = "none")
-```
-
-
-```{r test-code}
-#| include: false
-#| eval: false
-preds <- create_additive_predictions(data = data_stack, model = fit_4a, var = "Age", var_seq = seq(50, 97, by = 5)) |>
-  # Add color column based on transition significance
-  mutate(
-    transition_type = paste(status_prev, status, sep = " → "),
-    colour = case_when(
-      transition_type == "Normal Cognition → Normal Cognition" ~ "#E69F00",
-      transition_type == "Normal Cognition → MCI" ~ "#E69F00",
-      transition_type == "Normal Cognition → Dementia" ~ "#B2BEB5",
-      transition_type == "MCI → Normal Cognition" ~ "#56B4E9",
-      transition_type == "MCI → MCI" ~ "#56B4E9",
-      transition_type == "MCI → Dementia" ~ "darkgrey",
-      transition_type == "Dementia → Normal Cognition" ~ "#009E73",
-      transition_type == "Dementia → MCI" ~ "#009E73",
-      transition_type == "Dementia → Dementia" ~ "#009E73"
-    ))
-
-
-ggplot(preds, aes(Age, prob, color = colour, group = interaction(wave, transition_type))) +
-  geom_line(linewidth = 1) +
-  scale_color_identity("Previous State", 
-                      breaks = c("#E69F00", "#56B4E9", "#009E73"),
-                      labels = c("Normal Cognition", "MCI", "Dementia"),
-                      guide = "legend") +
-  labs(
-    title = "Transition Probabilities (Additive Model)",
-    subtitle = "By Age",
-    x = "Age", 
-    y = "Predicted Probability",
-    caption = "*Note:* Grey lines indicate non-significant transitions",
-    ) +
-    facet_grid(wave ~ status, labeller = labeller(
-      wave = function(x) case_when(
-        x == 2 ~ "Year = 2018",
-        x == 3 ~ "Year = 2020",
-        x == 4 ~ "Year = 2022",
-      ),
-      status = function(x) paste("Transition to:", x)
-    )) +
-    theme(
-      plot.subtitle = element_text(hjust = 0.5, size = 12, face = "bold"),
-      plot.caption = ggtext::element_markdown(),
-      panel.spacing = unit(1, "lines"))
-
-```
-

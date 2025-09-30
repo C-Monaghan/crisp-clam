@@ -9,6 +9,7 @@ format:
   # Nice HTML output
   html:
     toc: true
+    toc-depth: 3
     include-in-header:
       - text: |
           <style type="text/css">
@@ -16,30 +17,50 @@ format:
             display: none;
           }
           </style>
-    language: 
-      title-block-published: "Latest version"
-    format-links:
-      - html
-      - format: apaquarto-pdf
-        text: PDF
-        icon: file-pdf
-      - format: apaquarto-docx
-        text: Word
-        icon: file-word
-    shift-heading-level-by: 1
-    theme:
+    theme: 
       - zephyr
       - html/custom.scss
+    shift-heading-level-by: 1
+    
     citeproc: false
-    filters:
+    filters: 
       - at: pre-quarto
         path: _extensions/andrewheiss/wordcount/citeproc.lua
       - at: pre-quarto
         path: _extensions/andrewheiss/wordcount/wordcount.lua
+        
+    format-links:
+      - html
+      - format: hikmah-pdf
+        text: PDF
+        icon: file-pdf
     knitr:
       opts_chunk:
         dev: "ragg_png"
         dpi: 300
+  
+  # PDF format    
+  hikmah-pdf:
+    cite-method: citeproc
+    appendix-single-spacing: false
     
-  apaquarto-pdf: default
-  apaquarto-docx: default
+    # Custom fonts
+    mainfont: "Linux Libertine O"
+    mainfontoptions:
+      - "Numbers=Proportional"
+      - "Numbers=OldStyle"
+    # sansfont: "Libre Franklin"
+    # mathfont: "Libertinus Math"
+    
+    include-in-header:
+      # The \everydisplay thing makes all math blocks use \small font
+      text: |
+        \usepackage{mathtools}
+        \everydisplay\expandafter{\the\everydisplay\small }
+
+        \SetTblrStyle{foot}{font=\footnotesize}
+
+    knitr:
+      opts_chunk:
+        dev: "cairo_pdf"
+    

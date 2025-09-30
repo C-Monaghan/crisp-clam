@@ -1,8 +1,10 @@
+# Procrastination as a Marker of Cognitive Decline: Evidence from
+Longitudinal Transitions in the Older Adult Population
 
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
-## Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population
+------------------------------------------------------------------------
 
 - [Cormac Monaghan](https://c-monaghan.github.io/) • Maynooth University
 - [Rafael de Andrade Moral](https://rafamoral.github.io/) • Maynooth
@@ -13,6 +15,35 @@
 - [Joanna McHugh
   Power](https://www.maynoothuniversity.ie/people/joanna-mchugh-power) •
   Maynooth University
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+> Monaghan, C., de Andrade Moral, R, Kelly, M, & McHugh Power, J.
+> “Procrastination as a Marker of Cognitive Decline: Evidence from
+> Longitudinal Transitions in the Older Adult Population”.
+
+------------------------------------------------------------------------
+
+## Abstract
+
+Cognitive decline is a global health concern, making the identification
+of early, modifiable risk factors essential. While apathy is a
+recognized prodromal marker, procrastination may also signal early
+executive dysfunction. We used longitudinal secondary data from the
+United States Health and Retirement Study among adults aged 60+
+$(n = 549; \bar{x} = 69.70;\sigma = 7.58)$. Cognitive function,
+procrastination, and a proxy measure of apathy were assessed.
+Transitions between normative cognitive function, mild cognitive
+impairment (MCI), and dementia were modeled using a discrete-time
+first-order Markov model. Procrastination scores were higher among
+individuals with MCI or dementia than those with normative cognitive
+function. Procrastination also interacted with age, disproportionately
+increasing the risk of decline in the oldest participants.
+Procrastination was associated with cognitive impairment and predicted
+transitions to MCI, suggesting it may serve as both an early behavioral
+marker and compounding risk factor.
 
 ## 🥔🐚: Note on “crisp clam” project name
 

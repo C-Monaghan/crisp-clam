@@ -1,5 +1,5 @@
 ---
-title: "Download final data"
+title: "Download data"
 format:
   html:
     code-tools: false
@@ -12,6 +12,11 @@ The cleaned data is available in three formats:
 - `.rds` file for R <span class="small">(load with `df <- readRDS("data.rds")`)</span>
 - `.dta` file for Stata <span class="small">(load with `use "data.dta"`)</span>
 
-## Data
+## Data (wide format)
 
 <a class="btn btn-primary btn-sm" target="_blank" href="data/data.csv">{{< fa table >}} &ensp;<span class="font-monospace">data.csv</span></a> &emsp; <a class="btn btn-success btn-sm" target="_blank" href="data/data.rds">{{< fa brands r-project >}} &ensp;<span class="font-monospace">data.rds</span></a> &emsp; <a class="btn btn-warning btn-sm" target="_blank" href="data/data.dta">{{< fa table-cells >}} &ensp;<span class="font-monospace">data.dta</span></a>
+
+## Data (long format)
+
+<a class="btn btn-primary btn-sm" target="_blank" href="data/data_long.csv">{{< fa table >}} &ensp;<span class="font-monospace">data.csv</span></a> &emsp; <a class="btn btn-success btn-sm" target="_blank" href="data/data_long.rds">{{< fa brands r-project >}} &ensp;<span class="font-monospace">data.rds</span></a> &emsp; <a class="btn btn-warning btn-sm" target="_blank" href="data/data_long.dta">{{< fa table-cells >}} &ensp;<span class="font-monospace">data.dta</span></a>
+
