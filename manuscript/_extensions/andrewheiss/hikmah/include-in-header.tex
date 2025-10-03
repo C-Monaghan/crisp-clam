@@ -5,25 +5,36 @@
 % -----------------
 % Typography tweaks
 % -----------------
-% Indent size
-\setlength{\parindent}{1pc}  % 1p0
+% Sets the paragraph indent size. 1pc is a pica (12pt). 
+% This controls how much the first line of a paragraph is indented.
+\setlength{\parindent}{1pc}
 
-% Fix widows and orphans
+% The nowidow package tries to prevent widows and orphans 
+% (single lines of a paragraph stranded at top/bottom of a page). 
+% defaultlines=2 requests at least two lines to remain on a page when possible.
 \usepackage[all,defaultlines=2]{nowidow}
 
-% List things
+% enumitem gives fine control of lists.
+
+  % \setlist[1]{labelindent=\parindent}: for first-level lists, 
+  % set the label indent equal to the paragraph indent 
+  % (keeps list labels aligned with normal text).
+  % 
+  % leftmargin=* on itemize/enumerate: tells enumitem to align the 
+  % list body with the surrounding text (remove extra left offset).
+
 \usepackage{enumitem}
-% Same document-level indentation for ordered and ordered lists
 \setlist[1]{labelindent=\parindent}
 \setlist[itemize]{leftmargin=*}
 \setlist[enumerate]{leftmargin=*}
 
-% Wrap definition list terms
-% https://tex.stackexchange.com/a/9763/11851
+ % description with style=unboxed makes description-list terms wrap 
+% nicely (no boxed layout).
 \setlist[description]{style=unboxed}
 
 
-% For better TOCs
+% Improves Table of Contents formatting (the titles option makes it 
+% play nicely with section title formatting).
 \usepackage[titles]{tocloft}
 
 % Remove left margin in lists inside longtables

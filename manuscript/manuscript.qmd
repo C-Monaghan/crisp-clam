@@ -4,24 +4,22 @@ author:
   - name: Cormac Monaghan
     url: https://c-monaghan.github.io/
     email: cormacmonaghan@protonmail.com
-    orcid: https://orcid.org/0000-0001-9012-3060
-    affiliation:
-      - Hamilton Institute, Maynooth University, Ireland
-      - Department of Psychology, Maynooth University, Ireland
+    orcid: 0000-0001-9012-3060
+    affiliation: Maynooth University
     attributes:
       corresponding: true
   - name: Rafael de Andrade Moral
     url: https://rafamoral.github.io/
-    orcid: https://orcid.org/0000-0002-0875-3563
-    affiliation: Department of Mathematics and Statistics, Maynooth University, Ireland
+    orcid: 0000-0002-0875-3563
+    affiliation: Maynooth University
   - name: Michelle Kelly
     url: https://www.ncirl.ie/About/A-Z-Staff-Directory/Staff/346
-    orcid: https://orcid.org/0000-0001-6159-6707
-    affiliation: Department of Psychology, National College of Ireland
+    orcid: 0000-0001-6159-6707
+    affiliation: National College of Ireland
   - name: Joanna McHugh Power
     url: https://www.maynoothuniversity.ie/people/joanna-mchugh-power
-    orcid: https://orcid.org/0000-0002-7387-3107
-    affiliation: Department of Psychology, Maynooth University, Ireland
+    orcid: 0000-0002-7387-3107
+    affiliation: Maynooth University
 correspondence-prefix: "Correspondence concerning this article should be addressed to"
 abstract: |
   Cognitive decline is a global health concern, making the identification of early, modifiable risk factors essential. While apathy is a recognized prodromal marker, procrastination may also signal early executive dysfunction. We used longitudinal secondary data from the United States Health and Retirement Study among adults aged 60+ $(n = 549; \bar{x} = 69.70;\sigma = 7.58)$. Cognitive function, procrastination, and a proxy measure of apathy were assessed. Transitions between normative cognitive function, mild cognitive impairment (MCI), and dementia were modeled using a discrete-time first-order Markov model. Procrastination scores were higher among individuals with MCI or dementia than those with normative cognitive function. Procrastination also interacted with age, disproportionately increasing the risk of decline in the oldest participants. Procrastination was associated with cognitive impairment and predicted transitions to MCI, suggesting it may serve as both an early behavioral marker and compounding risk factor.
@@ -41,6 +39,7 @@ link-citations: true
 editor: 
   markdown: 
     wrap: 80
+keep-tex: true
 ---
 
 ```{r}
@@ -48,6 +47,7 @@ editor:
 #| include: false
 
 library(ggplot2)
+library(tinytable)
 
 knitr::opts_chunk$set(echo = FALSE, include = FALSE, 
 warning = FALSE, message = FALSE)
@@ -83,7 +83,7 @@ projected to rise to 152.8 million by 2050 [@nichols2022]. Identifying and
 addressing modifiable risk factors is crucial to mitigate this projected rise in
 prevalence. Two particularly vulnerable groups are older adults and those with
 mild cognitive impairment (MCI), of whom up to 80% progress to dementia within
-six years \[@cooper2015; @shigemizu2020 @tschanz2006}.
+six years [@cooper2015; @shigemizu2020 @tschanz2006].
 
 The Lancet Commission on Dementia identified fourteen causal risk factors
 including smoking, hypertension, and diabetes, which account for approximately
@@ -227,6 +227,8 @@ attainment [@abner2012; @freedman2024; @yu2013]. Educational attainment was
 classified into three categories: no formal education, GED (General Educational
 Development)/high school diploma, and college/further education.
 
+\clearpage
+
 ## Data Analysis
 
 All data analysis was carried out in R [@rcoreteam2025]. To model transitions in
@@ -293,21 +295,20 @@ total of $1,647$ observed transitions over time.
 #| fig-width: 12
 #| tbl-cap: "Baseline descriptives for the study sample and stratified by cognitive status category."
 #| tbl-cap-location: top
+#| tbl-pos: H
 #| include: true
 
 # Table information
 tbl_descriptives <- tibble::tribble(
-  ~"", ~"Full sample <br>(n = 549)", ~"NC <br>(n = 452)", ~"MCI <br>(n = 86)", ~"Dementia <br>(n = 11)",
+  ~"", ~Full, ~NC, ~MCI, ~Dementia,
   "Age (years)", "69.70 ± 7.58", "69.70 ± 7.55",	"69.60 ± 7.55",	"70.00 ± 9.89",
-  "**Sex**", " ", " ", " ", " ",
-  "Male", "38.43% <br>(n = 211)", "39.82% <br>(n =180)", "32.56% <br>(n = 28)", "27.27% <br>(n = 3)",
-  "Female", "61.57% <br>(n = 338)", "60.18%<br>(n = 272)", "67.44% <br>(n = 58)",	"72.73 <br>(n = 8)",
-  "**Education**", " ", " ", " ", " ",
-  "No degree",	"16.24% <br>(n = 98)", "10.56% <br>(n = 47)",	"39.53% <br>(n = 34)",	"63.54% <br>(n = 7)",
-  "GED", "51.58% <br>(n = 279)",	"51.91% <br>(n = 231)",	"52.33% <br>(n = 45)",	"27.27 <br>(n = 3)",
-  "Further <br>education", "32.29% <br>(n = 175)", "37.53% <br>(n = 167)", "8.14% <br>(n = 7)",	"9.09% <br>(n = 1)",
+  "Male", "38.43% (n = 211)", "39.82% (n =180)", "32.56% (n = 28)", "27.27% (n = 3)",
+  "Female", "61.57% (n = 338)", "60.18% (n = 272)", "67.44% (n = 58)",	"72.73% (n = 8)",
+  "No degree",	"16.24% (n = 98)", "10.56% (n = 47)",	"39.53% (n = 34)",	"63.54% (n = 7)",
+  "GED", "51.58% (n = 279)",	"51.91% (n = 231)",	"52.33% (n = 45)",	"27.27% (n = 3)",
+  "Further education", "32.29% (n = 175)", "37.53% (n = 167)", "8.14% (n = 7)",	"9.09% (n = 1)",
   "Apathy",	"0.37 ± 0.63", "0.31 ± 0.59",	"0.65 ± 0.76",	"0.36 ± 0.51",
-  "Procrastination",	"28.60 ± 12.00", "27.70 ± 11.30",	"32.10 ± 13.80",	"39.00 ± 16.00"
+  "Procrastination",	"28.60 ± 12.00", "27.70 ± 11.30",	"32.10 ± 13.80", "39.00 ± 16.00"
 )
 
 # Captions and footnotes
@@ -324,14 +325,21 @@ footnote <- glue::glue(
 
 # Outputting table 
 tbl_descriptives |>
-  setNames(c(" ", "Full sample <br>(n = 549)", "NC <br>(n = 452)", "MCI <br>(n = 86)", "Dementia <br>(n = 11)")) |>
-  tinytable::tt(notes = list(
+  setNames(c(" ", "Full sample (n = 549)", "NC (n = 452)", "MCI (n = 86)", "Dementia (n = 11)")) |>
+   tt(notes = list(
     caption, 
     a = list(i = 10, j = 1, text = footnote))
-    ) |>
-  tinytable::style_tt(j = 2:5, align = "c") |>
-  tinytable::format_tt("notes", markdown = TRUE) |>
-  tinytable::format_tt(j = 1, markdown = TRUE)
+  ) |>
+   group_tt(i = list("**Sex**" = 2, "**Education**" = 4)) |>
+   style_tt(j = 2:5, align = "c") |>
+   style_tt(i = c(2, 5), align = "l") |>
+   format_tt(escape = TRUE) |>
+   format_tt("notes", markdown = TRUE) |>
+   format_tt(j = 1, markdown = TRUE) |>
+  style_tt(
+     bootstrap_class = "table table-sm"
+  )
+
 ```
 
 ```{r}
@@ -339,6 +347,7 @@ tbl_descriptives |>
 #| fig-width: 15
 #| fig-height: 10
 #| fig-cap: "Frequency of cognitive status transitions between HRS waves."
+#| fig-pos: H
 #| include: true
 
 fig_1 <- readRDS(here::here("files/figure_1.RDS"))
@@ -410,7 +419,7 @@ function $(\text{OR} = 0.74; p = 0.003)$.
 #| label: fig-markov
 #| fig-width: 12
 #| fig-height: 10
-#| fig-cap: "Odds ratios (95% Confidence Intervals) of transitioning from one cognitive state to another calculated using generalised logit models. <br>*Note*. Odds ratios significantly different from 1 at a 5% significance rate are presented in blue (positive) or orange (negative),  otherwise they are presented in gray. NC = Normative cognitive function;  MCI = Mild cognitive impairment."
+#| fig-cap: "Odds ratios (95% Confidence Intervals) of transitioning from one cognitive state to another calculated using generalised logit models. *Note*. Odds ratios significantly different from 1 at a 5% significance rate are presented in blue (positive) or orange (negative),  otherwise they are presented in gray. NC = Normative cognitive function;  MCI = Mild cognitive impairment."
 #| include: true
 
 fig_3 <- readRDS(here::here("files/figure_3.RDS"))
@@ -434,7 +443,7 @@ compounded risk posed by these two variables in later life.
 #| label: fig-age-preds
 #| fig-width: 12
 #| fig-height: 8
-#| fig-cap: "Predicted transition probabilities by procrastination and age. <br>*Note.* Each curve represents a different age profile, ranging from the minimum (62 years) to the maximum (97 years) of the dataset. Specific ages of interest (70, 80, and 90) are highlighted."
+#| fig-cap: "Predicted transition probabilities by procrastination and age. *Note.* Each curve represents a different age profile, ranging from the minimum (62 years) to the maximum (97 years) of the dataset. Specific ages of interest (70, 80, and 90) are highlighted."
 #| include: true
 
 # Read in plot
