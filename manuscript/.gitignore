@@ -1,8 +1,8 @@
 /.quarto/
 
+manuscript_files/
 output/
 
 *.fff
 *.ttt
-
-**/*.quarto_ipynb
+*.tex
