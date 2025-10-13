@@ -4,6 +4,10 @@ project:
   
   render: 
     - "manuscript.qmd"
+  
+language:
+  title-block-published: Latest version
+  related-formats-title: Other formats
 
 format:
   # Nice HTML output

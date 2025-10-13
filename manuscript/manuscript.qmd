@@ -1,5 +1,6 @@
 ---
 title: "Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population"
+date: "2025-09-25"
 author: 
   - name: Cormac Monaghan
     url: https://c-monaghan.github.io/
@@ -31,7 +32,8 @@ keywords:
   - Procrastination
   - Apathy
   - Executive dysfunction
-  - Aging;
+  - Aging
+published: "This manuscript is a preprint and is currently under review at *Alzheimer's & Dementia: Diagnosis, Assessment & Disease Monitoring*"
 code-repo: "Access the code, data, and analysis at <https://github.com/C-Monaghan/crisp-clam>"
 bibliography: references.bib
 csl: csl/apa.csl
@@ -452,6 +454,8 @@ fig_4 <- readRDS(here::here("files/figure_4.RDS"))
 # Display plot
 fig_4
 ```
+
+\clearpage
 
 # Discussion
 
