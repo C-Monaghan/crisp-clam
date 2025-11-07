@@ -126,7 +126,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other formats</h2><ul><li><a href="manuscript.pdf"><i class="bi bi-file-pdf"></i>PDF (hikmah)</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other formats</h2><ul><li><a href="manuscript.pdf"><i class="bi bi-file-pdf"></i>Typst (shifu)</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -244,7 +244,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="data-analysis">Data Analysis</h3>
 <p>All data analysis was carried out in R <span class="citation" data-cites="rcoreteam2025">(<a href="#ref-rcoreteam2025" role="doc-biblioref">R Core Team, 2025</a>)</span>. To model transitions in cognitive states over time, we employed a first order discrete-time Markov model, a class of stochastic processes that satisfy the Markov property <span class="citation" data-cites="zhang2010">(<a href="#ref-zhang2010" role="doc-biblioref">Y. F. Zhang et al., 2010</a>)</span>, which can be formally expressed as:</p>
 <p><span class="math display">\[P(X_{t+1} = j \vert X_t = i, X_{t-1} = i_{t-1}, \dots X_0 = i_0) = P(X_{t+1} = j \vert X_t = i)\]</span></p>
-<p>This property asserts that the probability of transitioning from state $X_t = i$ to a future state $X_{t+1} = j$ depends only on the current state $X_t$, and not on the full history of preceding states. Here, there are three potential states: normative cognitive function, mild cognitive impairment, and dementia. We consider dementia to be an absorbing state, i.e.&nbsp;once an individual reaches this state, they cannot return to the other states in a future time point.</p>
+<p>This property asserts that the probability of transitioning from state <span class="math inline">\(X_t = i\)</span> to a future state <span class="math inline">\(X\_{t+1} = j\)</span> depends only on the current state <span class="math inline">\(X_t\)</span>, and not on the full history of preceding states. Here, there are three potential states: normative cognitive function, mild cognitive impairment, and dementia. We consider dementia to be an absorbing state, i.e.&nbsp;once an individual reaches this state, they cannot return to the other states in a future time point.</p>
 <p>Unlike continuous-time models, discrete-time Markov models are not readily supported by a dedicated R package for deriving transition probabilities. Therefore, we implemented the model manually using multinomial logistic regression from the <em>nnet</em> package <span class="citation" data-cites="venables2002">(<a href="#ref-venables2002" role="doc-biblioref">Venables &amp; Ripley, 2002</a>)</span>. This approach estimates the log-odds of transitioning to each non-reference state as a linear function of covariates, relative to a chosen reference category. For a system with <span class="math inline">\(K\)</span> cognitive states (with state <span class="math inline">\(K\)</span> as the reference), the model takes the form:</p>
 <p><span class="math display">\[log \frac{P(Y = j \; \vert \; x)}{P(Y = K \vert x)} = \beta_0 + \beta_j^\top x \qquad \text{for } j = 1, \dots K-1\]</span></p>
 <p>From these equations, the predicted transition probabilities for the non-reference states <span class="math inline">\(j = 1, \dots, K - 1\)</span> are derived as:</p>
@@ -260,7 +260,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>Our final analytic sample comprised <span class="math inline">\(549\)</span> respondents with the following age distribution: 60 - 70 <span class="math inline">\((n = 186)\)</span>, 71 - 80 <span class="math inline">\((n = 203)\)</span>, 81 - 90 <span class="math inline">\((n = 142)\)</span>, and 90+ <span class="math inline">\((n = 18)\)</span>. Descriptive statistics for the full sample, as well as data stratified by cognitive status (normative cognitive function, MCI, and dementia), are presented in <a href="#tbl-descriptives" class="quarto-xref">Table&nbsp;1</a>. Both <a href="#fig-river" class="quarto-xref">Figure&nbsp;1</a> and supplementary figure S1 capture the unconditional transitions and transition probabilities (respectively) between wave one and two (first transition), wave two and three (second transition), and wave three and four (third transition), yielding a total of <span class="math inline">\(1,647\)</span> observed transitions over time.</p>
 <div class="cell" data-layout-align="center" data-tbl-pos="H" data-tbl-cap-location="top">
-<div id="tbl-descriptives" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="top" data-layout-align="center" data-tbl-pos="H">
+<div id="tbl-descriptives" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center" data-tbl-pos="H" data-tbl-cap-location="top">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-descriptives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Baseline descriptives for the study sample and stratified by cognitive status category.
@@ -273,25 +273,25 @@ Table&nbsp;1: Baseline descriptives for the study sample and stratified by cogni
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_e2m0x8mingu14x9yg7cy = TinyTable.createTableFunctions("tinytable_e2m0x8mingu14x9yg7cy");
+      const tableFns_plyzzrj1ix00na8qy76s = TinyTable.createTableFunctions("tinytable_plyzzrj1ix00na8qy76s");
       // tinytable span after
-      window.addEventListener('load', function () { tableFns_e2m0x8mingu14x9yg7cy.spanCell(5, 1, 1, 5) })
-      window.addEventListener('load', function () { tableFns_e2m0x8mingu14x9yg7cy.spanCell(2, 1, 1, 5) })
+      window.addEventListener('load', function () { tableFns_plyzzrj1ix00na8qy76s.spanCell(5, 1, 1, 5) })
+      window.addEventListener('load', function () { tableFns_plyzzrj1ix00na8qy76s.spanCell(2, 1, 1, 5) })
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '4', j: 5 }, { i: '6', j: 5 }, { i: '7', j: 5 }, { i: '8', j: 5 }, { i: '9', j: 5 } ], css_id: 'tinytable_css_7hu1rbz70es1jwxi99xi',}, 
-          { positions: [ { i: '2', j: 1 }, { i: '5', j: 1 }, { i: '2', j: 2 }, { i: '5', j: 2 }, { i: '2', j: 3 }, { i: '5', j: 3 }, { i: '2', j: 4 }, { i: '5', j: 4 }, { i: '2', j: 5 }, { i: '5', j: 5 } ], css_id: 'tinytable_css_kpmcae11qm4dtsgd9cdf',}, 
-          { positions: [ { i: '10', j: 2 }, { i: '10', j: 3 }, { i: '10', j: 4 }, { i: '10', j: 5 } ], css_id: 'tinytable_css_moxfhwm1lmcm6maa3sz9',}, 
-          { positions: [ { i: '10', j: 1 } ], css_id: 'tinytable_css_hpqbq0ou1e6204vqiasc',}, 
-          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 } ], css_id: 'tinytable_css_80a7r9w383vg4p40ops1',}, 
-          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_9nhiwqowokyoyfi5yimz',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '4', j: 5 }, { i: '6', j: 5 }, { i: '7', j: 5 }, { i: '8', j: 5 }, { i: '9', j: 5 } ], css_id: 'tinytable_css_7dn3m9v9v584zyx5en8q',}, 
+          { positions: [ { i: '2', j: 1 }, { i: '5', j: 1 }, { i: '2', j: 2 }, { i: '5', j: 2 }, { i: '2', j: 3 }, { i: '5', j: 3 }, { i: '2', j: 4 }, { i: '5', j: 4 }, { i: '2', j: 5 }, { i: '5', j: 5 } ], css_id: 'tinytable_css_xodez3bwws9tpoqer0g4',}, 
+          { positions: [ { i: '10', j: 2 }, { i: '10', j: 3 }, { i: '10', j: 4 }, { i: '10', j: 5 } ], css_id: 'tinytable_css_yjimdzp6iudc0eqda4io',}, 
+          { positions: [ { i: '10', j: 1 } ], css_id: 'tinytable_css_gwb0kn3ifewdbf7ecb3i',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 } ], css_id: 'tinytable_css_ikwpi0u2ods55wrzhu2j',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_dpfq0kexo1vozi66vxhi',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_e2m0x8mingu14x9yg7cy.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_plyzzrj1ix00na8qy76s.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -300,15 +300,15 @@ Table&nbsp;1: Baseline descriptives for the study sample and stratified by cogni
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_e2m0x8mingu14x9yg7cy td.tinytable_css_7hu1rbz70es1jwxi99xi, #tinytable_e2m0x8mingu14x9yg7cy th.tinytable_css_7hu1rbz70es1jwxi99xi { text-align: center }
-    #tinytable_e2m0x8mingu14x9yg7cy td.tinytable_css_kpmcae11qm4dtsgd9cdf, #tinytable_e2m0x8mingu14x9yg7cy th.tinytable_css_kpmcae11qm4dtsgd9cdf { text-align: left }
-    #tinytable_e2m0x8mingu14x9yg7cy td.tinytable_css_moxfhwm1lmcm6maa3sz9, #tinytable_e2m0x8mingu14x9yg7cy th.tinytable_css_moxfhwm1lmcm6maa3sz9 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_e2m0x8mingu14x9yg7cy td.tinytable_css_hpqbq0ou1e6204vqiasc, #tinytable_e2m0x8mingu14x9yg7cy th.tinytable_css_hpqbq0ou1e6204vqiasc {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
-    #tinytable_e2m0x8mingu14x9yg7cy td.tinytable_css_80a7r9w383vg4p40ops1, #tinytable_e2m0x8mingu14x9yg7cy th.tinytable_css_80a7r9w383vg4p40ops1 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_e2m0x8mingu14x9yg7cy td.tinytable_css_9nhiwqowokyoyfi5yimz, #tinytable_e2m0x8mingu14x9yg7cy th.tinytable_css_9nhiwqowokyoyfi5yimz {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
+    #tinytable_plyzzrj1ix00na8qy76s td.tinytable_css_7dn3m9v9v584zyx5en8q, #tinytable_plyzzrj1ix00na8qy76s th.tinytable_css_7dn3m9v9v584zyx5en8q { text-align: center }
+    #tinytable_plyzzrj1ix00na8qy76s td.tinytable_css_xodez3bwws9tpoqer0g4, #tinytable_plyzzrj1ix00na8qy76s th.tinytable_css_xodez3bwws9tpoqer0g4 { font-weight: bold; text-align: left }
+    #tinytable_plyzzrj1ix00na8qy76s td.tinytable_css_yjimdzp6iudc0eqda4io, #tinytable_plyzzrj1ix00na8qy76s th.tinytable_css_yjimdzp6iudc0eqda4io {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_plyzzrj1ix00na8qy76s td.tinytable_css_gwb0kn3ifewdbf7ecb3i, #tinytable_plyzzrj1ix00na8qy76s th.tinytable_css_gwb0kn3ifewdbf7ecb3i {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
+    #tinytable_plyzzrj1ix00na8qy76s td.tinytable_css_ikwpi0u2ods55wrzhu2j, #tinytable_plyzzrj1ix00na8qy76s th.tinytable_css_ikwpi0u2ods55wrzhu2j {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_plyzzrj1ix00na8qy76s td.tinytable_css_dpfq0kexo1vozi66vxhi, #tinytable_plyzzrj1ix00na8qy76s th.tinytable_css_dpfq0kexo1vozi66vxhi {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_e2m0x8mingu14x9yg7cy" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_plyzzrj1ix00na8qy76s" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -319,7 +319,7 @@ Table&nbsp;1: Baseline descriptives for the study sample and stratified by cogni
                 <th scope="col" data-row="0" data-col="5">Dementia (n = 11)</th>
               </tr>
         </thead>
-        <tfoot><tr><td colspan="5"><sup></sup> <em>Note:</em> Descriptives for continuous and categorical variables are represented
+        <tfoot><tr><td colspan="5"><sup></sup> Note: Descriptives for continuous and categorical variables are represented
 using means ± standard deviations and percentages and frequencies respectively.
 NC = Normative cognitive function; MCI = Mild cognitive impairment;
 GED = General Educational Development.</td></tr>
@@ -335,11 +335,11 @@ baseline.</td></tr></tfoot>
                   <td data-row="1" data-col="5">70.00 ± 9.89</td>
                 </tr>
                 <tr>
-                  <td data-row="2" data-col="1"><strong>Sex</strong></td>
-                  <td data-row="2" data-col="2">**Sex**</td>
-                  <td data-row="2" data-col="3">**Sex**</td>
-                  <td data-row="2" data-col="4">**Sex**</td>
-                  <td data-row="2" data-col="5">**Sex**</td>
+                  <td data-row="2" data-col="1">Sex</td>
+                  <td data-row="2" data-col="2">Sex</td>
+                  <td data-row="2" data-col="3">Sex</td>
+                  <td data-row="2" data-col="4">Sex</td>
+                  <td data-row="2" data-col="5">Sex</td>
                 </tr>
                 <tr>
                   <td data-row="3" data-col="1">Male</td>
@@ -356,11 +356,11 @@ baseline.</td></tr></tfoot>
                   <td data-row="4" data-col="5">72.73% (n = 8)</td>
                 </tr>
                 <tr>
-                  <td data-row="5" data-col="1"><strong>Education</strong></td>
-                  <td data-row="5" data-col="2">**Education**</td>
-                  <td data-row="5" data-col="3">**Education**</td>
-                  <td data-row="5" data-col="4">**Education**</td>
-                  <td data-row="5" data-col="5">**Education**</td>
+                  <td data-row="5" data-col="1">Education</td>
+                  <td data-row="5" data-col="2">Education</td>
+                  <td data-row="5" data-col="3">Education</td>
+                  <td data-row="5" data-col="4">Education</td>
+                  <td data-row="5" data-col="5">Education</td>
                 </tr>
                 <tr>
                   <td data-row="6" data-col="1">No degree</td>
@@ -408,7 +408,7 @@ baseline.</td></tr></tfoot>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-river" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="H">
+<div id="fig-river" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-river-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="manuscript_files/figure-html/fig-river-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="H">
@@ -492,6 +492,7 @@ Figure&nbsp;4: Predicted transition probabilities by procrastination and age. <e
 <section id="conclusions" class="level3">
 <h3 class="anchored" data-anchor-id="conclusions">Conclusions</h3>
 <p>In summary, this study offers preliminary evidence that procrastination may function as an early behavioral tendency marker of cognitive decline, particularly in older age. Individuals with MCI and dementia reported higher procrastination scores, and longitudinal modelling revealed that procrastination, especially when coupled with advancing age, was predictive of increased cognitive decline. These findings underscore the importance of everyday self-regulatory behaviors in dementia risk and resilience. As a modifiable and measurable construct, procrastination holds promise as a target for early detection and preventative intervention strategies aimed at sustaining cognitive health in ageing populations.</p>
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 <section id="references" class="level2">
