@@ -1,7 +1,7 @@
 ---
 title: "Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population"
 date: "2025-09-25"
-author: 
+author:
   - name: Cormac Monaghan
     url: https://c-monaghan.github.io/
     email: cormacmonaghan@protonmail.com
@@ -38,8 +38,8 @@ code-repo: "Access the code, data, and analysis at <https://github.com/C-Monagha
 bibliography: references.bib
 csl: csl/apa.csl
 link-citations: true
-editor: 
-  markdown: 
+editor:
+  markdown:
     wrap: 80
 keep-tex: true
 ---
@@ -51,7 +51,7 @@ keep-tex: true
 library(ggplot2)
 library(tinytable)
 
-knitr::opts_chunk$set(echo = FALSE, include = FALSE, 
+knitr::opts_chunk$set(echo = FALSE, include = FALSE,
 warning = FALSE, message = FALSE)
 
 knitr::opts_chunk$set(
@@ -240,13 +240,12 @@ model, a class of stochastic processes that satisfy the Markov property
 
 $$P(X_{t+1} = j \vert X_t = i, X_{t-1} = i_{t-1}, \dots X_0 = i_0) = P(X_{t+1} = j \vert X_t = i)$$
 
-This property asserts that the probability of transitioning from state \$X_t =
-i\$ to a future state \$X\_{t+1} = j\$ depends only on the current state
-\$X_t\$, and not on the full history of preceding states. Here, there are three
-potential states: normative cognitive function, mild cognitive impairment, and
-dementia. We consider dementia to be an absorbing state, i.e. once an individual
-reaches this state, they cannot return to the other states in a future time
-point.
+This property asserts that the probability of transitioning from state $X_t = i$
+to a future state $X\_{t+1} = j$ depends only on the current state $X_t$, and
+not on the full history of preceding states. Here, there are three potential
+states: normative cognitive function, mild cognitive impairment, and dementia.
+We consider dementia to be an absorbing state, i.e. once an individual reaches
+this state, they cannot return to the other states in a future time point.
 
 Unlike continuous-time models, discrete-time Markov models are not readily
 supported by a dedicated R package for deriving transition probabilities.
@@ -302,46 +301,44 @@ total of $1,647$ observed transitions over time.
 
 # Table information
 tbl_descriptives <- tibble::tribble(
-  ~"", ~Full, ~NC, ~MCI, ~Dementia,
-  "Age (years)", "69.70 ± 7.58", "69.70 ± 7.55",	"69.60 ± 7.55",	"70.00 ± 9.89",
-  "Male", "38.43% (n = 211)", "39.82% (n =180)", "32.56% (n = 28)", "27.27% (n = 3)",
-  "Female", "61.57% (n = 338)", "60.18% (n = 272)", "67.44% (n = 58)",	"72.73% (n = 8)",
-  "No degree",	"16.24% (n = 98)", "10.56% (n = 47)",	"39.53% (n = 34)",	"63.54% (n = 7)",
-  "GED", "51.58% (n = 279)",	"51.91% (n = 231)",	"52.33% (n = 45)",	"27.27% (n = 3)",
-  "Further education", "32.29% (n = 175)", "37.53% (n = 167)", "8.14% (n = 7)",	"9.09% (n = 1)",
-  "Apathy",	"0.37 ± 0.63", "0.31 ± 0.59",	"0.65 ± 0.76",	"0.36 ± 0.51",
-  "Procrastination",	"28.60 ± 12.00", "27.70 ± 11.30",	"32.10 ± 13.80", "39.00 ± 16.00"
+  ~""                 , ~Full              , ~NC                , ~MCI              , ~Dementia        ,
+  "Age (years)"       , "69.70 ± 7.58"    , "69.70 ± 7.55"    , "69.60 ± 7.55"   , "70.00 ± 9.89"  ,
+  "Male"              , "38.43% (n = 211)" , "39.82% (n =180)"  , "32.56% (n = 28)" , "27.27% (n = 3)" ,
+  "Female"            , "61.57% (n = 338)" , "60.18% (n = 272)" , "67.44% (n = 58)" , "72.73% (n = 8)" ,
+  "No degree"         , "16.24% (n = 98)"  , "10.56% (n = 47)"  , "39.53% (n = 34)" , "63.54% (n = 7)" ,
+  "GED"               , "51.58% (n = 279)" , "51.91% (n = 231)" , "52.33% (n = 45)" , "27.27% (n = 3)" ,
+  "Further education" , "32.29% (n = 175)" , "37.53% (n = 167)" , "8.14% (n = 7)"   , "9.09% (n = 1)"  ,
+  "Apathy"            , "0.37 ± 0.63"     , "0.31 ± 0.59"     , "0.65 ± 0.76"    , "0.36 ± 0.51"   ,
+  "Procrastination"   , "28.60 ± 12.00"   , "27.70 ± 11.30"   , "32.10 ± 13.80"  , "39.00 ± 16.00"
 )
 
 # Captions and footnotes
 caption <- glue::glue(
-  "*Note:* Descriptives for continuous and categorical variables are represented 
-  using means ± standard deviations and percentages and frequencies respectively. 
-  NC = Normative cognitive function; MCI = Mild cognitive impairment; 
+  "Note: Descriptives for continuous and categorical variables are represented
+  using means ± standard deviations and percentages and frequencies respectively.
+  NC = Normative cognitive function; MCI = Mild cognitive impairment;
   GED = General Educational Development.")
 
 footnote <- glue::glue(
-  "Procrastination scores were collected in 2020 (Wave 3) and are presented 
-  here for descriptive comparison, although they were not measured at 
+  "Procrastination scores were collected in 2020 (Wave 3) and are presented
+  here for descriptive comparison, although they were not measured at
   baseline.")
 
-# Outputting table 
+# Outputting table
 tbl_descriptives |>
   setNames(c(" ", "Full sample (n = 549)", "NC (n = 452)", "MCI (n = 86)", "Dementia (n = 11)")) |>
-   tt(notes = list(
-    caption, 
+  tt(notes = list(
+    caption,
     a = list(i = 10, j = 1, text = footnote))
   ) |>
-   group_tt(i = list("**Sex**" = 2, "**Education**" = 4)) |>
+   group_tt(i = list("Sex" = 2, "Education" = 4)) |>
    style_tt(j = 2:5, align = "c") |>
-   style_tt(i = c(2, 5), align = "l") |>
+   style_tt(i = c(2, 5), align = "l", bold = TRUE) |>
    format_tt(escape = TRUE) |>
    format_tt("notes", markdown = TRUE) |>
-   format_tt(j = 1, markdown = TRUE) |>
-  style_tt(
+   style_tt(
      bootstrap_class = "table table-sm"
-  )
-
+     )
 ```
 
 ```{r}
@@ -454,8 +451,6 @@ fig_4 <- readRDS(here::here("files/figure_4.RDS"))
 # Display plot
 fig_4
 ```
-
-\clearpage
 
 # Discussion
 
@@ -592,4 +587,8 @@ modifiable and measurable construct, procrastination holds promise as a target
 for early detection and preventative intervention strategies aimed at sustaining
 cognitive health in ageing populations.
 
+\newpage
+
+::: {.content-visible when-format="html"}
 # References
+:::

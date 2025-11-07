@@ -6,3 +6,5 @@ output/
 *.fff
 *.ttt
 *.tex
+
+**/*.quarto_ipynb

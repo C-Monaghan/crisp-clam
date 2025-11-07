@@ -1,10 +1,10 @@
 project:
   title: "Manuscript"
   output-dir: "output"
-  
-  render: 
+
+  render:
     - "manuscript.qmd"
-  
+
 language:
   title-block-published: Latest version
   related-formats-title: Other formats
@@ -21,50 +21,27 @@ format:
             display: none;
           }
           </style>
-    theme: 
+    theme:
       - zephyr
       - html/custom.scss
     shift-heading-level-by: 1
-    
+
     citeproc: false
-    filters: 
+    filters:
       - at: pre-quarto
         path: _extensions/andrewheiss/wordcount/citeproc.lua
       - at: pre-quarto
         path: _extensions/andrewheiss/wordcount/wordcount.lua
-        
+
     format-links:
       - html
-      - format: hikmah-pdf
-        text: PDF
+      - format: shifu-typst
+        text: Typst
         icon: file-pdf
     knitr:
       opts_chunk:
         dev: "ragg_png"
         dpi: 300
-  
-  # PDF format    
-  hikmah-pdf:
-    cite-method: citeproc
-    appendix-single-spacing: false
-    
-    # Custom fonts
-    mainfont: "Linux Libertine O"
-    mainfontoptions:
-      - "Numbers=Proportional"
-      - "Numbers=OldStyle"
-    # sansfont: "Libre Franklin"
-    # mathfont: "Libertinus Math"
-    
-    include-in-header:
-      # The \everydisplay thing makes all math blocks use \small font
-      text: |
-        \usepackage{mathtools}
-        \everydisplay\expandafter{\the\everydisplay\small }
 
-        \SetTblrStyle{foot}{font=\footnotesize}
-
-    knitr:
-      opts_chunk:
-        dev: "cairo_pdf"
-    
+  # Typst
+  shifu-typst: default
