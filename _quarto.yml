@@ -4,37 +4,37 @@ project:
   output-dir: "docs"
   pre-render:
     - "quarto render manuscript" # Will render manuscript to docs/manuscript
-  
+
   render:
     - "**/*.qmd"
     - "!manuscript"
-    
-  resources: 
+
+  resources:
    # We need to include the libs folder so that the html file renders correctly
     - "manuscript/output/manuscript_files"
     - "manuscript/output/"
-    
+
   preview:
     port: 44
     browser: true
     watch-inputs: false
     navigate: true
-    
+
 execute:
   freeze: auto  # Re-render only when source changes
 
 website:
   repo-url: "https://github.com/C-Monaghan/crisp-clam"
   repo-actions: [edit, issue]
-  
+
   page-navigation: true
   bread-crumbs: false
-  
+
   navbar:
     pinned: true
     background: "#1D6996"
     search: true
-    
+
     left:
       - text: "Data"
         file: "analysis/data-final.qmd"
@@ -44,45 +44,33 @@ website:
         file: "analysis/data-analysis.qmd"
       - text: "Manuscript"
         file: "analysis/manuscript.qmd"
-        
+
     right:
       - icon: github
         aria-label: github
         href: https://github.com/C-Monaghan/crisp-clam
-  
-  sidebar: 
-    - title: "Data"
-      style: docked
-      background: dark
-      contents: 
-        - section: "Data"
-          contents:
-            - analysis/data-final.qmd
-            - analysis/data-overview.qmd
-        - section: "Exploration"
-          contents:
-            - analysis/data-exploration.qmd
-    
+
+  sidebar:
     - title: "Analysis"
       style: docked
       background: dark
-      contents: 
-        - section: "Analysis Plan"
-          contents: 
+      contents:
+        - section: "Analysis plan"
+          contents:
             - analysis/data-analysis.qmd
-          
-        - section: "Models"
+
+        - section: "Statistical models"
           contents:
             - analysis/kruskal-wallis.qmd
             - analysis/discrete-markov.qmd
-            
+
     - title: "Empty space"
-          
-  page-footer: 
+
+  page-footer:
     left:  |
       Content {{< fa brands creative-commons >}} 2024–2025 by Cormac Monaghan, Rafael de Andrade Moral, Michelle Kelly, and Joanna McHugh Power<br>
       All content licensed under a {{< fa brands creative-commons >}}
-      {{< fa brands creative-commons-by >}} 
+      {{< fa brands creative-commons-by >}}
       [Creative Commons Attribution 4.0 International license (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
     right: |
       Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)<br>

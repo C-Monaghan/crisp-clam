@@ -3,8 +3,8 @@ title: "Analysis plan"
 format:
   html:
     toc: false
-bibliography: manuscript/references.bib
-csl: manuscript/csl/apa.csl
+bibliography: ../manuscript/references.bib
+csl: ../manuscript/csl/apa.csl
 editor:
   markdown:
     wrap: 80
