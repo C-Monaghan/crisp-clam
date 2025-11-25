@@ -1,5 +1,5 @@
 ---
-title: "Discrete Time Markov Model"
+title: "Markov Model"
 ---
 
 # Setting up
@@ -11,8 +11,6 @@ title: "Discrete Time Markov Model"
 #| output: false
 #| code-fold: true
 #| code-summary: "Check out my code"
-
-rm(list = ls())
 
 # Packages ---------------------------------------------------------------------
 library(dplyr)
@@ -28,15 +26,16 @@ purrr::walk(files, source)
 # Theme ------------------------------------------------------------------------
 colour <- "#212427"
 
-theme_set(
-  theme_minimal() +
-    theme(
-      plot.title = element_text(hjust = 0.5, size = 14, colour = colour, face = "bold"),
-      plot.subtitle = element_text(hjust = 0.5, size = 12, colour = colour),
-      axis.title = element_text(size = 10, colour = colour, face = "bold"),
-      strip.text = element_text(size = 10, colour = colour, face = "bold"),
-      legend.title = element_text(hjust = 0.5, colour = colour, face = "bold"),
-      ))
+theme_clean <- function(){
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, colour = colour, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, colour = colour),
+    axis.title = element_text(size = 10, colour = colour, face = "bold"),
+    strip.text = element_text(size = 10, colour = colour, face = "bold"),
+    legend.title = element_text(hjust = 0.5, colour = colour, face = "bold")
+  )
+}
 
 # Data -------------------------------------------------------------------------
 data <- read.csv(here::here("analysis/data/data.csv"))
@@ -48,14 +47,15 @@ Before preparing the data, we want to create a vector of covariates that we are 
 
 ```{r}
 #| label: covariates
-#| 
+#|
 cols <- c(
   "ID", "Gender", "Age", "Education_tri",
   paste0("apathy_", seq(2016, 2022, by = 2)),
+  paste0("mean_anxiety_", seq(16, 22, by = 2)),
   "Total_p")
 ```
 
-Following this, we can now use the `extract_years()` function to extract the cognitive function data for the years 2016, 2018, and 2020. 
+Following this, we can now use the `extract_years()` function to extract the cognitive function data for the years 2016, 2018, 2020, and 2022.
 
 - We will also impute some missing values `impute = TRUE` using logical reasoning (if a respondent has an NA value in 2018, but has a classification of "normal cognition" in 2020, then the missing 2018 value becomes "normal cognition").
 - We will also treat dementia as an absorbing state `absorbing = TRUE`.
@@ -63,7 +63,7 @@ Following this, we can now use the `extract_years()` function to extract the cog
 ```{r}
 #| label: extract-years
 #| collapse: true
-data_stack <- data |> 
+data_stack <- data |>
   extract_years(years = seq(2016, 2022, by = 2), impute = TRUE, absorbing = TRUE) |>
   na.omit()
 
@@ -79,92 +79,34 @@ For each respondent we will now add in their relevant covariate data. Following 
 #| collapse: true
 data_stack <- data_stack |>
   # Join covariate data
-  inner_join(data[, cols], by = "ID") |>
+    inner_join(data[, cols], by = "ID") |>
   # Removing baseline age below 60
-  filter(Age - (2022 - 2016) >= 60) |>
-  pivot_and_factorise(time_vary = TRUE) |>
-  group_by(ID) |>
+    filter(Age - (2022 - 2016) >= 60) |>
+    pivot_and_factorise(time_vary = TRUE) |>
+    group_by(ID) |>
   # Make age time varying
-  mutate(Age = Age - (2022 - as.numeric(as.character(wave))))
+    mutate(Age = Age - (2022 - as.numeric(as.character(wave)))) |>
+    ungroup()
 
 head(data_stack)
-``` 
+```
 
 Finally, we will create a new variable `status_prev` that notes the cognitive status of the respondent in the previous wave $(t - 1)$. This will be done by using the `lag` function from the `dplyr` package.
 
 ```{r}
 #| label: stack-data
 #| collapse: true
-#| 
+#|
 data_stack <- data_stack |>
   mutate(status_prev = lag(status), .after = status) |>
   filter(!is.na(Total_p)) |>
-  ungroup() |> 
+  ungroup() |>
   filter(wave != 2016)
 
 head(data_stack)
 ```
 
 # Modelling
-## Markov Process Fundamentals
-
-Discrete-time Markov models belong to a class of stochastic processes that satisfy the **Markov property**, which can be formally expressed as:
-
-$$
-P(X_{t+1} = j \vert X_t = i, X_{t-1} = i_{t-1}, \dots X_0 = i_0) = P(X_{t+1} = j \vert X_t = i)
-$$ {#eq-markov}
-
-This property establishes that the future state $X_{t+1}$ depends only on the current state $X_t$, not on the entire history of states.
-
-### Multinomial Logistic Regression Formulation
-
-We model the transition probabilities using **multinomial logistic regression**, where the log-odds of each transition relative to a reference state are linear functions of covariates.
-
-For a system with $K$ states (using state $K$ as reference), we have:
-
-$$
-log \left( \frac{P(Y = j \vert x)}{P(Y = k \vert x)} \right) = \beta_0 + \beta_j^Tx \qquad \text{for } j = 1, \dots K-1
-$$ {#eq-multinomial}
-
-For non-reference states $j = 1, \dots, K - 1$
-
-$$
-P(Y = j \vert x) = \frac{e^{\beta_{0j} + \beta_j^Tx}}{1 + \sum^{k - 1}_{k = 1} e^{\beta_{0k} + \beta_k^Tx}}
-$$ {#eq-non-reference}
-
-For the reference state $K$:
-
-$$
-P(Y = k \vert x) = \frac{1}{1 + \sum^{k - 1}_{k = 1} e^{\beta_{0k} + \beta_j^Tx }}
-$$ {#eq-reference}
-
-### Absorbing State Specification
-
-Our primary analysis assumes the transition matrix remains fixed:
-
-$$
-P^{(t)} \equiv P \qquad \forall \; t
-$$ {#eq-assumption}
-
-However, we model Dementia as an absorbing state:
-
-$$
-p_{3j} = \begin{cases} 
-1 \qquad \text{if } j = 3 \\
-0 \qquad \text{otherwise} \end{cases}
-$$ {#eq-dementia}
-
-yielding the constrained transition matrix:
-
-$$
-P = \begin{bmatrix} 
-p_{11} & p_{12} & p_{13} \\
-p_{21} & p_{22} & p_{23} \\
-0      & 0      & 1      \\
-\end{bmatrix}
-$$ {#eq-t-matrix-constrained}
-
-## Our model
 
 As mentioned, we estimate our Markov model using `nnet::multinom()`
 
@@ -172,20 +114,20 @@ As mentioned, we estimate our Markov model using `nnet::multinom()`
 #| label: model-fit
 
 fit_a <- nnet::multinom(
-  status ~ Gender + Education_tri + Depression + (Total_p * Age) + status_prev, 
-  family = multinomial, 
+  status ~ Gender + Education_tri + Apathy + (Total_p * Age) + status_prev,
+  family = multinomial,
   data = data_stack, trace = FALSE)
 
 fit_b <- nnet::multinom(
-  status ~ Gender + Education_tri + Depression + (Total_p * Age) + status_prev, 
-  family = multinomial, 
-  data = data_stack |> mutate(status = relevel(status, ref = 2)), 
+  status ~ Gender + Education_tri + Apathy + (Total_p * Age) + status_prev,
+  family = multinomial,
+  data = data_stack |> mutate(status = relevel(status, ref = 2)),
   trace = FALSE)
 ```
 
 ### Estimated parameters
 
-Below we present the estimated parameters for the interaction model (@tbl-interaction-output). We will transform the estimates to odds ratios and colour them based on significance.
+Below we present the estimated parameters for our model (@tbl-interaction-output). We will transform the estimates to odds ratios and colour them based on significance.
 
 ```{r}
 #| label: tbl-interaction-output
@@ -198,16 +140,17 @@ interaction_results <- rbind(tidy_output(fit_a), tidy_output(fit_b)) |>
   mutate(
     # Mutating to factors
     transition = factor(
-      transition, 
-      levels = c("NC - MCI", "MCI - NC", 
+      transition,
+      levels = c("NC - MCI", "MCI - NC",
                  "NC - Dementia", "MCI - Dementia")),
     term = factor(
       term,
-      levels = c("Being female", "Age", 
+      levels = c("Being female", "Age",
                  "High school degree vs. No education",
-                 "Further education vs. No education", "Depression",
-                 "Procrastination (2020)",  
-                 "Age x Procrastination", "Previous state: MCI", 
+                 "Further education vs. No education",
+                 "Apathy Scores", "Anxiety Scores",
+                 "Procrastination (2020)",
+                 "Age x Procrastination", "Previous state: MCI",
                  "Previous state: Dementia")),
     )
 
@@ -234,13 +177,13 @@ Let’s visualize the estimated odds ratios (@fig-odds-ratio-interaction) and pr
 #| fig-height: 10
 #| code-fold: true
 #| code-summary: "Check out my code"
-#| fig-cap: "Estimated odds ratios for the interaction model."
+#| fig-cap: "Estimated odds ratios for the Markov model."
 #| message: false
 #| warning: false
 
 # Design matrix for faceting
 design <- "
-  AABBCC 
+  AABBCC
   DDEEFF
   ##GG##
 "
@@ -250,7 +193,7 @@ interaction_results |>
   # Adding text labels
   mutate(
     label_pos = case_when(
-      stringr::str_detect(term, "Further") & 
+      stringr::str_detect(term, "Further") &
         stringr::str_detect(transition, "MCI - NC") ~ estimate - 0.5,
       stringr::str_detect(term, "Further") ~ estimate - 0.5,
       TRUE ~ estimate
@@ -277,26 +220,18 @@ interaction_results |>
     show.legend = FALSE) +
   # Customization
   scale_colour_manual(values = c(
-    "Positive" = "#0072B2", 
-    "Negative" = "#E69F00", 
+    "Positive" = "#0072B2",
+    "Negative" = "#E69F00",
     "NS"       = "#B2BEB5")) +
   # scale_x_continuous(expand = expansion(mult = 0.025, add = 0.025)) +
   labs(# title = "Odds ratios (stationary model)",
        x = "Odds Ratio", y = "Predictor") +
   guides(colour = "none") +
   ggh4x::facet_manual(
-    ~ term, scales = "free_x", 
-    design = design, labeller = labeller(
-     term = c("Depression" = "Apathy")
-    )) +
+    ~ term, scales = "free_x", design = design) +
   coord_cartesian(clip = "off") +
-  theme_bw() +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    axis.title = element_text(size = 12, face = "bold"),
-    strip.text = element_text(size = 10, face = "bold"),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank())
+  theme_clean() +
+  theme(panel.grid = element_blank())
 
 ```
 
@@ -306,7 +241,7 @@ interaction_results |>
 #| fig-height: 10
 #| code-fold: true
 #| code-summary: "Check out my code"
-#| fig-cap: "Predicted transition probabilities from the interaction model."
+#| fig-cap: "Predicted transition probabilities from the Markov model."
 #| warning: false
 
 # Making a new predicted dataset
@@ -314,7 +249,7 @@ pred_data <- expand.grid(
   Gender = factor(0),
   Age = seq(60, 97, length = 200),
   Education_tri = factor(0),
-  Depression = mean(data_stack$Depression, na.rm = TRUE),
+  Apathy = mean(data_stack$Apathy, na.rm = TRUE),
   status_prev = levels(data_stack$status_prev),
   Total_p = seq(0, 60, length = 200))
 
@@ -336,15 +271,15 @@ data_plot <- data_stack |>
       status, levels = c("Normal Cognition", "MCI", "Dementia")),
     status_prev = factor(
       status_prev, levels = c("Normal Cognition", "MCI", "Dementia"))) |>
-  filter(status_prev %in% c("Normal Cognition", "MCI") & 
+  filter(status_prev %in% c("Normal Cognition", "MCI") &
          status %in%  c("Normal Cognition", "MCI"))
-  
+
 # Plotting interaction effect ----------------------------------------------
 pred_data |>
   # Adding predictions
   modelr::add_predictions(model = fit_a, var = "pred", type = "probs") |>
   tidy_predictions() |>
-  filter(status_prev %in% c("Normal Cognition", "MCI") & 
+  filter(status_prev %in% c("Normal Cognition", "MCI") &
          status %in%  c("Normal Cognition", "MCI")) |>
   ggplot(aes(x = Total_p, y = as.numeric(Age))) +
   # Adding heat mat with contour lines
@@ -364,22 +299,15 @@ pred_data |>
                         breaks = NULL, labels = NULL)) +
   scale_fill_viridis_c(option = "plasma") +
   labs(
-    title = "Predicted transition probabilities from the interaction model",
-    x = "Total Procrastination", y = "Age", 
+    x = "Total Procrastination", y = "Age",
     fill = expression(hat(p))) +
   facet_grid(status ~ status_prev) +
-  theme_classic() +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    axis.title = element_text(size = 12, face = "bold"),
-    strip.text = element_text(size = 10, face = "bold"),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    legend.title = element_text(size = 10, face = "bold"))
+  theme_clean() +
+  theme(panel.grid = element_blank())
 
 ```
 
-Finally, (@fig-interaction-age-predictions) shows the the predicted transition probabilities for different age cohorts. 
+Finally, (@fig-interaction-age-predictions) shows the the predicted transition probabilities for different age cohorts.
 
 ```{r}
 #| label: fig-interaction-age-predictions
@@ -395,7 +323,7 @@ age_cohots <- expand.grid(
   Gender = factor(0),
   Age = c(62:97),
   Education_tri = factor(0),
-  Depression = mean(data_stack$Depression, na.rm = TRUE),
+  Apathy = mean(data_stack$Apathy, na.rm = TRUE),
   status_prev = levels(data_stack$status_prev),
   Total_p = seq(0, 60, length = 200)) |>
   modelr::add_predictions(model = fit_a, var = "pred", type = "probs") |>
@@ -403,7 +331,7 @@ age_cohots <- expand.grid(
   filter(status_prev %in% c("Normal Cognition", "MCI") &
          status %in%  c("Normal Cognition", "MCI")) |>
   mutate(label = case_when(
-    Age %in% c(70, 80, 90) ~ as.character(Age), 
+    Age %in% c(70, 80, 90) ~ as.character(Age),
     TRUE ~ "Other"
   ))
 
@@ -415,10 +343,10 @@ label_data <- age_cohots |>
   ungroup()
 
 # Plotting ---------------------------------------------------------------------
-ggplot(data = age_cohots, aes(x = Total_p, y = prob, 
+ggplot(data = age_cohots, aes(x = Total_p, y = prob,
                               group = interaction(Age, status_prev, status),
                               colour = label)) +
-  geom_line(aes(linewidth = label)) + 
+  geom_line(aes(linewidth = label)) +
   ggrepel::geom_text_repel(
     data = label_data,
     aes(label = paste0("Age ", Age), colour = as.character(Age)),
@@ -430,13 +358,13 @@ ggplot(data = age_cohots, aes(x = Total_p, y = prob,
     sec.axis = sec_axis( ~., name = "Previous State", breaks = NULL, labels = NULL)) +
   scale_y_continuous(sec.axis = sec_axis( ~ ., name = "Current State", breaks = NULL, labels = NULL)) +
   scale_colour_manual(values = c(
-    "70"    = "#E69F00", 
-    "80"    = "#56B4E9", 
+    "70"    = "#E69F00",
+    "80"    = "#56B4E9",
     "90"    = "#009E73",
     "Other" = "grey80")) +
   scale_linewidth_manual(values = c(
-    "70"    = 1.5, 
-    "80"    = 1.5, 
+    "70"    = 1.5,
+    "80"    = 1.5,
     "90"    = 1.5,
     "Other" = 0.5)) +
   labs(
@@ -446,13 +374,9 @@ ggplot(data = age_cohots, aes(x = Total_p, y = prob,
     status = c("Normal Cognition" = "Normative Cognitive Function"),
     status_prev = c("Normal Cognition" = "Normative Cognitive Function")
   )) +
-  theme_bw() +
+  theme_clean() +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    axis.title = element_text(size = 12, face = "bold"),
-    strip.text = element_text(size = 10, face = "bold"),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
+    panel.grid = element_blank()
     legend.title = element_text(size = 10, face = "bold"),
     legend.position = "none")
 ```

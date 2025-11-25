@@ -1,5 +1,5 @@
 ---
-title: "Download data"
+title: "Data files"
 format:
   html:
     code-tools: false
@@ -19,4 +19,3 @@ The cleaned data is available in three formats:
 ## Data (long format)
 
 <a class="btn btn-primary btn-sm" target="_blank" href="data/data_long.csv">{{< fa table >}} &ensp;<span class="font-monospace">data.csv</span></a> &emsp; <a class="btn btn-success btn-sm" target="_blank" href="data/data_long.rds">{{< fa brands r-project >}} &ensp;<span class="font-monospace">data.rds</span></a> &emsp; <a class="btn btn-warning btn-sm" target="_blank" href="data/data_long.dta">{{< fa table-cells >}} &ensp;<span class="font-monospace">data.dta</span></a>
-

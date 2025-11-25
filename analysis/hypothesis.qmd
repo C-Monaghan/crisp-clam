@@ -1,10 +1,12 @@
 ---
 title: "Hypotheses"
-format: 
+format:
   html:
     code-tools: false
     toc: false
 ---
+
+This study was **not pre-registered** on the [Open Science Framework](https://osf.io/). However, we had two main hypotheses.
 
 ## Hypothesis 1
 
@@ -22,4 +24,4 @@ We hypothesize that:
   - Increased risk of transitioning from normative cognitive function to MCI / dementia $(\beta = x, p < .05)$
   - Increased risk of transitioning from MCI to Dementia $(\beta = y, p < .05)$
 
-In order to test our hypotheses we will be using both a **non-parametric ANOVA** and a post-hoc test to compare procrastination scores between cognitive groups, and a **discrete time Markov Model** to assess the association between procrastination and cognitive decline transitions.
+In order to test our hypotheses we will be using both a **non-parametric ANOVA** and a post-hoc test to compare procrastination scores between cognitive groups, and a **discrete time Markov Model** to assess the association between procrastination and cognitive decline transitions (controlling for known covariates).

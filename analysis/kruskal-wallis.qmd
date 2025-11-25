@@ -1,8 +1,11 @@
 ---
 title: "Kruskal Wallis Test"
 format:
-  html: 
+  html:
     toc: false
+editor:
+  markdown:
+    wrap: 80
 ---
 
 ```{r}
@@ -24,7 +27,13 @@ data <- readRDS(here::here("analysis/data/data_long.RDS")) |>
   select(ID, status, Total_p)
 ```
 
-To examine whether procrastination scores differed across cognitive status groups in 2020, we first tested the assumption of homogeneity of variances using Levene’s test, which was violated ($p = 0.039$). Consequently, we employed the **Kruskal–Wallis test**, a rank-based non-parametric alternative to one-way ANOVA, to evaluate whether procrastination scores differed significantly among participants with normative cognitive function, mild cognitive impairment (MCI), and dementia.  
+To examine whether procrastination scores differed across cognitive status
+groups in 2020, we first tested the assumption of homogeneity of variances using
+Levene’s test, which was violated ($p = 0.039$). Consequently, we employed the
+**Kruskal–Wallis test**, a rank-based non-parametric alternative to one-way
+ANOVA, to evaluate whether procrastination scores differed significantly among
+participants with normative cognitive function, mild cognitive impairment (MCI),
+and dementia.
 
 ```{r}
 #| label: kw_test
@@ -36,11 +45,16 @@ kw_results <- kruskal.test(Total_p ~ status, data = data)
 # Outputting result
 broom::tidy(kw_results)
 ```
-The test revealed a significant effect of cognitive status on procrastination scores ($\chi^2(2) = 17.54, \; p < 0.001$), suggesting that at least two groups differ.
+
+The test revealed a significant effect of cognitive status on procrastination
+scores ($\chi^2(2) = 17.54, \; p < 0.001$), suggesting that at least two groups
+differ.
 
 ## Post-hoc analysis
 
-To identify where these differences lay, we conducted **pairwise Wilcoxon rank-sum tests with Benjamini–Hochberg (BH) correction** for multiple comparisons:
+To identify where these differences lay, we conducted **pairwise Wilcoxon
+rank-sum tests with Benjamini–Hochberg (BH) correction** for multiple
+comparisons:
 
 ```{r}
 #| label: posthoc
@@ -60,13 +74,20 @@ broom::tidy(pairwise_res) |>
 
 The results indicated that:
 
-- Normative cognitive function participants reported significantly lower procrastination scores than those with MCI ($p = 0.004$).
-- Normative cognitive function participants also reported significantly lower scores than those with dementia ($p = 0.005$).
-- No significant difference was found between the MCI and dementia groups ($p = 0.334$).
+-   Normative cognitive function participants reported significantly lower
+    procrastination scores than those with MCI ($p = 0.004$).
+-   Normative cognitive function participants also reported significantly lower
+    scores than those with dementia ($p = 0.005$).
+-   No significant difference was found between the MCI and dementia groups
+    ($p = 0.334$).
 
 ## Visualisation
 
-Figure fig-kruskal illustrates the distribution of procrastination scores across cognitive status groups. Individual scores are displayed as dotplots (left side of each box), and boxplots summarize the group distributions (right side). Significance bars represent the results of the pairwise comparisons described above.
+Figure fig-kruskal illustrates the distribution of procrastination scores across
+cognitive status groups. Individual scores are displayed as dotplots (left side
+of each box), and boxplots summarize the group distributions (right side).
+Significance bars represent the results of the pairwise comparisons described
+above.
 
 ```{r}
 #| label: fig-kruskal
@@ -80,7 +101,7 @@ Figure fig-kruskal illustrates the distribution of procrastination scores across
 anova_fig <- data |>
   ggplot(aes(x = status, y = Total_p, fill = status, colour = status)) +
   gghalves::geom_half_point(
-    side = "l", 
+    side = "l",
     transformation = ggbeeswarm::position_quasirandom(width = 0.15),
     size = 1.5, alpha = 0.5) +
   gghalves::geom_half_boxplot(side = "r", colour = "black") +
@@ -98,10 +119,10 @@ anova_fig <- data |>
   ggokabeito::scale_fill_okabe_ito() +
   ggokabeito::scale_color_okabe_ito() +
   scale_x_discrete(labels = c(
-    "1" = "Normative Cognitive Function", 
-    "2" = "MCI", 
+    "1" = "Normative Cognitive Function",
+    "2" = "MCI",
     "3" = "Dementia")) +
-  scale_y_continuous(breaks = seq(0, 60, by = 10), 
+  scale_y_continuous(breaks = seq(0, 60, by = 10),
                      expand = expansion(mult = 0.05, add = 1)) +
   labs(x = NULL, y = "Procrastination") +
   guides(fill = "none", colour = "none") +
@@ -110,4 +131,3 @@ anova_fig <- data |>
 
 anova_fig
 ```
-
