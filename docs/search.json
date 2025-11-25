@@ -18,206 +18,101 @@
     "href": "analysis/hypothesis.html",
     "title": "Hypotheses",
     "section": "",
-    "text": "We hypothesize that:\n\nH0: There are no group differences in procrastination scores between cognitive groups (normative cognitive function; MCI; Dementia).\nH1: There are group differences in procrastination scores between cognitive groups (normative cognitive function; MCI; Dementia)"
+    "text": "This study was not pre-registered on the Open Science Framework. However, we had two main hypotheses."
   },
   {
     "objectID": "analysis/hypothesis.html#hypothesis-1",
     "href": "analysis/hypothesis.html#hypothesis-1",
     "title": "Hypotheses",
-    "section": "",
-    "text": "We hypothesize that:\n\nH0: There are no group differences in procrastination scores between cognitive groups (normative cognitive function; MCI; Dementia).\nH1: There are group differences in procrastination scores between cognitive groups (normative cognitive function; MCI; Dementia)"
+    "section": "Hypothesis 1",
+    "text": "Hypothesis 1\nWe hypothesize that:\n\nH0: There are no group differences in procrastination scores between cognitive groups (normative cognitive function; MCI; Dementia).\nH1: There are group differences in procrastination scores between cognitive groups (normative cognitive function; MCI; Dementia)"
   },
   {
     "objectID": "analysis/hypothesis.html#hypothesis-2",
     "href": "analysis/hypothesis.html#hypothesis-2",
     "title": "Hypotheses",
     "section": "Hypothesis 2",
-    "text": "Hypothesis 2\nWe hypothesize that:\n\nH0: There is no association between procrastination and cognitive decline transitions\nH1: Higher scores on a measure of procrastination are associated with:\n\nIncreased risk of transitioning from normative cognitive function to MCI / dementia \\((\\beta = x, p &lt; .05)\\)\nIncreased risk of transitioning from MCI to Dementia \\((\\beta = y, p &lt; .05)\\)\n\n\nIn order to test our hypotheses we will be using both a non-parametric ANOVA and a post-hoc test to compare procrastination scores between cognitive groups, and a discrete time Markov Model to assess the association between procrastination and cognitive decline transitions."
+    "text": "Hypothesis 2\nWe hypothesize that:\n\nH0: There is no association between procrastination and cognitive decline transitions\nH1: Higher scores on a measure of procrastination are associated with:\n\nIncreased risk of transitioning from normative cognitive function to MCI / dementia \\((\\beta = x, p &lt; .05)\\)\nIncreased risk of transitioning from MCI to Dementia \\((\\beta = y, p &lt; .05)\\)\n\n\nIn order to test our hypotheses we will be using both a non-parametric ANOVA and a post-hoc test to compare procrastination scores between cognitive groups, and a discrete time Markov Model to assess the association between procrastination and cognitive decline transitions (controlling for known covariates)."
   },
   {
-    "objectID": "analysis/data-overview.html",
-    "href": "analysis/data-overview.html",
-    "title": "Data Overview",
+    "objectID": "analysis/data-final.html",
+    "href": "analysis/data-final.html",
+    "title": "Data files",
     "section": "",
-    "text": "The Health and Retirement Study (HRS) collects an extensive array of data related to cognitive health, physical well-being, economic status, and psychosocial factors. Among the information gathered, specific variables are used to assess and classify individuals into distinct categories of cognitive functioning. These classifications help to better understand the progression of cognitive decline, enabling researchers to track trends and identify factors that may influence cognitive health over time.\n\n\n\nNormative Cognitive Function: Individuals in this category show no significant signs of cognitive impairment and are able to function independently in daily activities.\nMild Cognitive Impairment (MCI): This stage reflects a slight but noticeable decline in cognitive abilities, such as memory or thinking skills, that goes beyond what would be expected with normal aging but does not yet interfere significantly with daily life.\nDementia: This classification is marked by more severe cognitive deficits, impacting memory, reasoning, and the ability to perform everyday tasks. Dementia encompasses various neurodegenerative conditions, with Alzheimer’s disease being the most common.\n\nBy tracking transitions between these categories, researchers can gain insights into the factors that contribute to cognitive decline and identify potential interventions to promote healthy aging.",
-    "crumbs": [
-      "Data",
-      "Data Overview"
-    ]
+    "text": "The cleaned data is available in three formats:"
   },
   {
-    "objectID": "analysis/data-overview.html#cognitive-function-categories",
-    "href": "analysis/data-overview.html#cognitive-function-categories",
-    "title": "Data Overview",
-    "section": "",
-    "text": "Normative Cognitive Function: Individuals in this category show no significant signs of cognitive impairment and are able to function independently in daily activities.\nMild Cognitive Impairment (MCI): This stage reflects a slight but noticeable decline in cognitive abilities, such as memory or thinking skills, that goes beyond what would be expected with normal aging but does not yet interfere significantly with daily life.\nDementia: This classification is marked by more severe cognitive deficits, impacting memory, reasoning, and the ability to perform everyday tasks. Dementia encompasses various neurodegenerative conditions, with Alzheimer’s disease being the most common.\n\nBy tracking transitions between these categories, researchers can gain insights into the factors that contribute to cognitive decline and identify potential interventions to promote healthy aging.",
-    "crumbs": [
-      "Data",
-      "Data Overview"
-    ]
+    "objectID": "analysis/data-final.html#data-wide-format",
+    "href": "analysis/data-final.html#data-wide-format",
+    "title": "Data files",
+    "section": "Data (wide format)",
+    "text": "Data (wide format)\n  data.csv     data.rds     data.dta"
   },
   {
-    "objectID": "analysis/data-overview.html#lwc2022-package",
-    "href": "analysis/data-overview.html#lwc2022-package",
-    "title": "Data Overview",
-    "section": "LWC2022 Package",
-    "text": "LWC2022 Package\nIn order to address this we developed the LWC2022 package (Monaghan2024b?) to replicate the methodology of (Langa2023?). This package automates the classification process, ensuring consistency with previous waves and providing researchers with an up-to-date resource for studying cognitive decline and dementia across all available HRS waves.",
-    "crumbs": [
-      "Data",
-      "Data Overview"
-    ]
-  },
-  {
-    "objectID": "analysis/data-exploration.html",
-    "href": "analysis/data-exploration.html",
-    "title": "Exploratory Data Analysis",
-    "section": "",
-    "text": "Check out my code\n# Packages ---------------------------------------------------------------------\npacman::p_load(\n  dplyr,         # For data manipulation\n  tidyr,         # For even more data manipulation\n  stringr,       # String manipulation\n  ggplot2,       # For cool plots\n  ggalluvial     # For alluvial diagrams\n)\n\n# Functions --------------------------------------------------------------------\nfunc_files &lt;- c(\n  here::here(\"R/count_transitions.R\"),\n  here::here(\"R/extract-years.R\"),\n  here::here(\"R/plot_cognitive_scores.R\"),\n  here::here(\"R/plot_transitions.R\")\n)\n\npurrr::walk(func_files, source)\n\n# Theme ------------------------------------------------------------------------\ncolour = \"#212427\"\n\ntheme_clean &lt;- function() {\n  theme_minimal() +\n    theme(\n      plot.title = element_text(hjust = 0.5, size = 14, face = \"bold\", colour = colour ),\n      plot.subtitle = element_text( hjust = 0.5, size = 10, colour = colour),\n      axis.title = element_text(size = 10,face = \"bold\",colour = colour),\n      strip.text = element_text(size = 10,face = \"bold\",colour = colour),\n      panel.grid = element_blank(),\n    )\n  }\n\n# Read in data -----------------------------------------------------------------\ndata &lt;- read.csv(here::here(\"analysis/data/data.csv\"))\nOur updated dataset contains 13 columns of cognitive classifications spanning from 1996 to 2022. These columns reflect dementia status across each wave, using the same criteria and structure as the original Langa-Weir dataset, now extended to include the most recent 2022 wave.\ndementia_data &lt;- data |&gt;\n  count_transitions(years = seq(1996, 2022, by = 2))\n\nglimpse(dementia_data)\n\nRows: 2,296\nColumns: 3\n$ ID             &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3…\n$ Wave           &lt;fct&gt; HRS 1996, HRS 1998, HRS 2000, HRS 2002, HRS 2004, HRS 2…\n$ Classification &lt;fct&gt; Normal Cognition, Normal Cognition, Normal Cognition, N…",
-    "crumbs": [
-      "Data",
-      "Exploration",
-      "Exploratory Data Analysis"
-    ]
-  },
-  {
-    "objectID": "analysis/data-exploration.html#missing-data",
-    "href": "analysis/data-exploration.html#missing-data",
-    "title": "Exploratory Data Analysis",
-    "section": "Missing data",
-    "text": "Missing data\nSince the participant pool is drawn from the 2020 wave of the HRS data, any analysis that looks back at previous waves will inevitably encounter missing data. Not all participants were included in earlier waves, leading to gaps in the data. Figure 1 displays the frequency of missing cognitive test data across each HRS wave.\n\n\nCheck out my code\n# Dynamic colours\ncolours &lt;- c(rep(\"#2e2e2e\", times = 12), \"red\", \"#2e2e2e\")\n\ndata |&gt;\n  select(any_of(paste0(\"cogtot27_imp\", 1996:2022))) |&gt;\n  rename_with(~ str_replace(., \"cogtot27_imp\", \"\"), starts_with(\"cogtot27\")) |&gt;\n  visdat::vis_dat() +\n  labs(title = \"Missing data across HRS Waves (1996 - 2022)\", \n       subtitle = \"Total Cognitive Scores\") +\n  theme_clean() +\n  theme(legend.position = \"none\")\n\n\n\n\n\n\n\n\nFigure 1: Occurance of missing data across HRS waves (participants were gathered from the 2020 HRS wave [in red])\n\n\n\n\n\nThe HRS had its most recent participant intake in 2016, which explains the notable decline in missing data occurrences from that point onward. As new participants were not added after 2016, the dataset becomes more complete in subsequent waves, with fewer missing values.\nGiven this shift, we will conduct our analysis the reduced dataset (2016 - 2022) (Figure 2) along with removing the missing values from 2016 and 2018.\n\n\nCheck out my code\ndata |&gt;\n  select(any_of(paste0(\"cogtot27_imp\", 2016:2022))) |&gt;\n  rename_with(~ str_replace(., \"cogtot27_imp\", \"\"), starts_with(\"cogtot27\")) |&gt;\n  na.omit() |&gt;\n  visdat::vis_dat() +\n  labs(title = \"Complete dataset across HRS Waves (2016 - 2022)\", \n       subtitle = \"Total Cognitive Scores\") +\n  theme(\n    plot.title = element_text(\n      hjust = 0.5, size = 14, face = \"bold\", colour = colour),\n    plot.subtitle = element_text(\n      hjust = 0.5, size = 12, face = \"bold\", colour = colour),\n    axis.text.x = element_text(size = 9),\n    panel.grid = element_blank(),\n    legend.position = \"none\"\n  )\n\n\n\n\n\n\n\n\nFigure 2: HRS dataset after processing",
-    "crumbs": [
-      "Data",
-      "Exploration",
-      "Exploratory Data Analysis"
-    ]
-  },
-  {
-    "objectID": "analysis/data-exploration.html#exploratory-data-analysis",
-    "href": "analysis/data-exploration.html#exploratory-data-analysis",
-    "title": "Exploratory Data Analysis",
-    "section": "Exploratory Data Analysis",
-    "text": "Exploratory Data Analysis\n\nCognitive Test Scores\nInitially, we will plot a distribution of the cognitive test scores (ranging from 0 - 27) across time for all HRS participants.\n\nplot_cognitive_scores(data = data, year = 2016)\n\n\n\n\n\n\n\nFigure 3: Cognitive test scores (2016 - 2022)\n\n\n\n\n\n\n\nClassification proportion per year\nFigure 4 shows the proportion of dementia classifications from HRS 2016 - 2022.\n\n# Plotting proportions --------------------------------------------------------\ndata |&gt;\n  count_transitions(years = seq(2016, 2022, by = 2), absorbing = TRUE) |&gt;\n  ggplot(aes(x = Wave, fill = Classification)) +\n  geom_bar(position = \"fill\", alpha = 0.5, colour = \"black\") +\n  scale_y_continuous(labels = scales::percent) +\n  labs(title = \"Proportion of Cognitive Status Classifications (2016 - 2022)\", \n       x = \"\", y = \"Percentage\") +\n  scale_fill_viridis_d(direction = -1) +\n  theme(\n    axis.text = element_text(size = 10),\n    text = element_text(size = 10)) +\n  ggeasy::easy_move_legend(\"bottom\") +\n  ggeasy::easy_remove_legend_title()\n\n\n\n\n\n\n\nFigure 4: Proportion of dementia classifications per year\n\n\n\n\n\n\n\nDementia transitions per year\nFigure 5 is an alluvial graph illustrating the transitions in cognitive classifications from one HRS wave to the next.\n\ndata |&gt;\n  count_transitions(years = seq(2016, 2022, by = 2)) |&gt;\n  group_by(ID, Wave) |&gt;\n  reframe(plyr::count(Classification)) |&gt;\n  rename(Classification = x, n = freq) |&gt;\n  plot_transitions(size = 2.5)\n\n\n\n\n\n\n\nFigure 5: Dementia transitions (2016 - 2022)\n\n\n\n\n\nFrom this figure we can see that some individuals classified with dementia in one wave transition out of dementia in a subsequent wave. Let’s fix this by adding an additional parameter to our count_transitions() function to turn dementia into an absorbing state (Figure 6). We can do this by using the cumany() function from the dplyr [@Wickham2023] package.\n\ndata |&gt;\n  count_transitions(years = seq(2016, 2022, by = 2), absorbing = TRUE) |&gt;\n  group_by(ID, Wave) |&gt;\n  reframe(plyr::count(Classification)) |&gt;\n  rename(Classification = x, n = freq) |&gt;\n  plot_transitions(size = 2.5)\n\n\n\n\n\n\n\nFigure 6: Dementia transitions with dementia as an absorbing state (2016 - 2022)",
-    "crumbs": [
-      "Data",
-      "Exploration",
-      "Exploratory Data Analysis"
-    ]
+    "objectID": "analysis/data-final.html#data-long-format",
+    "href": "analysis/data-final.html#data-long-format",
+    "title": "Data files",
+    "section": "Data (long format)",
+    "text": "Data (long format)\n  data.csv     data.rds     data.dta"
   },
   {
     "objectID": "analysis/data-analysis.html",
     "href": "analysis/data-analysis.html",
-    "title": "Analysis Plan",
+    "title": "Analysis plan",
     "section": "",
     "text": "To examine whether procrastination scores differed by cognitive status, we employed the Kruskal–Wallis test, a non-parametric alternative to one-way ANOVA. This test is appropriate when the assumption of homogeneity of variance is violated. The Kruskal–Wallis test evaluates whether the distribution of ranks differs across groups and is formally expressed as:\n\\[\nH = \\frac{n - 1}{n} \\times \\sum^k_{i = 1}\\frac{n_i \\times (\\bar{R} - E_R)^2}{\\sigma^2}\n\\]\nwhere \\(k\\) denotes the number of groups, \\(n_i\\) the number of participants in group \\(i\\), \\(n\\) the total sample size, \\(\\bar{R}\\) the mean rank sum of each group, \\(E_R\\) the expected value of the rankings and \\(\\sigma^2\\) the rank variance. Under the null hypothesis that all groups have the same distribution, \\(H\\) approximately follows a \\(\\chi^2\\) distribution with \\(k-1\\) degrees of freedom.",
     "crumbs": [
       "Analysis",
-      "Analysis Plan",
-      "Analysis Plan"
+      "Analysis plan",
+      "Analysis plan"
     ]
   },
   {
     "objectID": "analysis/data-analysis.html#cross-sectional-analysis",
     "href": "analysis/data-analysis.html#cross-sectional-analysis",
-    "title": "Analysis Plan",
+    "title": "Analysis plan",
     "section": "",
     "text": "To examine whether procrastination scores differed by cognitive status, we employed the Kruskal–Wallis test, a non-parametric alternative to one-way ANOVA. This test is appropriate when the assumption of homogeneity of variance is violated. The Kruskal–Wallis test evaluates whether the distribution of ranks differs across groups and is formally expressed as:\n\\[\nH = \\frac{n - 1}{n} \\times \\sum^k_{i = 1}\\frac{n_i \\times (\\bar{R} - E_R)^2}{\\sigma^2}\n\\]\nwhere \\(k\\) denotes the number of groups, \\(n_i\\) the number of participants in group \\(i\\), \\(n\\) the total sample size, \\(\\bar{R}\\) the mean rank sum of each group, \\(E_R\\) the expected value of the rankings and \\(\\sigma^2\\) the rank variance. Under the null hypothesis that all groups have the same distribution, \\(H\\) approximately follows a \\(\\chi^2\\) distribution with \\(k-1\\) degrees of freedom.",
     "crumbs": [
       "Analysis",
-      "Analysis Plan",
-      "Analysis Plan"
+      "Analysis plan",
+      "Analysis plan"
     ]
   },
   {
     "objectID": "analysis/data-analysis.html#longitudinal-analysis",
     "href": "analysis/data-analysis.html#longitudinal-analysis",
-    "title": "Analysis Plan",
+    "title": "Analysis plan",
     "section": "Longitudinal analysis",
-    "text": "Longitudinal analysis\nTo model transitions in cognitive states over time, we employed a first order discrete-time Markov model, a class of stochastic processes that satisfy the Markov property, which can be formally expressed as:\n\\[\nP(X_{t+1} = j \\; \\vert \\; X_t = i, X_{t-1} = i_{t-1}, \\dots X_0 = i_0) = P(X_{t+1} = j \\; \\vert x_t = 1)\n\\]\nThis property asserts that the probability of transitioning from state \\(X_t = i\\) to a future state \\(X_{t+1} = j\\) depends only on the current state \\(X_t\\), and not on the full history of preceding states.\nUnlike continuous-time models, discrete-time Markov models are not readily supported by a dedicated R package for deriving transition probabilities. Therefore, we implemented the model manually using multinomial logistic regression from the nnet package. This approach estimates the log-odds of transitioning to each non-reference state as a linear function of covariates, relative to a chosen reference state. For a system with \\(K\\) cognitive states (with state \\(K\\) as the reference), the model takes the form:\n\\[\nlog \\left( \\frac{P(Y = j \\vert x)}{P(Y = k \\vert x)} \\right) = \\beta_0 + \\beta_j^Tx \\qquad \\text{for } j = 1, \\dots K-1\n\\]\nFor non-reference states \\(j = 1, \\dots, K - 1\\)\n\\[\nP(Y = j \\vert x) = \\frac{e^{\\beta_{0j} + \\beta_j^Tx}}{1 + \\sum^{k - 1}_{k = 1} e^{\\beta_{0k} + \\beta_k^Tx}}\n\\]\nFor the reference state \\(K\\):\n\\[\nP(Y = k \\vert x) = \\frac{1}{1 + \\sum^{k - 1}_{k = 1} e^{\\beta_{0k} + \\beta_j^Tx }}\n\\]\nAdditional, to assess model fit and guide model selection for the covariates in the \\(\\beta_j\\) vectors, we conducted likelihood-ratio tests comparing full and reduced models. Such tests are defined as:\n\\[\nD = 2 \\times (\\ell_{reduced} - \\ell_{full})\n\\]\nwhere \\(\\ell_{full}\\) and \\(\\ell_{reduced}\\) denote the log-likelihoods of the respective models. Under the null hypothesis that the full model does not represent an improved fit when compared to the reduced model, \\(D\\) has an asymptotic \\(\\chi^2\\) distribution with degrees of freedom corresponding to the difference between the numbers of parameters estimated by the two models.",
+    "text": "Longitudinal analysis\nTo model transitions in cognitive states over time, we employed a first order discrete-time Markov model, a class of stochastic processes that satisfy the Markov property, which can be formally expressed as:\n\\[\nP(X_{t+1} = j \\; \\vert \\; X_t = i, X_{t-1} = i_{t-1}, \\dots X_0 = i_0) = P(X_{t+1} = j \\; \\vert x_t = 1)\n\\]\nThis property asserts that the probability of transitioning from state \\(X_t = i\\) to a future state \\(X_{t+1} = j\\) depends only on the current state \\(X_t\\), and not on the full history of preceding states.\nUnlike continuous-time models, discrete-time Markov models are not readily supported by a dedicated R package for deriving transition probabilities. Therefore, we implemented the model manually using multinomial logistic regression from the nnet package (Venables & Ripley, 2002). This approach estimates the log-odds of transitioning to each non-reference state as a linear function of covariates, relative to a chosen reference state. For a system with \\(K\\) cognitive states (with state \\(K\\) as the reference), the model takes the form:\n\\[\nlog \\left( \\frac{P(Y = j \\vert x)}{P(Y = k \\vert x)} \\right) = \\beta_0 + \\beta_j^Tx \\qquad \\text{for } j = 1, \\dots K-1\n\\]\nFor non-reference states \\(j = 1, \\dots, K - 1\\)\n\\[\nP(Y = j \\vert x) = \\frac{e^{\\beta_{0j} + \\beta_j^Tx}}{1 + \\sum^{k - 1}_{k = 1} e^{\\beta_{0k} + \\beta_k^Tx}}\n\\]\nFor the reference state \\(K\\):\n\\[\nP(Y = k \\vert x) = \\frac{1}{1 + \\sum^{k - 1}_{k = 1} e^{\\beta_{0k} + \\beta_j^Tx }}\n\\]\nAdditional, to assess model fit and guide model selection for the covariates in the \\(\\beta_j\\) vectors, we conducted likelihood-ratio tests comparing full and reduced models. Such tests are defined as:\n\\[\nD = 2 \\times (\\ell_{reduced} - \\ell_{full})\n\\]\nwhere \\(\\ell_{full}\\) and \\(\\ell_{reduced}\\) denote the log-likelihoods of the respective models. Under the null hypothesis that the full model does not represent an improved fit when compared to the reduced model, \\(D\\) has an asymptotic \\(\\chi^2\\) distribution with degrees of freedom corresponding to the difference between the numbers of parameters estimated by the two models.",
     "crumbs": [
       "Analysis",
-      "Analysis Plan",
-      "Analysis Plan"
-    ]
-  },
-  {
-    "objectID": "analysis/data-final.html",
-    "href": "analysis/data-final.html",
-    "title": "Download data",
-    "section": "",
-    "text": "The cleaned data is available in three formats:",
-    "crumbs": [
-      "Data",
-      "Download data"
-    ]
-  },
-  {
-    "objectID": "analysis/data-final.html#data-wide-format",
-    "href": "analysis/data-final.html#data-wide-format",
-    "title": "Download data",
-    "section": "Data (wide format)",
-    "text": "Data (wide format)\n  data.csv     data.rds     data.dta",
-    "crumbs": [
-      "Data",
-      "Download data"
-    ]
-  },
-  {
-    "objectID": "analysis/data-final.html#data-long-format",
-    "href": "analysis/data-final.html#data-long-format",
-    "title": "Download data",
-    "section": "Data (long format)",
-    "text": "Data (long format)\n  data.csv     data.rds     data.dta",
-    "crumbs": [
-      "Data",
-      "Download data"
+      "Analysis plan",
+      "Analysis plan"
     ]
   },
   {
     "objectID": "analysis/discrete-markov.html",
     "href": "analysis/discrete-markov.html",
-    "title": "Discrete Time Markov Model",
+    "title": "Markov Model",
     "section": "",
-    "text": "Check out my code\nrm(list = ls())\n\n# Packages ---------------------------------------------------------------------\nlibrary(dplyr)\nlibrary(tidyr)\nlibrary(ggplot2)\nlibrary(patchwork)\n\n# Functions --------------------------------------------------------------------\nfiles &lt;- list.files(here::here(\"R/\"), full.names = TRUE)\n\npurrr::walk(files, source)\n\n# Theme ------------------------------------------------------------------------\ncolour &lt;- \"#212427\"\n\ntheme_set(\n  theme_minimal() +\n    theme(\n      plot.title = element_text(hjust = 0.5, size = 14, colour = colour, face = \"bold\"),\n      plot.subtitle = element_text(hjust = 0.5, size = 12, colour = colour),\n      axis.title = element_text(size = 10, colour = colour, face = \"bold\"),\n      strip.text = element_text(size = 10, colour = colour, face = \"bold\"),\n      legend.title = element_text(hjust = 0.5, colour = colour, face = \"bold\"),\n      ))\n\n# Data -------------------------------------------------------------------------\ndata &lt;- read.csv(here::here(\"analysis/data/data.csv\"))",
+    "text": "Check out my code\n# Packages ---------------------------------------------------------------------\nlibrary(dplyr)\nlibrary(tidyr)\nlibrary(ggplot2)\nlibrary(patchwork)\n\n# Functions --------------------------------------------------------------------\nfiles &lt;- list.files(here::here(\"R/\"), full.names = TRUE)\n\npurrr::walk(files, source)\n\n# Theme ------------------------------------------------------------------------\ncolour &lt;- \"#212427\"\n\ntheme_clean &lt;- function(){\n  theme_bw() +\n  theme(\n    plot.title = element_text(hjust = 0.5, size = 14, colour = colour, face = \"bold\"),\n    plot.subtitle = element_text(hjust = 0.5, size = 12, colour = colour),\n    axis.title = element_text(size = 10, colour = colour, face = \"bold\"),\n    strip.text = element_text(size = 10, colour = colour, face = \"bold\"),\n    legend.title = element_text(hjust = 0.5, colour = colour, face = \"bold\")\n  )\n}\n\n# Data -------------------------------------------------------------------------\ndata &lt;- read.csv(here::here(\"analysis/data/data.csv\"))",
     "crumbs": [
       "Analysis",
-      "Models",
-      "Discrete Time Markov Model"
+      "Statistical models",
+      "Markov Model"
     ]
   },
   {
     "objectID": "analysis/discrete-markov.html#creating-a-stacked-dataset",
     "href": "analysis/discrete-markov.html#creating-a-stacked-dataset",
-    "title": "Discrete Time Markov Model",
+    "title": "Markov Model",
     "section": "Creating a stacked dataset",
-    "text": "Creating a stacked dataset\nFor each respondent we will now add in their relevant covariate data. Following this, we transform the data to long format and convert categorical variables to factors using the pivot_and_factorise() function. Additionally, we will fix the Age column to properly represent the age of the respondent at each time point\n\ndata_stack &lt;- data_stack |&gt;\n  # Join covariate data\n  inner_join(data[, cols], by = \"ID\") |&gt;\n  # Removing baseline age below 60\n  filter(Age - (2022 - 2016) &gt;= 60) |&gt;\n  pivot_and_factorise(time_vary = TRUE) |&gt;\n  group_by(ID) |&gt;\n  # Make age time varying\n  mutate(Age = Age - (2022 - as.numeric(as.character(wave))))\n\nhead(data_stack)\n## # A tibble: 6 × 8\n## # Groups:   ID [2]\n##      ID wave  status Gender   Age Education_tri Total_p Depression\n##   &lt;int&gt; &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;           &lt;int&gt;      &lt;int&gt;\n## 1     1 2016  1      1         72 2                  22          0\n## 2     1 2018  1      1         74 2                  22          0\n## 3     1 2020  1      1         76 2                  22          0\n## 4     1 2022  1      1         78 2                  22          0\n## 5     2 2016  1      1         75 2                  41          1\n## 6     2 2018  1      1         77 2                  41          1\n\nFinally, we will create a new variable status_prev that notes the cognitive status of the respondent in the previous wave \\((t - 1)\\). This will be done by using the lag function from the dplyr package.\n\ndata_stack &lt;- data_stack |&gt;\n  mutate(status_prev = lag(status), .after = status) |&gt;\n  filter(!is.na(Total_p)) |&gt;\n  ungroup() |&gt; \n  filter(wave != 2016)\n\nhead(data_stack)\n## # A tibble: 6 × 9\n##      ID wave  status status_prev Gender   Age Education_tri Total_p Depression\n##   &lt;int&gt; &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;       &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;           &lt;int&gt;      &lt;int&gt;\n## 1     1 2018  1      1           1         74 2                  22          0\n## 2     1 2020  1      1           1         76 2                  22          0\n## 3     1 2022  1      1           1         78 2                  22          0\n## 4     2 2018  1      1           1         77 2                  41          1\n## 5     2 2020  1      1           1         79 2                  41          1\n## 6     2 2022  1      1           1         81 2                  41          0",
+    "text": "Creating a stacked dataset\nFor each respondent we will now add in their relevant covariate data. Following this, we transform the data to long format and convert categorical variables to factors using the pivot_and_factorise() function. Additionally, we will fix the Age column to properly represent the age of the respondent at each time point\n\ndata_stack &lt;- data_stack |&gt;\n  # Join covariate data\n    inner_join(data[, cols], by = \"ID\") |&gt;\n  # Removing baseline age below 60\n    filter(Age - (2022 - 2016) &gt;= 60) |&gt;\n    pivot_and_factorise(time_vary = TRUE) |&gt;\n    group_by(ID) |&gt;\n  # Make age time varying\n    mutate(Age = Age - (2022 - as.numeric(as.character(wave)))) |&gt;\n    ungroup()\n\nhead(data_stack)\n## # A tibble: 6 × 9\n##      ID wave  status Gender   Age Education_tri Total_p Apathy Anxiety\n##   &lt;int&gt; &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;           &lt;int&gt;  &lt;int&gt;   &lt;dbl&gt;\n## 1     1 2016  1      1         72 2                  22      0    NA  \n## 2     1 2018  1      1         74 2                  22      0     1.8\n## 3     1 2020  1      1         76 2                  22      0    NA  \n## 4     1 2022  1      1         78 2                  22      0     1.6\n## 5     2 2016  1      1         75 2                  41      1    NA  \n## 6     2 2018  1      1         77 2                  41      1     2.6\n\nFinally, we will create a new variable status_prev that notes the cognitive status of the respondent in the previous wave \\((t - 1)\\). This will be done by using the lag function from the dplyr package.\n\n#|\ndata_stack &lt;- data_stack |&gt;\n  mutate(status_prev = lag(status), .after = status) |&gt;\n  filter(!is.na(Total_p)) |&gt;\n  ungroup() |&gt;\n  filter(wave != 2016)\n\nhead(data_stack)\n## # A tibble: 6 × 10\n##      ID wave  status status_prev Gender   Age Education_tri Total_p Apathy\n##   &lt;int&gt; &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;       &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;           &lt;int&gt;  &lt;int&gt;\n## 1     1 2018  1      1           1         74 2                  22      0\n## 2     1 2020  1      1           1         76 2                  22      0\n## 3     1 2022  1      1           1         78 2                  22      0\n## 4     2 2018  1      1           1         77 2                  41      1\n## 5     2 2020  1      1           1         79 2                  41      1\n## 6     2 2022  1      1           1         81 2                  41      0\n## # ℹ 1 more variable: Anxiety &lt;dbl&gt;",
     "crumbs": [
       "Analysis",
-      "Models",
-      "Discrete Time Markov Model"
-    ]
-  },
-  {
-    "objectID": "analysis/discrete-markov.html#markov-process-fundamentals",
-    "href": "analysis/discrete-markov.html#markov-process-fundamentals",
-    "title": "Discrete Time Markov Model",
-    "section": "Markov Process Fundamentals",
-    "text": "Markov Process Fundamentals\nDiscrete-time Markov models belong to a class of stochastic processes that satisfy the Markov property, which can be formally expressed as:\n\\[\nP(X_{t+1} = j \\vert X_t = i, X_{t-1} = i_{t-1}, \\dots X_0 = i_0) = P(X_{t+1} = j \\vert X_t = i)\n\\tag{1}\\]\nThis property establishes that the future state \\(X_{t+1}\\) depends only on the current state \\(X_t\\), not on the entire history of states.\n\nMultinomial Logistic Regression Formulation\nWe model the transition probabilities using multinomial logistic regression, where the log-odds of each transition relative to a reference state are linear functions of covariates.\nFor a system with \\(K\\) states (using state \\(K\\) as reference), we have:\n\\[\nlog \\left( \\frac{P(Y = j \\vert x)}{P(Y = k \\vert x)} \\right) = \\beta_0 + \\beta_j^Tx \\qquad \\text{for } j = 1, \\dots K-1\n\\tag{2}\\]\nFor non-reference states \\(j = 1, \\dots, K - 1\\)\n\\[\nP(Y = j \\vert x) = \\frac{e^{\\beta_{0j} + \\beta_j^Tx}}{1 + \\sum^{k - 1}_{k = 1} e^{\\beta_{0k} + \\beta_k^Tx}}\n\\tag{3}\\]\nFor the reference state \\(K\\):\n\\[\nP(Y = k \\vert x) = \\frac{1}{1 + \\sum^{k - 1}_{k = 1} e^{\\beta_{0k} + \\beta_j^Tx }}\n\\tag{4}\\]\n\n\nAbsorbing State Specification\nOur primary analysis assumes the transition matrix remains fixed:\n\\[\nP^{(t)} \\equiv P \\qquad \\forall \\; t\n\\tag{5}\\]\nHowever, we model Dementia as an absorbing state:\n\\[\np_{3j} = \\begin{cases}\n1 \\qquad \\text{if } j = 3 \\\\\n0 \\qquad \\text{otherwise} \\end{cases}\n\\tag{6}\\]\nyielding the constrained transition matrix:\n\\[\nP = \\begin{bmatrix}\np_{11} & p_{12} & p_{13} \\\\\np_{21} & p_{22} & p_{23} \\\\\n0      & 0      & 1      \\\\\n\\end{bmatrix}\n\\tag{7}\\]",
-    "crumbs": [
-      "Analysis",
-      "Models",
-      "Discrete Time Markov Model"
-    ]
-  },
-  {
-    "objectID": "analysis/discrete-markov.html#our-model",
-    "href": "analysis/discrete-markov.html#our-model",
-    "title": "Discrete Time Markov Model",
-    "section": "Our model",
-    "text": "Our model\nAs mentioned, we estimate our Markov model using nnet::multinom()\n\nfit_a &lt;- nnet::multinom(\n  status ~ Gender + Education_tri + Depression + (Total_p * Age) + status_prev, \n  family = multinomial, \n  data = data_stack, trace = FALSE)\n\nfit_b &lt;- nnet::multinom(\n  status ~ Gender + Education_tri + Depression + (Total_p * Age) + status_prev, \n  family = multinomial, \n  data = data_stack |&gt; mutate(status = relevel(status, ref = 2)), \n  trace = FALSE)\n\n\nEstimated parameters\nBelow we present the estimated parameters for the interaction model (Table 1). We will transform the estimates to odds ratios and colour them based on significance.\n\n\nCheck out my code\ninteraction_results &lt;- rbind(tidy_output(fit_a), tidy_output(fit_b)) |&gt;\n  mutate(\n    # Mutating to factors\n    transition = factor(\n      transition, \n      levels = c(\"NC - MCI\", \"MCI - NC\", \n                 \"NC - Dementia\", \"MCI - Dementia\")),\n    term = factor(\n      term,\n      levels = c(\"Being female\", \"Age\", \n                 \"High school degree vs. No education\",\n                 \"Further education vs. No education\", \"Depression\",\n                 \"Procrastination (2020)\",  \n                 \"Age x Procrastination\", \"Previous state: MCI\", \n                 \"Previous state: Dementia\")),\n    )\n\ninteraction_results |&gt;\n  mutate(across(c(estimate, conf.low, conf.high), ~ round(x = ., digits = 4))) |&gt;\n  DT::datatable(\n    options = list(\n      pageLength = 10,\n      dom = \"tip\",\n      ordering = FALSE,\n      columnDefs = list(list(className = \"dt-center\", targets = \"_all\"))\n    ),\n    rownames = FALSE\n  )\n\n\n\n\n\n\n\n\n\n\nTable 1: Estimated parameters for the interaction model\n\n\n\n\n\n\nModel visualisation\nLet’s visualize the estimated odds ratios (Figure 1) and predicted transition probabilities (Figure 2) for our interaction model.\n\n\nCheck out my code\n# Design matrix for faceting\ndesign &lt;- \"\n  AABBCC \n  DDEEFF\n  ##GG##\n\"\n\ninteraction_results |&gt;\n  filter(!term %in% c(\"Previous state: MCI\", \"Previous state: Dementia\")) |&gt;\n  # Adding text labels\n  mutate(\n    label_pos = case_when(\n      stringr::str_detect(term, \"Further\") & \n        stringr::str_detect(transition, \"MCI - NC\") ~ estimate - 0.5,\n      stringr::str_detect(term, \"Further\") ~ estimate - 0.5,\n      TRUE ~ estimate\n    ),\n    label_text = sprintf(\n    \"&lt;span style='line-height:3.5'&gt;OR = %.3f&lt;br&gt;&lt;br&gt;[%.3f, %.3f]&lt;/span&gt;\",\n    estimate, conf.low, conf.high)) |&gt;\n  # Plotting\n  ggplot(aes(x = estimate, y = transition, colour = colour)) +\n  geom_vline(xintercept = 1, linetype = \"dashed\", color = \"gray50\") +\n  # Odds ratios\n  ggstance::geom_pointrangeh(\n    aes(xmin = conf.low, xmax = conf.high),\n    position = ggstance::position_dodgev(height = 0.6),\n    size = 1,\n    fatten = 2) +\n  # Estimates and CIS\n  ggtext::geom_richtext(\n    aes(x = label_pos, label = label_text),\n    position = ggstance::position_dodge2v(height = 0.5),\n    hjust = 0,\n    size = 3,\n    fill = NA, label.colour = NA,\n    show.legend = FALSE) +\n  # Customization\n  scale_colour_manual(values = c(\n    \"Positive\" = \"#0072B2\", \n    \"Negative\" = \"#E69F00\", \n    \"NS\"       = \"#B2BEB5\")) +\n  # scale_x_continuous(expand = expansion(mult = 0.025, add = 0.025)) +\n  labs(# title = \"Odds ratios (stationary model)\",\n       x = \"Odds Ratio\", y = \"Predictor\") +\n  guides(colour = \"none\") +\n  ggh4x::facet_manual(\n    ~ term, scales = \"free_x\", \n    design = design, labeller = labeller(\n     term = c(\"Depression\" = \"Apathy\")\n    )) +\n  coord_cartesian(clip = \"off\") +\n  theme_bw() +\n  theme(\n    plot.title = element_text(hjust = 0.5, size = 14, face = \"bold\"),\n    axis.title = element_text(size = 12, face = \"bold\"),\n    strip.text = element_text(size = 10, face = \"bold\"),\n    panel.grid.major.y = element_blank(),\n    panel.grid.minor.y = element_blank())\n\n\n\n\n\n\n\n\nFigure 1: Estimated odds ratios for the interaction model.\n\n\n\n\n\n\n\nCheck out my code\n# Making a new predicted dataset\npred_data &lt;- expand.grid(\n  Gender = factor(0),\n  Age = seq(60, 97, length = 200),\n  Education_tri = factor(0),\n  Depression = mean(data_stack$Depression, na.rm = TRUE),\n  status_prev = levels(data_stack$status_prev),\n  Total_p = seq(0, 60, length = 200))\n\n# Reveling original data\ndata_plot &lt;- data_stack |&gt;\n  mutate(\n    # Relevel\n    status = case_when(\n      status == 1 ~ \"Normal Cognition\",\n      status == 2 ~ \"MCI\",\n      status == 3 ~ \"Dementia\"),\n    status_prev = case_when(\n      status_prev == 1 ~ \"Normal Cognition\",\n      status_prev == 2 ~ \"MCI\",\n      status_prev == 3 ~ \"Dementia\")\n    ) |&gt;\n  mutate(\n    status = factor(\n      status, levels = c(\"Normal Cognition\", \"MCI\", \"Dementia\")),\n    status_prev = factor(\n      status_prev, levels = c(\"Normal Cognition\", \"MCI\", \"Dementia\"))) |&gt;\n  filter(status_prev %in% c(\"Normal Cognition\", \"MCI\") & \n         status %in%  c(\"Normal Cognition\", \"MCI\"))\n  \n# Plotting interaction effect ----------------------------------------------\npred_data |&gt;\n  # Adding predictions\n  modelr::add_predictions(model = fit_a, var = \"pred\", type = \"probs\") |&gt;\n  tidy_predictions() |&gt;\n  filter(status_prev %in% c(\"Normal Cognition\", \"MCI\") & \n         status %in%  c(\"Normal Cognition\", \"MCI\")) |&gt;\n  ggplot(aes(x = Total_p, y = as.numeric(Age))) +\n  # Adding heat mat with contour lines\n  geom_raster(aes(fill = prob), alpha = 0.7) +\n  geom_contour(aes(z = prob), colour = \"black\", size = 0.3) +\n  # Adding orginal data points\n  geom_point(\n    data = data_plot, aes(x = Total_p, y = Age), size = 1.75, alpha = 0.3) +\n  # Customising plot\n  scale_x_continuous(\n    breaks = seq(0, 60, by = 10),\n    sec.axis = sec_axis(~ ., name = \"Previous State\",\n                        breaks = NULL, labels = NULL)) +\n  scale_y_continuous(\n    breaks = seq(50, 100, by = 5),\n    sec.axis = sec_axis(~ ., name = \"Current State\",\n                        breaks = NULL, labels = NULL)) +\n  scale_fill_viridis_c(option = \"plasma\") +\n  labs(\n    title = \"Predicted transition probabilities from the interaction model\",\n    x = \"Total Procrastination\", y = \"Age\", \n    fill = expression(hat(p))) +\n  facet_grid(status ~ status_prev) +\n  theme_classic() +\n  theme(\n    plot.title = element_text(hjust = 0.5, size = 14, face = \"bold\"),\n    axis.title = element_text(size = 12, face = \"bold\"),\n    strip.text = element_text(size = 10, face = \"bold\"),\n    panel.grid.major.y = element_blank(),\n    panel.grid.minor.y = element_blank(),\n    legend.title = element_text(size = 10, face = \"bold\"))\n\n\n\n\n\n\n\n\nFigure 2: Predicted transition probabilities from the interaction model.\n\n\n\n\n\nFinally, (Figure 3) shows the the predicted transition probabilities for different age cohorts.\n\n\nCheck out my code\n# Create predictions with age info\nage_cohots &lt;- expand.grid(\n  Gender = factor(0),\n  Age = c(62:97),\n  Education_tri = factor(0),\n  Depression = mean(data_stack$Depression, na.rm = TRUE),\n  status_prev = levels(data_stack$status_prev),\n  Total_p = seq(0, 60, length = 200)) |&gt;\n  modelr::add_predictions(model = fit_a, var = \"pred\", type = \"probs\") |&gt;\n  tidy_predictions() |&gt;\n  filter(status_prev %in% c(\"Normal Cognition\", \"MCI\") &\n         status %in%  c(\"Normal Cognition\", \"MCI\")) |&gt;\n  mutate(label = case_when(\n    Age %in% c(70, 80, 90) ~ as.character(Age), \n    TRUE ~ \"Other\"\n  ))\n\n# Identifying right most point for each label point\nlabel_data &lt;- age_cohots |&gt;\n  filter(Age %in% c(70, 80, 90)) |&gt;\n  group_by(status_prev, Age) |&gt;\n  filter(Total_p == max(Total_p)) |&gt;\n  ungroup()\n\n# Plotting ---------------------------------------------------------------------\nggplot(data = age_cohots, aes(x = Total_p, y = prob, \n                              group = interaction(Age, status_prev, status),\n                              colour = label)) +\n  geom_line(aes(linewidth = label)) + \n  ggrepel::geom_text_repel(\n    data = label_data,\n    aes(label = paste0(\"Age \", Age), colour = as.character(Age)),\n    direction = \"y\", nudge_x = 4, hjust = 0,\n    segment.size = 0.5, segment.colour = \"grey50\",\n    size = 3, show.legend = FALSE) +\n  scale_x_continuous(\n    breaks = seq(0, 60, by = 10),\n    sec.axis = sec_axis( ~., name = \"Previous State\", breaks = NULL, labels = NULL)) +\n  scale_y_continuous(sec.axis = sec_axis( ~ ., name = \"Current State\", breaks = NULL, labels = NULL)) +\n  scale_colour_manual(values = c(\n    \"70\"    = \"#E69F00\", \n    \"80\"    = \"#56B4E9\", \n    \"90\"    = \"#009E73\",\n    \"Other\" = \"grey80\")) +\n  scale_linewidth_manual(values = c(\n    \"70\"    = 1.5, \n    \"80\"    = 1.5, \n    \"90\"    = 1.5,\n    \"Other\" = 0.5)) +\n  labs(\n    # title = \"Predicted transition probabilities for different age cohorts\",\n    x = \"Procrastination\", y = \"Probability\", colour = NULL) +\n  facet_grid(status ~ status_prev, labeller = labeller(\n    status = c(\"Normal Cognition\" = \"Normative Cognitive Function\"),\n    status_prev = c(\"Normal Cognition\" = \"Normative Cognitive Function\")\n  )) +\n  theme_bw() +\n  theme(\n    plot.title = element_text(hjust = 0.5, size = 14, face = \"bold\"),\n    axis.title = element_text(size = 12, face = \"bold\"),\n    strip.text = element_text(size = 10, face = \"bold\"),\n    panel.grid.major.y = element_blank(),\n    panel.grid.minor.y = element_blank(),\n    legend.title = element_text(size = 10, face = \"bold\"),\n    legend.position = \"none\")\n\n\n\n\n\n\n\n\nFigure 3: Predicted transition probabilities for different age cohorts.",
-    "crumbs": [
-      "Analysis",
-      "Models",
-      "Discrete Time Markov Model"
+      "Statistical models",
+      "Markov Model"
     ]
   },
   {
@@ -228,7 +123,7 @@
     "text": "Check out my code\n# Packages ---------------------------------------------------------------------\npacman::p_load(\n  dplyr,\n  ggplot2\n)\n\n# Data -------------------------------------------------------------------------\ndata &lt;- readRDS(here::here(\"analysis/data/data_long.RDS\")) |&gt;\n  filter(wave == \"2020\") |&gt;\n  select(ID, status, Total_p)\nTo examine whether procrastination scores differed across cognitive status groups in 2020, we first tested the assumption of homogeneity of variances using Levene’s test, which was violated (\\(p = 0.039\\)). Consequently, we employed the Kruskal–Wallis test, a rank-based non-parametric alternative to one-way ANOVA, to evaluate whether procrastination scores differed significantly among participants with normative cognitive function, mild cognitive impairment (MCI), and dementia.\n# Running test\nkw_results &lt;- kruskal.test(Total_p ~ status, data = data)\n\n# Outputting result\nbroom::tidy(kw_results)\n## # A tibble: 1 × 4\n##   statistic  p.value parameter method                      \n##       &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt; &lt;chr&gt;                       \n## 1      17.5 0.000155         2 Kruskal-Wallis rank sum test\nThe test revealed a significant effect of cognitive status on procrastination scores (\\(\\chi^2(2) = 17.54, \\; p &lt; 0.001\\)), suggesting that at least two groups differ.",
     "crumbs": [
       "Analysis",
-      "Models",
+      "Statistical models",
       "Kruskal Wallis Test"
     ]
   },
@@ -240,7 +135,7 @@
     "text": "Post-hoc analysis\nTo identify where these differences lay, we conducted pairwise Wilcoxon rank-sum tests with Benjamini–Hochberg (BH) correction for multiple comparisons:\n\n# Running multiple comparison\npairwise_res &lt;- pairwise.wilcox.test(data$Total_p, data$status, p.adjust.method = \"BH\")\n\n# Outputting result\nbroom::tidy(pairwise_res) |&gt;\n  mutate(across(c(group1, group2), ~ case_when(\n  .x == \"1\" ~ \"Normative Cognitive Function\",\n  .x == \"2\" ~ \"MCI\",\n  .x == \"3\" ~ \"Dementia\"\n  )))\n## # A tibble: 3 × 3\n##   group1   group2                       p.value\n##   &lt;chr&gt;    &lt;chr&gt;                          &lt;dbl&gt;\n## 1 MCI      Normative Cognitive Function 0.00394\n## 2 Dementia Normative Cognitive Function 0.00500\n## 3 Dementia MCI                          0.334\n\nThe results indicated that:\n\nNormative cognitive function participants reported significantly lower procrastination scores than those with MCI (\\(p = 0.004\\)).\nNormative cognitive function participants also reported significantly lower scores than those with dementia (\\(p = 0.005\\)).\nNo significant difference was found between the MCI and dementia groups (\\(p = 0.334\\)).",
     "crumbs": [
       "Analysis",
-      "Models",
+      "Statistical models",
       "Kruskal Wallis Test"
     ]
   },
@@ -249,10 +144,10 @@
     "href": "analysis/kruskal-wallis.html#visualisation",
     "title": "Kruskal Wallis Test",
     "section": "Visualisation",
-    "text": "Visualisation\nFigure fig-kruskal illustrates the distribution of procrastination scores across cognitive status groups. Individual scores are displayed as dotplots (left side of each box), and boxplots summarize the group distributions (right side). Significance bars represent the results of the pairwise comparisons described above.\n\n\nCheck out my code\nanova_fig &lt;- data |&gt;\n  ggplot(aes(x = status, y = Total_p, fill = status, colour = status)) +\n  gghalves::geom_half_point(\n    side = \"l\", \n    transformation = ggbeeswarm::position_quasirandom(width = 0.15),\n    size = 1.5, alpha = 0.5) +\n  gghalves::geom_half_boxplot(side = \"r\", colour = \"black\") +\n  ggsignif::geom_signif(\n    comparisons = list(c(\"1\", \"2\"), c(\"2\", \"3\"), c(\"1\", \"3\")),\n    annotations = c(\"**\", \"NS\", \"**\"),\n    size = 1,\n    textsize = 4.5,\n    step_increase = 0.05,\n    margin_top = 0.05,\n    y_position = c(60, 65, 70),\n    tip_length = 0.01,\n    vjust = 0.01\n  ) +\n  ggokabeito::scale_fill_okabe_ito() +\n  ggokabeito::scale_color_okabe_ito() +\n  scale_x_discrete(labels = c(\n    \"1\" = \"Normative Cognitive Function\", \n    \"2\" = \"MCI\", \n    \"3\" = \"Dementia\")) +\n  scale_y_continuous(breaks = seq(0, 60, by = 10), \n                     expand = expansion(mult = 0.05, add = 1)) +\n  labs(x = NULL, y = \"Procrastination\") +\n  guides(fill = \"none\", colour = \"none\") +\n  theme_minimal() +\n  theme(axis.text.x = element_text(size = 10, face = \"bold\"))\n\nanova_fig\n\n\n\n\n\n\n\n\nFigure 1: Procrastination scores across cognitive status groups (2020).",
+    "text": "Visualisation\nFigure fig-kruskal illustrates the distribution of procrastination scores across cognitive status groups. Individual scores are displayed as dotplots (left side of each box), and boxplots summarize the group distributions (right side). Significance bars represent the results of the pairwise comparisons described above.\n\n\nCheck out my code\nanova_fig &lt;- data |&gt;\n  ggplot(aes(x = status, y = Total_p, fill = status, colour = status)) +\n  gghalves::geom_half_point(\n    side = \"l\",\n    transformation = ggbeeswarm::position_quasirandom(width = 0.15),\n    size = 1.5, alpha = 0.5) +\n  gghalves::geom_half_boxplot(side = \"r\", colour = \"black\") +\n  ggsignif::geom_signif(\n    comparisons = list(c(\"1\", \"2\"), c(\"2\", \"3\"), c(\"1\", \"3\")),\n    annotations = c(\"**\", \"NS\", \"**\"),\n    size = 1,\n    textsize = 4.5,\n    step_increase = 0.05,\n    margin_top = 0.05,\n    y_position = c(60, 65, 70),\n    tip_length = 0.01,\n    vjust = 0.01\n  ) +\n  ggokabeito::scale_fill_okabe_ito() +\n  ggokabeito::scale_color_okabe_ito() +\n  scale_x_discrete(labels = c(\n    \"1\" = \"Normative Cognitive Function\",\n    \"2\" = \"MCI\",\n    \"3\" = \"Dementia\")) +\n  scale_y_continuous(breaks = seq(0, 60, by = 10),\n                     expand = expansion(mult = 0.05, add = 1)) +\n  labs(x = NULL, y = \"Procrastination\") +\n  guides(fill = \"none\", colour = \"none\") +\n  theme_minimal() +\n  theme(axis.text.x = element_text(size = 10, face = \"bold\"))\n\nanova_fig\n\n\n\n\n\n\n\n\nFigure 1: Procrastination scores across cognitive status groups (2020).",
     "crumbs": [
       "Analysis",
-      "Models",
+      "Statistical models",
       "Kruskal Wallis Test"
     ]
   },
