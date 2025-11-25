@@ -6,41 +6,54 @@ pivot_and_factorise <- function(data, time_vary = FALSE) {
   #   - data: Dataset containing cognitive function variables in wide format
   # Returns:
   #   - Long-format dataset with factorized variables, ordered by ID and wave
-  # 
-  
-  if(time_vary == TRUE) {
-    # Pivoting depression variable
-    dep_scores <- data |>
+  #
+
+  if (time_vary == TRUE) {
+    # Pivoting apathy variable
+    apathy_scores <- data |>
       select(ID, starts_with("apathy")) |>
       pivot_longer(
         cols = !ID,
         names_to = "remove",
-        values_to = "Depression") |>
-      select(Depression)
-    
+        values_to = "Apathy"
+      ) |>
+      select(Apathy)
+
+    # Pivot anxiety
+    anxiety_scores <- data |>
+      select(ID, starts_with("mean_anxiety")) |>
+      pivot_longer(
+        cols = !ID,
+        names_to = "remove",
+        values_to = "Anxiety"
+      ) |>
+      select(Anxiety)
+
     # Pivoting whole dataset
     data <- data |>
-      select(!starts_with("apathy")) |>
+      select(!starts_with("apathy") & !starts_with("mean_anxiety")) |>
       pivot_longer(
         cols = starts_with("cogfunction"),
         names_to = "wave",
         names_prefix = "cogfunction",
-        values_to = "status")
-    
+        values_to = "status"
+      )
+
     # Adding in depression scores
-    data <- data |> cbind(dep_scores)
-  } else{
+    data <- data |> cbind(apathy_scores) |> cbind(anxiety_scores)
+  } else {
     # No pivoting of depression
     data <- data |>
       tidyr::pivot_longer(
-        cols = starts_with("cogfunction"), 
+        cols = starts_with("cogfunction"),
         names_to = "wave",
-        names_prefix = "cogfunction", 
-        values_to = "status") |>
+        names_prefix = "cogfunction",
+        values_to = "status"
+      ) |>
       rename(Depression = Total_dep_2016) |>
       select(!starts_with("Total_dep_"))
   }
-  
+
   # Factorizing
   data <- data |>
     mutate(
@@ -50,10 +63,11 @@ pivot_and_factorise <- function(data, time_vary = FALSE) {
       status = factor(
         status,
         levels = c("Normal Cognition", "MCI", "Dementia"),
-        labels = c(1, 2, 3))) |>
+        labels = c(1, 2, 3)
+      )
+    ) |>
     relocate(wave, .after = ID) |>
     relocate(status, .after = wave)
-    
-  
+
   return(data)
 }
