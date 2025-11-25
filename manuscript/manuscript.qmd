@@ -1,6 +1,6 @@
 ---
 title: "Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population"
-date: "2025-09-25"
+date: "2025-11-25"
 author:
   - name: Cormac Monaghan
     url: https://c-monaghan.github.io/
@@ -103,24 +103,41 @@ other hand, reflect early disease processes and may signal limited opportunities
 for prevention [@teipel2025]. One such prodromal marker is apathy, or the
 significant loss of motivation, as distinct from depression and cognitive
 impairment [@fresnais2023; @richard2012]. Apathy is prevalent in both MCI and
-dementia subgroups [@donovan2014; @fresnais2023, @salem2023; @vandalen2018].
+dementia subgroups [@donovan2014; @fresnais2023; @salem2023; @vandalen2018].
 Apathy is a significant predictor of the transition from MCI to dementia
-[@ruthirakuhan2019; @salem2023, @vandalen2018]. While apathy has been
+[@ruthirakuhan2019; @salem2023; @vandalen2018]. While apathy has been
 well-established as a prodromal marker and risk factor for dementia progression,
 emerging evidence suggests that procrastination may also relate to early
 cognitive decline.
 
-Though superficially similar, apathy and procrastination are behaviorally
-distinct. Apathy reflects reduced internal drive and emotional engagement,
-impairing initiation of action [@fresnais2023], whereas procrastination reflects
-intact intention but delayed execution [@steel2007]. While both reflect
-impairments in executive functioning, procrastination may additionally capture
-unique aspects of emotional and motivational dysregulation . For instance,
-person A may feel no motivation to attend an exercise class and therefore never
-books it (apathy). Person B, however, books the class and intends to go, but
-postpones at the last minute (procrastination). Both apathy and procrastination
-have been linked to dysfunction in prefrontal regions implicated in dementia
-[@friden2020; @zhang2010; @joseph2021; @fahed2021].
+Although apathy and procrastination can appear similar in that both lead to
+reduced engagement in everyday activities, the underlying behavioural processes
+are distinct. Apathy reflects reduced internal drive and emotional engagement,
+impairing initiation of action [@fresnais2023]. In contrast, procrastination is
+a self-regulatory failure defined by the voluntary delay of an important and
+intended course of action despite expecting negative consequences [@sirois2013;
+@klingsieck2013]. This distinction suggests that individuals who procrastinate
+typically form intentions but fail to execute them in a timely manner. This
+failure can often be understood through an affective framework, where delayed
+action may stem from the avoidance of negative emotions (i.e., stress or
+anxiety) associated with the task [@sirois2013]. Furthermore, while also
+conceptualised as a stable trait linked to specific personality factors
+[@meng2024; @sirois2017c], these factors can shift in later life and may
+interact with emerging cognitive or motivational changes to influence
+procrastination behaviour in older adult [@oi2024; @donnellan2008].
+
+Both apathy and procrastination have been linked to dysfunction in prefrontal
+regions implicated in dementia [@friden2020; @zhang2010; @joseph2021;
+@fahed2021]. Procrastination has been associated with alterations in brain
+circuitry supporting cognitive control and emotional regulation. Research has
+identified both structural and functional differences primarily in the
+prefrontal cortex (PFC) and parahippocampal cortex [@zhang2019]. Specifically,
+high procrastination is associated with decreased gray matter volume in the
+dorsolateral PFC (dlPFC) and increased spontaneous activity in the ventromedial
+PFC (vmPFC) [@liu2017]. Additionally, functional connectivity studies indicate
+altered couplings between both the vmPFC and dlPFC, along with the vmPFC and
+frontal gyri [@zhang2019]. Critically, these same networks are affected in
+neurodegenerative conditions, including Alzheimer’s disease [@joseph2021].
 
 These parallels raise the possibility that procrastination could serve as an
 early marker of cognitive impairment or even a modifiable risk factor. Chronic
@@ -178,12 +195,14 @@ questionnaires designed to explore new topics or supplement existing core survey
 data [@juster1995]. Each respondent receives only one experimental module, with
 sample sizes for each module constituting approximately 10% of the core sample.
 As a result, while the core HRS sample includes approximately $18,000$
-respondents, our initial sample of interest consisted of $1,368$ respondents. We
-excluded respondents with missing cognitive assessment data for any wave
-$(n = 419)$, those under 60 years of age, (as cognitive symptoms typically occur
-around this age $n = 398$), and those with complete missing values across the
-procrastination measure $(n = 2)$. This resulted in a final analytic sample of
-$549$ respondents.
+respondents, our inclusion criteria (i.e., having completed the experimental
+module) identified an initial sample of $1,368$ respondents. We then applied the
+following exclusion criteria: respondents with missing cognitive assessment data
+for any $(n = 419)$, those under 60 years of age, (as cognitive symptoms
+typically occur around this age $n = 398$), and those with complete missing
+values across the procrastination measure $(n = 2)$. The application of these
+exclusion criteria resulted in a final analytic sample of $549$ respondents, of
+whom $61.57\% (n = 338)$ were female.
 
 ## Measures
 
@@ -227,7 +246,7 @@ everything you did was an effort" and "You could not get going". Both items
 capture core features of apathy (behavioural and motivational disengagement)
 and, while not a comprehensive measure of apathy, provide a valid and pragmatic
 approximation for modelling purposes. Each item was measured on a binary
-“yes/no” scale with total scores ranging from \$0\$ to \$2\$.
+“yes/no” scale with total scores ranging from $0$ to $2$.
 
 ### Confounders
 
@@ -238,7 +257,7 @@ attainment [@abner2012; @freedman2024; @yu2013]. Educational attainment was
 classified into three categories: no formal education, GED (General Educational
 Development)/high school diploma, and college/further education.
 
-\clearpage
+\newpage
 
 ## Data Analysis
 
@@ -288,6 +307,8 @@ model, $D$ has an asymptotic $\chi^2$ distribution with degrees of freedom
 corresponding to the difference between the numbers of parameters estimated by
 the two models.
 
+\newpage
+
 # Results
 
 Our final analytic sample comprised $549$ respondents with the following age
@@ -312,11 +333,11 @@ total of $1,647$ observed transitions over time.
 tbl_descriptives <- tibble::tribble(
   ~""                 , ~Full              , ~NC                , ~MCI              , ~Dementia        ,
   "Age (years)"       , "69.70 ± 7.58"    , "69.70 ± 7.55"    , "69.60 ± 7.55"   , "70.00 ± 9.89"  ,
-  "Male"              , "38.43% (n = 211)" , "39.82% (n =180)"  , "32.56% (n = 28)" , "27.27% (n = 3)" ,
-  "Female"            , "61.57% (n = 338)" , "60.18% (n = 272)" , "67.44% (n = 58)" , "72.73% (n = 8)" ,
-  "No degree"         , "16.24% (n = 98)"  , "10.56% (n = 47)"  , "39.53% (n = 34)" , "63.54% (n = 7)" ,
-  "GED"               , "51.58% (n = 279)" , "51.91% (n = 231)" , "52.33% (n = 45)" , "27.27% (n = 3)" ,
-  "Further education" , "32.29% (n = 175)" , "37.53% (n = 167)" , "8.14% (n = 7)"   , "9.09% (n = 1)"  ,
+  "Male"              , "38.43%<br>(n = 211)" , "39.82%<br>(n = 180)"  , "32.56%<br>(n = 28)" , "27.27%<br>(n = 3)" ,
+  "Female"            , "61.57%<br>(n = 338)" , "60.18%<br>(n = 272)" , "67.44%<br>(n = 58)" , "72.73%<br>(n = 8)" ,
+  "No degree"         , "16.24%<br>(n = 98)"  , "10.56%<br>(n = 47)"  , "39.53%<br>(n = 34)" , "63.54%<br>(n = 7)" ,
+  "GED"               , "51.58%<br>(n = 279)" , "51.91%<br>(n = 231)" , "52.33%<br>(n = 45)" , "27.27%<br>(n = 3)" ,
+  "Further education" , "32.29%<br>(n = 175)" , "37.53%<br>(n = 167)" , "8.14%<br>(n = 7)"   , "9.09%<br>(n = 1)"  ,
   "Apathy"            , "0.37 ± 0.63"     , "0.31 ± 0.59"     , "0.65 ± 0.76"    , "0.36 ± 0.51"   ,
   "Procrastination"   , "28.60 ± 12.00"   , "27.70 ± 11.30"   , "32.10 ± 13.80"  , "39.00 ± 16.00"
 )
@@ -335,15 +356,16 @@ footnote <- glue::glue(
 
 # Outputting table
 tbl_descriptives |>
-  setNames(c(" ", "Full sample (n = 549)", "NC (n = 452)", "MCI (n = 86)", "Dementia (n = 11)")) |>
-  tt(notes = list(
-    caption,
-    a = list(i = 10, j = 1, text = footnote))
+  setNames(c(" ", "Full sample<br>(n = 549)", "NC<br>(n = 452)", "MCI<br>(n = 86)", "Dementia<br>(n = 11)")) |>
+  tt(notes = list(caption,
+  a = list(i = 10, j = 1, text = footnote))
   ) |>
    group_tt(i = list("Sex" = 2, "Education" = 4)) |>
    style_tt(j = 2:5, align = "c") |>
+   style_tt(j = 1, align = "l") |>
    style_tt(i = c(2, 5), align = "l", bold = TRUE) |>
-   format_tt(escape = TRUE) |>
+   # format_tt(escape = TRUE) |>
+   format_tt(linebreak = "<br>") |>
    format_tt("notes", markdown = TRUE) |>
    style_tt(
      bootstrap_class = "table table-sm"
@@ -569,11 +591,31 @@ time and whether such changes affect cognitive transitions. It should be noted
 that this limitation is inherent to the HRS dataset rather than a methodological
 oversight (Juster & Suzman, 1995). Future studies should prioritise repeated
 assessments of procrastination to determine whether increases in procrastination
-precedes, accompanies, or follows cognitive decline. Moreover, our use of a
-proxy measure of apathy may not have fully captured the multidimensional nature
-of apathy. Future research should incorporate more validated apathy assessments
-to strengthen the behavioral inferences drawn.
+precedes, accompanies, or follows cognitive decline.
 
+A further limitation concerns the classification of cognitive status. As our
+analyses rely on the HRS, we are constrained by its operational definitions of
+MCI and dementia [@crimmins2011], which are based on threshold scores on the
+TICS. Although widely used [@langa2017; @davydow2015; @wei2018], these cut-offs
+may not fully align with other clinical diagnostic criteria or
+neuropsychological assessments, raising the possibility of misclassification.
+Future research using more comprehensive cognitive batteries or clinical
+diagnoses would help validate and refine the patterns observed here.
+
+Additionally, negative emotional states (e.g., anxiety or depression) are
+important psychological factors linked to both cognitive ageing and
+procrastination. However, we were unable to adjust for anxiety in our models due
+to substantial missingness in the HRS anxiety measure (approximately 61% missing
+for our sample). Similarly, depression was not included as a covariate because
+two CES-D items were used to construct our proxy measure of apathy, leaving a
+non-standard six-item score that would not provide a valid index of depressive
+symptoms. Future research using datasets with more complete emotional-health
+assessments may help clarify the role of negative emotions in these
+associations.
+
+sMoreover, our use of a proxy measure of apathy may not have fully captured the
+multidimensional nature of apathy. Future research should incorporate more
+validated apathy assessments to strengthen the behavioral inferences drawn.
 Additionally, as noted earlier, the relatively small number of individuals in
 the MCI and dementia groups may have constrained statistical power for certain
 comparisons and increased the potential for misclassification bias. Finally,
@@ -582,6 +624,8 @@ covariates, unmeasured confounding (undiagnosed medical conditions, medication
 use, or sleep quality) could also have influenced cognitive outcomes. Future
 research should seek to replicate and extend these findings using more
 clinically diverse samples.
+
+\newpage
 
 ## Conclusions
 
@@ -595,8 +639,6 @@ everyday self-regulatory behaviors in dementia risk and resilience. As a
 modifiable and measurable construct, procrastination holds promise as a target
 for early detection and preventative intervention strategies aimed at sustaining
 cognitive health in ageing populations.
-
-\newpage
 
 ::: {.content-visible when-format="html"}
 # References
