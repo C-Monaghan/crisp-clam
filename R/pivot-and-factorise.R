@@ -19,7 +19,17 @@ pivot_and_factorise <- function(data, time_vary = FALSE) {
       ) |>
       select(Apathy)
 
-    # Pivot anxiety
+    # Pivoting depression variable
+    depression_scores <- data |>
+      select(ID, starts_with("depression")) |>
+      pivot_longer(
+        cols = !ID,
+        names_to = "remove",
+        values_to = "Depression"
+      ) |>
+      select(Depression)
+
+    # Pivot anxiety variable
     anxiety_scores <- data |>
       select(ID, starts_with("mean_anxiety")) |>
       pivot_longer(
@@ -31,7 +41,11 @@ pivot_and_factorise <- function(data, time_vary = FALSE) {
 
     # Pivoting whole dataset
     data <- data |>
-      select(!starts_with("apathy") & !starts_with("mean_anxiety")) |>
+      select(
+        !starts_with("apathy") &
+          !starts_with("mean_anxiety") &
+          !starts_with("depression")
+      ) |>
       pivot_longer(
         cols = starts_with("cogfunction"),
         names_to = "wave",
@@ -40,7 +54,10 @@ pivot_and_factorise <- function(data, time_vary = FALSE) {
       )
 
     # Adding in depression scores
-    data <- data |> cbind(apathy_scores) |> cbind(anxiety_scores)
+    data <- data |>
+      cbind(apathy_scores) |>
+      cbind(depression_scores) |>
+      cbind(anxiety_scores)
   } else {
     # No pivoting of depression
     data <- data |>
