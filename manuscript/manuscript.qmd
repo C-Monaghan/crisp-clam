@@ -1,6 +1,6 @@
 ---
 title: "Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population"
-date: "2025-11-25"
+date: "2025-12-02"
 author:
   - name: Cormac Monaghan
     url: https://c-monaghan.github.io/
@@ -50,7 +50,6 @@ link-citations: true
 editor:
   markdown:
     wrap: 80
-keep-tex: true
 ---
 
 ```{r}
@@ -103,12 +102,11 @@ other hand, reflect early disease processes and may signal limited opportunities
 for prevention [@teipel2025]. One such prodromal marker is apathy, or the
 significant loss of motivation, as distinct from depression and cognitive
 impairment [@fresnais2023; @richard2012]. Apathy is prevalent in both MCI and
-dementia subgroups [@donovan2014; @fresnais2023; @salem2023; @vandalen2018].
-Apathy is a significant predictor of the transition from MCI to dementia
-[@ruthirakuhan2019; @salem2023; @vandalen2018]. While apathy has been
-well-established as a prodromal marker and risk factor for dementia progression,
-emerging evidence suggests that procrastination may also relate to early
-cognitive decline.
+dementia subgroups [@donovan2014; @fresnais2023; @salem2023; @vandalen2018], and
+is a robust predictor of progression from MCI to dementia [@ruthirakuhan2019;
+@salem2023; @vandalen2018]. While apathy has been well-established as a
+prodromal marker and risk factor for dementia progression, emerging evidence
+suggests that procrastination may also relate to early cognitive decline.
 
 Although apathy and procrastination can appear similar in that both lead to
 reduced engagement in everyday activities, the underlying behavioural processes
@@ -122,31 +120,30 @@ failure can often be understood through an affective framework, where delayed
 action may stem from the avoidance of negative emotions (i.e., stress or
 anxiety) associated with the task [@sirois2013]. Furthermore, while also
 conceptualised as a stable trait linked to specific personality factors
-[@meng2024; @sirois2017c], these factors can shift in later life and may
-interact with emerging cognitive or motivational changes to influence
-procrastination behaviour in older adult [@oi2024; @donnellan2008].
+[@meng2024], these factors can shift in later life and may interact with
+emerging cognitive or motivational changes to influence procrastination
+behaviour in older adult [@oi2024; @donnellan2008].
 
 Both apathy and procrastination have been linked to dysfunction in prefrontal
-regions implicated in dementia [@friden2020; @zhang2010; @joseph2021;
-@fahed2021]. Procrastination has been associated with alterations in brain
-circuitry supporting cognitive control and emotional regulation. Research has
-identified both structural and functional differences primarily in the
-prefrontal cortex (PFC) and parahippocampal cortex [@zhang2019]. Specifically,
-high procrastination is associated with decreased gray matter volume in the
-dorsolateral PFC (dlPFC) and increased spontaneous activity in the ventromedial
-PFC (vmPFC) [@liu2017]. Additionally, functional connectivity studies indicate
-altered couplings between both the vmPFC and dlPFC, along with the vmPFC and
-frontal gyri [@zhang2019]. Critically, these same networks are affected in
-neurodegenerative conditions, including Alzheimer’s disease [@joseph2021].
+regions implicated in dementia [@zhang2010; @joseph2021]. Procrastination has
+been associated with alterations in brain circuitry supporting cognitive control
+and emotional regulation. Research has identified both structural and functional
+differences primarily in the prefrontal cortex (PFC) and parahippocampal cortex
+[@zhang2019]. Specifically, high procrastination is associated with decreased
+gray matter volume in the dorsolateral PFC (dlPFC) and increased spontaneous
+activity in the ventromedial PFC (vmPFC). Additionally, functional connectivity
+studies indicate altered couplings between both the vmPFC and dlPFC, along with
+the vmPFC and frontal gyri [@zhang2019]. Critically, these same networks are
+affected in neurodegenerative conditions, including Alzheimer’s disease
+[@joseph2021].
 
 These parallels raise the possibility that procrastination could serve as an
 early marker of cognitive impairment or even a modifiable risk factor. Chronic
 procrastination may exacerbate decline by limiting engagement in cognitively
 stimulating activities such as physical exercise, problem-solving, and
 goal-setting, which build cognitive resilience and reduce dementia risk
-[@kelly2021; @mohammadibytamar2020; @chowdhary2022; @livingston2024]. Reduced
-engagement may contribute to a cycle of cognitive disengagement, accelerating
-decline.
+[@kelly2021; @livingston2024]. Reduced engagement may contribute to a cycle of
+cognitive disengagement, accelerating decline.
 
 Importantly, procrastination is responsive to intervention through
 cognitive-behavioral strategies and self-regulation training [@rozental2014;
@@ -218,6 +215,8 @@ scale and validated cut-off points to assess and classify cognitive status.
 Using these points, respondents who scored $12 - 27$ were classified as having
 normal cognition, $7 - 11$ as having MCI, and $0 - 6$ as having dementia.
 
+\newpage
+
 ### Predictor: Procrastination
 
 Procrastination was measured using the Pure Procrastination Scale [@steel2010],
@@ -248,13 +247,26 @@ and, while not a comprehensive measure of apathy, provide a valid and pragmatic
 approximation for modelling purposes. Each item was measured on a binary
 “yes/no” scale with total scores ranging from $0$ to $2$.
 
+### Covariate: Depression
+
+Depressive symptoms were included in our model based on their associations with
+both procrastination [@klingsieck2013] and cognitive ageing [@livingston2020].
+As mentioned, the HRS uses the CESD-8 as a measure of depressive symptomatology.
+The scale consists of 8 items that are scored as either 0 (no) or 1 (yes), with
+items 4 and 6 being reversed scored. Since we used two items from this scale as
+proxies for apathy, we scored the remaining 6 items, giving a total score
+ranging from 0 to 6, with higher scores indicating higher levels of depressive
+symptoms. Across the waves, this 6-item scale showed reliable internal
+consistency $(\alpha \in [0.81-0.83])$. An example of a question from the scale
+includes “Much of the time during the past week, your sleep was restless”.
+
 ### Confounders
 
 To account for potential confounding, we controlled for demographic variables
 with established associations with both cognitive function and procrastination
 [@vanderweele2019]. These included measures of age, sex, and educational
-attainment [@abner2012; @freedman2024; @yu2013]. Educational attainment was
-classified into three categories: no formal education, GED (General Educational
+attainment [@livingston2020; @steel2013]. Educational attainment was classified
+into three categories: no formal education, GED (General Educational
 Development)/high school diploma, and college/further education.
 
 \newpage
@@ -263,8 +275,8 @@ Development)/high school diploma, and college/further education.
 
 All data analysis was carried out in R [@rcoreteam2025]. To model transitions in
 cognitive states over time, we employed a first order discrete-time Markov
-model, a class of stochastic processes that satisfy the Markov property
-[@zhang2010], which can be formally expressed as:
+model, a class of stochastic processes that satisfy the Markov property, which
+can be formally expressed as:
 
 $$P(X_{t+1} = j \vert X_t = i, X_{t-1} = i_{t-1}, \dots X_0 = i_0) = P(X_{t+1} = j \vert X_t = i)$$
 
@@ -315,11 +327,11 @@ Our final analytic sample comprised $549$ respondents with the following age
 distribution: 60 - 70 $(n = 186)$, 71 - 80 $(n = 203)$, 81 - 90 $(n = 142)$, and
 90+ $(n = 18)$. Descriptive statistics for the full sample, as well as data
 stratified by cognitive status (normative cognitive function, MCI, and
-dementia), are presented in @tbl-descriptives. Both @fig-river and supplementary
-figure S1 capture the unconditional transitions and transition probabilities
-(respectively) between wave one and two (first transition), wave two and three
-(second transition), and wave three and four (third transition), yielding a
-total of $1,647$ observed transitions over time.
+dementia), are presented in @tbl-descriptives. Both @fig-river and Figure S1 in
+the supplement capture the unconditional transitions and transition
+probabilities (respectively) between wave one and two (first transition), wave
+two and three (second transition), and wave three and four (third transition),
+yielding a total of $1,647$ observed transitions over time.
 
 ```{r}
 #| label: tbl-descriptives
@@ -331,15 +343,16 @@ total of $1,647$ observed transitions over time.
 
 # Table information
 tbl_descriptives <- tibble::tribble(
-  ~""                 , ~Full              , ~NC                , ~MCI              , ~Dementia        ,
-  "Age (years)"       , "69.70 ± 7.58"    , "69.70 ± 7.55"    , "69.60 ± 7.55"   , "70.00 ± 9.89"  ,
-  "Male"              , "38.43%<br>(n = 211)" , "39.82%<br>(n = 180)"  , "32.56%<br>(n = 28)" , "27.27%<br>(n = 3)" ,
+  ~""                 , ~Full                 , ~NC                   , ~MCI                 , ~Dementia           ,
+  "Age (years)"       , "69.70 ± 7.58"       , "69.70 ± 7.55"       , "69.60 ± 7.55"      , "70.00 ± 9.89"     ,
+  "Male"              , "38.43%<br>(n = 211)" , "39.82%<br>(n = 180)" , "32.56%<br>(n = 28)" , "27.27%<br>(n = 3)" ,
   "Female"            , "61.57%<br>(n = 338)" , "60.18%<br>(n = 272)" , "67.44%<br>(n = 58)" , "72.73%<br>(n = 8)" ,
   "No degree"         , "16.24%<br>(n = 98)"  , "10.56%<br>(n = 47)"  , "39.53%<br>(n = 34)" , "63.54%<br>(n = 7)" ,
   "GED"               , "51.58%<br>(n = 279)" , "51.91%<br>(n = 231)" , "52.33%<br>(n = 45)" , "27.27%<br>(n = 3)" ,
   "Further education" , "32.29%<br>(n = 175)" , "37.53%<br>(n = 167)" , "8.14%<br>(n = 7)"   , "9.09%<br>(n = 1)"  ,
-  "Apathy"            , "0.37 ± 0.63"     , "0.31 ± 0.59"     , "0.65 ± 0.76"    , "0.36 ± 0.51"   ,
-  "Procrastination"   , "28.60 ± 12.00"   , "27.70 ± 11.30"   , "32.10 ± 13.80"  , "39.00 ± 16.00"
+  "Apathy"            , "0.37 ± 0.63"        , "0.31 ± 0.59"        , "0.65 ± 0.76"       , "0.36 ± 0.51"      ,
+  "Depression"        , "0.98 ± 1.48"        , "0.88 ± 1.41"        , "1.41 ± 1.71"       , "1.09 ± 1.87"      ,
+  "Procrastination"   , "28.60 ± 12.00"      , "27.70 ± 11.30"      , "32.10 ± 13.80"     , "39.00 ± 16.00"
 )
 
 # Captions and footnotes
@@ -358,7 +371,7 @@ footnote <- glue::glue(
 tbl_descriptives |>
   setNames(c(" ", "Full sample<br>(n = 549)", "NC<br>(n = 452)", "MCI<br>(n = 86)", "Dementia<br>(n = 11)")) |>
   tt(notes = list(caption,
-  a = list(i = 10, j = 1, text = footnote))
+  a = list(i = 11, j = 1, text = footnote))
   ) |>
    group_tt(i = list("Sex" = 2, "Education" = 4)) |>
    style_tt(j = 2:5, align = "c") |>
@@ -418,32 +431,33 @@ fig_2
 
 Results from the discrete-time Markov analysis, showed that all covariates
 significantly influenced the likelihood of transitioning between cognitive
-states (see @fig-markov). Notably, procrastination interacted significantly with
-*age* to affect two key transitions: increasing the likelihood of transitioning
-from normative cognitive function to MCI $(\text{OR} = 1.001; p < 0.001)$ and
-decreasing the likelihood of reverting from MCI to normative cognitive function
-$(\text{OR} = 0.999; p < 0.001)$. *Women* were significantly less likely than
-men to transition from both normative cognitive function to dementia
-$(\text{OR} = 0.068; p < 0.001)$ and from MCI to dementia
-$(\text{OR} = 0.70; p < 0.001$).
+states (see @fig-markov). Notably, *procrastination* interacted significantly
+with *age* to affect two key transitions: increasing the likelihood of
+transitioning from normative cognitive function to MCI
+$(\text{OR} = 1.001; p < 0.001)$ and decreasing the likelihood of reverting from
+MCI to normative cognitive function $(\text{OR} = 0.999; p < 0.001)$. *Women*
+were significantly less likely than men to transition from both normative
+cognitive function to dementia $(\text{OR} = 0.67; p < 0.001)$ and from MCI to
+dementia $(\text{OR} = 0.71; p < 0.001$).
 
 For *education attainment*, individuals with a GED were less likely to
 transition from normative cognitive function to either MCI
-$(\text{OR} = 0.49; p < 0.001)$ or dementia $(\text{OR} = 0.29; p < 0.001)$ and
+$(\text{OR} = 0.46; p < 0.001)$ or dementia $(\text{OR} = 0.29; p < 0.001)$ and
 from MCI to dementia $(\text{OR} = 0.64; p < 0.001)$. They were also more likely
 to back transition from MCI to normative cognitive function
-$(\text{OR} = 2.18; p < 0.001)$. Those with a college level education or higher
+$(\text{OR} = 2.24; p < 0.001)$. Those with a college level education or higher
 demonstrated a significantly reduced likelihood of transitioning from normative
-cognitive function to either MCI $(\text{OR} = 0.32; p < 0.001)$ or dementia
+cognitive function to either MCI $(\text{OR} = 0.31; p < 0.001)$ or dementia
 $(\text{OR} = 0.07; p < 0.001)$ and from MCI to dementia
 $(\text{OR} = 0.22; p < 0.001)$. They were also more likely to back transition
-from MCI to normative cognitive function $(\text{OR} = 3.13; p < 0.001)$.
+from MCI to normative cognitive function $(\text{OR} = 3.23; p < 0.001)$.
 
-Finally, higher levels of *apathy* were associated with an increased likelihood
-of transitioning from normative cognitive function to both MCI
-$(\text{OR} = 1.35; p = 0.005)$ and dementia $(\text{OR} = 1.36; p<0.001)$ and a
-decreased likelihood of transitioning from MCI back to normative cognitive
-function $(\text{OR} = 0.74; p = 0.003)$.
+Higher levels of *depression* were associated with an increased likelihood of
+transitioning from normative cognitive function to MCI
+$(\text{OR} = 1.14; p = 0.013)$ and a reduced likelihood of transitioning back
+from MCI to normal cognition $\text{OR} = 0.88; p = 0.013)$. Finally, higher
+levels of *apathy* were associated with an increased likelihood of transitioning
+from normative cognitive function to dementia $(\text{OR} = 1.20; p < 0.001)$
 
 ```{r}
 #| label: fig-markov
@@ -490,7 +504,7 @@ prodromal markers offering important targets for intervention [@livingston2024;
 @livingston2020]. While apathy has been well established as a prodromal marker
 and predictor of dementia [@donovan2014; @fresnais2023; @salem2023;
 @vandalen2018], emerging evidence suggests that procrastination may also signal
-early cognitive dysfunction [@friden2020; @zhang2019]. This study examined
+early cognitive dysfunction [@joseph2021; @zhang2019]. This study examined
 whether procrastination, particularly in later life, could serve as a predictor
 of cognitive decline. We assessed both cross-sectional differences in
 procrastination across three cognitive groups (normative cognitive function, MCI
@@ -503,7 +517,7 @@ individuals experiencing cognitive impairment, both MCI and dementia, reporting
 higher procrastination scores than those with normative cognitive function.
 These findings support the hypothesis that procrastination may be associated
 with cognitive decline and aligns with emerging evidence linking procrastination
-to cognitive dysfunction [@friden2020; @zhang2019]. Interestingly, while both
+to cognitive dysfunction [@joseph2021; @zhang2019]. Interestingly, while both
 MCI and dementia groups exhibited elevated procrastination scores, no
 significant difference emerged between these two groups. This suggests that
 increases in procrastination may occur relatively early in the neurodegenerative
@@ -515,10 +529,17 @@ MCI $(n = 67)$ or dementia $(n = 27)$ was relatively small compared to those
 with normative cognitive function $(n = 455)$. This imbalance in group sizes may
 have limited the sensitivity of our comparisons and raises the possibility that
 subtle differences between MCI and dementia groups were obscured by statistical
-power constraints. Future research should aim to replicate these findings in
-more evenly distributed samples to better determine whether procrastination
-continues to increase across progressive stages of impairment or plateaus
-following early decline.
+power constraints. In addition, our analytic sample contained a higher
+proportion of women than men $(61.57\% \text{female})$ reflecting the
+demographic composition of the available HRS respondents who met eligibility
+criteria. Although this imbalance was not the result of a sampling decision, it
+may influence the generalisability of our findings, as women in older cohorts
+differ from men in both dementia risk profiles and health-seeking behaviours
+[@berve2025]. Future research should aim to replicate these findings in more
+evenly distributed samples to better determine whether these results are
+consistent across men and women and whether procrastination continues to
+increase across progressive stages of impairment or plateaus following early
+decline.
 
 Beyond these cross-sectional differences, our discrete-time Markov analysis
 offered insight into how procrastination alongside other demographic and
@@ -541,8 +562,15 @@ which may accelerate hippocampal atrophy, β-amyloid plaque deposition, and brai
 inflammation [@franks2021; @wallensten2023], further undermining cognitive
 resilience. These behavioral and biological mechanisms align with
 self-regulation theories suggesting that procrastination reflects executive
-dysfunction [@rozental2014; @steel2007], an early feature of neurodegenerative
-progression [@clark2012].
+dysfunction [@rozental2014], an early feature of neurodegenerative progression
+[@clark2012]. At the same time, these results align with both the affective and
+trait-based perspectives on procrastination. Higher procrastination in
+individuals with cognitive impairment may partly reflect affective dysregulation
+(e.g., anxiety or stress-related avoidance) [@sirois2013] or age-related shifts
+in stable behavioural tendencies that accompany neurodegenerative change
+[@oi2024]. While our study cannot differentiate between these frameworks, our
+results highlight that procrastination is a multifaceted construct encompassing
+motivational, affective, and self-regulatory dimensions.
 
 The observed interaction with age (see @fig-age-preds) suggests that the
 influence of procrastination on cognitive trajectories may grow stronger with
@@ -589,43 +617,37 @@ as both a retrospective and prospective proxy for procrastination scores.
 However, this precluded analysis of within-person changes in this behavior over
 time and whether such changes affect cognitive transitions. It should be noted
 that this limitation is inherent to the HRS dataset rather than a methodological
-oversight (Juster & Suzman, 1995). Future studies should prioritise repeated
-assessments of procrastination to determine whether increases in procrastination
-precedes, accompanies, or follows cognitive decline.
+oversight [@juster1995]. Future studies should prioritise repeated assessments
+of procrastination to determine whether increases in procrastination precedes,
+accompanies, or follows cognitive decline.
 
 A further limitation concerns the classification of cognitive status. As our
 analyses rely on the HRS, we are constrained by its operational definitions of
 MCI and dementia [@crimmins2011], which are based on threshold scores on the
-TICS. Although widely used [@langa2017; @davydow2015; @wei2018], these cut-offs
-may not fully align with other clinical diagnostic criteria or
-neuropsychological assessments, raising the possibility of misclassification.
-Future research using more comprehensive cognitive batteries or clinical
-diagnoses would help validate and refine the patterns observed here.
+TICS [@brandt1988; @fong2009]. Developed as a telephone-based analogue of the
+Mini-Mental State Examination, the TICS is a widely adopted and well-validated
+cognitive screener [@fong2009]. However, like all brief screening measures,
+TICS-based classifications may not fully align with more detailed clinical
+assessments, raising the possibility of diagnostic misclassification. Future
+research using more comprehensive cognitive batteries or clinical diagnoses
+would help validate and refine the patterns observed here.
 
-Additionally, negative emotional states (e.g., anxiety or depression) are
-important psychological factors linked to both cognitive ageing and
-procrastination. However, we were unable to adjust for anxiety in our models due
-to substantial missingness in the HRS anxiety measure (approximately 61% missing
-for our sample). Similarly, depression was not included as a covariate because
-two CES-D items were used to construct our proxy measure of apathy, leaving a
-non-standard six-item score that would not provide a valid index of depressive
-symptoms. Future research using datasets with more complete emotional-health
-assessments may help clarify the role of negative emotions in these
-associations.
+Additionally, negative emotional states (e.g., anxiety) are important
+psychological factors linked to both cognitive ageing and procrastination
+[@livingston2020; @sirois2013]. However, we were unable to robustly adjust for
+anxiety in our models due to substantial systematic missingness in the HRS
+anxiety measure (see Figure S2 and Figure S3 in the supplement). Moreover, our
+use of a proxy measure of apathy may not have fully captured the
+multidimensional nature of apathy. Additionally, it meant that only six of the
+original eight CESD-8 items were used for scoring depression, possibly
+introducing measurement error. Future research should incorporate more validated
+apathy assessments to strengthen the behavioral inferences drawn.
 
-sMoreover, our use of a proxy measure of apathy may not have fully captured the
-multidimensional nature of apathy. Future research should incorporate more
-validated apathy assessments to strengthen the behavioral inferences drawn.
-Additionally, as noted earlier, the relatively small number of individuals in
-the MCI and dementia groups may have constrained statistical power for certain
-comparisons and increased the potential for misclassification bias. Finally,
-while the models adjusted for several key demographic and psychological
+Finally, while the models adjusted for several key demographic and psychological
 covariates, unmeasured confounding (undiagnosed medical conditions, medication
 use, or sleep quality) could also have influenced cognitive outcomes. Future
 research should seek to replicate and extend these findings using more
 clinically diverse samples.
-
-\newpage
 
 ## Conclusions
 
