@@ -51,6 +51,7 @@ Before preparing the data, we want to create a vector of covariates that we are 
 cols <- c(
   "ID", "Gender", "Age", "Education_tri",
   paste0("apathy_", seq(2016, 2022, by = 2)),
+  paste0("depression_", seq(2016, 2022, by = 2)),
   paste0("mean_anxiety_", seq(16, 22, by = 2)),
   "Total_p")
 ```
@@ -114,12 +115,12 @@ As mentioned, we estimate our Markov model using `nnet::multinom()`
 #| label: model-fit
 
 fit_a <- nnet::multinom(
-  status ~ Gender + Education_tri + Apathy + (Total_p * Age) + status_prev,
+  status ~ Gender + Education_tri + Apathy + Depression + (Total_p * Age) + status_prev,
   family = multinomial,
   data = data_stack, trace = FALSE)
 
 fit_b <- nnet::multinom(
-  status ~ Gender + Education_tri + Apathy + (Total_p * Age) + status_prev,
+  status ~ Gender + Education_tri + Apathy + Depression + (Total_p * Age) + status_prev,
   family = multinomial,
   data = data_stack |> mutate(status = relevel(status, ref = 2)),
   trace = FALSE)
@@ -148,7 +149,7 @@ interaction_results <- rbind(tidy_output(fit_a), tidy_output(fit_b)) |>
       levels = c("Being female", "Age",
                  "High school degree vs. No education",
                  "Further education vs. No education",
-                 "Apathy Scores", "Anxiety Scores",
+                 "Apathy", "Anxiety", "Depression",
                  "Procrastination (2020)",
                  "Age x Procrastination", "Previous state: MCI",
                  "Previous state: Dementia")),
@@ -185,7 +186,7 @@ Let’s visualize the estimated odds ratios (@fig-odds-ratio-interaction) and pr
 design <- "
   AABBCC
   DDEEFF
-  ##GG##
+  #GGHH#
 "
 
 interaction_results |>
@@ -250,6 +251,7 @@ pred_data <- expand.grid(
   Age = seq(60, 97, length = 200),
   Education_tri = factor(0),
   Apathy = mean(data_stack$Apathy, na.rm = TRUE),
+  Depression = mean(data_stack$Depression, na.rm = TRUE),
   status_prev = levels(data_stack$status_prev),
   Total_p = seq(0, 60, length = 200))
 
@@ -324,6 +326,7 @@ age_cohots <- expand.grid(
   Age = c(62:97),
   Education_tri = factor(0),
   Apathy = mean(data_stack$Apathy, na.rm = TRUE),
+  Depression = mean(data_stack$Depression, na.rm = TRUE),
   status_prev = levels(data_stack$status_prev),
   Total_p = seq(0, 60, length = 200)) |>
   modelr::add_predictions(model = fit_a, var = "pred", type = "probs") |>
@@ -378,5 +381,5 @@ ggplot(data = age_cohots, aes(x = Total_p, y = prob,
   theme(
     panel.grid = element_blank(),
     legend.title = element_text(size = 10, face = "bold"),
-    legend.position = "none")
+    legend.position = "none") -> new_fig
 ```
