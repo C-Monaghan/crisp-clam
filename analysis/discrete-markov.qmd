@@ -381,5 +381,5 @@ ggplot(data = age_cohots, aes(x = Total_p, y = prob,
   theme(
     panel.grid = element_blank(),
     legend.title = element_text(size = 10, face = "bold"),
-    legend.position = "none") -> new_fig
+    legend.position = "none")
 ```
