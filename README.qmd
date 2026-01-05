@@ -28,7 +28,7 @@ emoji_out <- emoji_glue(":potato::spiral_shell:")
 
 ---
 
-> Monaghan, C., de Andrade Moral, R, Kelly, M, & McHugh Power, J. "`r title`".
+> Monaghan, C., de Andrade Moral, R, Kelly, M, & McHugh Power, J. (2026)" `r title`. *Alzheimer's & Dementia: Diagnosis, Assessment & Disease Monitoring*".
 
 ---
 
@@ -50,4 +50,3 @@ codename_message()
 codename(seed = "dementia", type = "ubuntu")
 #> [1] "crisp clam"
 ```
-

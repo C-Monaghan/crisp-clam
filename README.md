@@ -17,8 +17,9 @@
 ------------------------------------------------------------------------
 
 > Monaghan, C., de Andrade Moral, R, Kelly, M, & McHugh Power, J.
-> “Procrastination as a Marker of Cognitive Decline: Evidence from
-> Longitudinal Transitions in the Older Adult Population”.
+> (2026)” Procrastination as a Marker of Cognitive Decline: Evidence
+> from Longitudinal Transitions in the Older Adult Population.
+> *Alzheimer’s & Dementia: Diagnosis, Assessment & Disease Monitoring*”.
 
 ------------------------------------------------------------------------
 
@@ -30,7 +31,7 @@ recognized prodromal marker, procrastination may also signal early
 executive dysfunction. We used longitudinal secondary data from the
 United States Health and Retirement Study among adults aged 60+
 $(n = 549; \bar{x} = 69.70;\sigma = 7.58)$. Cognitive function,
-procrastination, and a proxy measure of apathy were assessed.
+procrastination, depression and a proxy measure of apathy were assessed.
 Transitions between normative cognitive function, mild cognitive
 impairment (MCI), and dementia were modeled using a discrete-time
 first-order Markov model. Procrastination scores were higher among
