@@ -1,6 +1,6 @@
 ---
 title: "Procrastination as a Marker of Cognitive Decline: Evidence from Longitudinal Transitions in the Older Adult Population"
-date: "2025-12-02"
+date: "2025-12-05"
 author:
   - name: Cormac Monaghan
     url: https://c-monaghan.github.io/
@@ -31,7 +31,7 @@ author:
       name: Maynooth University
 correspondence-prefix: "Corresponding author"
 abstract: |
-  Cognitive decline is a global health concern, making the identification of early, modifiable risk factors essential. While apathy is a recognized prodromal marker, procrastination may also signal early executive dysfunction. We used longitudinal secondary data from the United States Health and Retirement Study among adults aged 60+ $(n = 549; \bar{x} = 69.70;\sigma = 7.58)$. Cognitive function, procrastination, and a proxy measure of apathy were assessed. Transitions between normative cognitive function, mild cognitive impairment (MCI), and dementia were modeled using a discrete-time first-order Markov model. Procrastination scores were higher among individuals with MCI or dementia than those with normative cognitive function. Procrastination also interacted with age, disproportionately increasing the risk of decline in the oldest participants. Procrastination was associated with cognitive impairment and predicted transitions to MCI, suggesting it may serve as both an early behavioral marker and compounding risk factor.
+  Cognitive decline is a global health concern, making the identification of early, modifiable risk factors essential. While apathy is a recognized prodromal marker, procrastination may also signal early executive dysfunction. We used longitudinal secondary data from the United States Health and Retirement Study among adults aged 60+ $(n = 549; \bar{x} = 69.70;\sigma = 7.58)$. Cognitive function, procrastination, depression and a proxy measure of apathy were assessed. Transitions between normative cognitive function, mild cognitive impairment (MCI), and dementia were modeled using a discrete-time first-order Markov model. Procrastination scores were higher among individuals with MCI or dementia than those with normative cognitive function. Procrastination also interacted with age, disproportionately increasing the risk of decline in the oldest participants. Procrastination was associated with cognitive impairment and predicted transitions to MCI, suggesting it may serve as both an early behavioral marker and compounding risk factor.
 additional-info: |
   **Data Availability:** All data and replication code are publicly available at <https://github.com/C-Monaghan/crisp-clam>
 keywords:
@@ -41,7 +41,7 @@ keywords:
   - Apathy
   - Executive dysfunction
   - Aging
-published: "This manuscript is a preprint and is currently under review at *Alzheimer's & Dementia: Diagnosis, Assessment & Disease Monitoring*"
+published: "This manuscript is a preprint and with its full version available at *Alzheimer's & Dementia: Diagnosis, Assessment & Disease Monitoring*"
 code-repo: "Access the code, data, and analysis at <https://github.com/C-Monaghan/crisp-clam>"
 bibliography: references.bib
 csl: csl/apa.csl
@@ -86,10 +86,8 @@ theme_set(
 # Introduction {.hide}
 :::
 
-Dementia is characterized by progressive decline of cognitive function, leading
-to memory loss and difficulties with daily living [@prince2013;
-@sanz-blasco2022]. The global burden of dementia is substantial, with cases
-projected to rise to 152.8 million by 2050 [@nichols2022]. Identifying and
+Dementia involves progressive cognitive decline that impairs daily functioning [@prince2013;
+@sanz-blasco2022] with cases projected to rise to 152.8 million by 2050 [@nichols2022]. Identifying and
 addressing modifiable risk factors is crucial to mitigate this projected rise in
 prevalence. Two particularly vulnerable groups are older adults and those with
 mild cognitive impairment (MCI), of whom up to 80% progress to dementia within
