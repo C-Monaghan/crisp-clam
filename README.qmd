@@ -36,7 +36,7 @@ emoji_out <- emoji_glue(":potato::spiral_shell:")
 
 ---
 
-> Monaghan, C., de Andrade Moral, R, Kelly, M, & McHugh Power, J. (2026)" `r title`. *Alzheimer's & Dementia: Diagnosis, Assessment & Disease Monitoring 18*(1). [https://doi.org/10.1002/dad2.70245](https://doi.org/10.1002/dad2.70245)".
+> Monaghan, C., de Andrade Moral, R, Kelly, M, & McHugh Power, J. (2026). `r title`. *Alzheimer's & Dementia: Diagnosis, Assessment & Disease Monitoring 18*(1). [https://doi.org/10.1002/dad2.70245](https://doi.org/10.1002/dad2.70245).
 
 ---
 
@@ -58,3 +58,9 @@ codename_message()
 codename(seed = "dementia", type = "ubuntu")
 #> [1] "crisp clam"
 ```
+
+## Licenses
+
+**Text and figures:** All prose and images are licensed under Creative Commons ([CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/)).
+
+**Code:** All code is licensed under the [MIT License](LICENSE.md).
