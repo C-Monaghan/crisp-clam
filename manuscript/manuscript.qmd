@@ -86,12 +86,13 @@ theme_set(
 # Introduction {.hide}
 :::
 
-Dementia involves progressive cognitive decline that impairs daily functioning [@prince2013;
-@sanz-blasco2022] with cases projected to rise to 152.8 million by 2050 [@nichols2022]. Identifying and
-addressing modifiable risk factors is crucial to mitigate this projected rise in
-prevalence. Two particularly vulnerable groups are older adults and those with
-mild cognitive impairment (MCI), of whom up to 80% progress to dementia within
-six years [@cooper2015; @shigemizu2020 @tschanz2006].
+Dementia involves progressive cognitive decline that impairs daily functioning
+[@prince2013; @sanz-blasco2022] with cases projected to rise to 152.8 million by
+2050 [@nichols2022]. Identifying and addressing modifiable risk factors is
+crucial to mitigate this projected rise in prevalence. Two particularly
+vulnerable groups are older adults and those with mild cognitive impairment
+(MCI), of whom up to 80% progress to dementia within six years [@cooper2015;
+@shigemizu2020 @tschanz2006].
 
 The Lancet Commission on Dementia identified fourteen causal risk factors
 including smoking, hypertension, and diabetes, which account for approximately

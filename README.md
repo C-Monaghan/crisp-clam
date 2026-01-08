@@ -16,10 +16,21 @@
 
 ------------------------------------------------------------------------
 
+<!-- badges: start -->
+
+[![Final
+version](https://img.shields.io/badge/Final%20version-10.1002%2Fdad2.70245-blue)](https://doi.org/10.1002/dad2.70245)
+<!-- badges: end -->
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
 > Monaghan, C., de Andrade Moral, R, Kelly, M, & McHugh Power, J.
 > (2026)” Procrastination as a Marker of Cognitive Decline: Evidence
 > from Longitudinal Transitions in the Older Adult Population.
-> *Alzheimer’s & Dementia: Diagnosis, Assessment & Disease Monitoring*”.
+> *Alzheimer’s & Dementia: Diagnosis, Assessment & Disease Monitoring
+> 18*(1). <https://doi.org/10.1002/dad2.70245>“.
 
 ------------------------------------------------------------------------
 

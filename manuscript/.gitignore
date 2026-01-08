@@ -2,6 +2,7 @@
 
 manuscript_files/
 output/
+submission/
 
 *.fff
 *.ttt
